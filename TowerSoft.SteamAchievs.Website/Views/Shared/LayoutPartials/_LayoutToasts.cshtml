@@ -1,0 +1,15 @@
+﻿<div class="toast-container position-fixed p-3 bottom-0 end-0" style="z-index:1200;"></div>
+
+@if (TempData["message"] != null) {
+    <input type="hidden" id="tempDataMessage" value="@TempData["message"]" />
+}
+
+<div id="toast-template" hidden>
+    <div class="toast fade hide" role="alert">
+        <div class="toast-header bg-primary text-white">
+            <strong class="me-auto">@AppSettings.Value.AppName</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
+</div>

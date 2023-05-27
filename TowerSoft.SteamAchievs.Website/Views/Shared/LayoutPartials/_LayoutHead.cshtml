@@ -1,0 +1,23 @@
+﻿<head>
+    <title>
+        @if (ViewData["Title"] == null) {
+            @AppSettings.Value.AppName;
+        } else {
+            @ViewData["Title"] @:- @AppSettings.Value.AppName
+        }
+    </title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="@AppSettings.Value.AppName" />
+    <meta name="robots" content="noodp" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="content-language" content="en" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="~/lib/bundle-light.min.css" asp-append-version="true" media="(prefers-color-scheme: light)" />
+    <link rel="stylesheet" href="~/lib/bundle-dark.min.css" asp-append-version="true" media="(prefers-color-scheme: dark)" id="default-theme" />
+    <link rel="stylesheet" href="~/lib/bundle-light.min.css" asp-append-version="true" media="print" />
+</head>

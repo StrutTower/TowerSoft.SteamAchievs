@@ -1,0 +1,51 @@
+﻿///<reference path="_variablesShared.scss" />
+///<reference path="_variablesLight.scss" />
+///<reference path="_variablesDark.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables.scss" />
+
+.noscript {
+    display: block;
+    text-align: center;
+    color: $danger;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+a.disable-link {
+    text-decoration: none;
+    pointer-events: none;
+    cursor: default;
+    color: $body-color;
+}
+
+.text-faded {
+    opacity: 0.7;
+}
+
+.font-weight-semibold, .font-weight-600 {
+    font-weight: 600;
+}
+
+.column-label {
+    font-variant: small-caps;
+    opacity: 0.8;
+}
+
+footer {
+    color: darken($body-color, 30);
+
+    a, a:link, a:visited {
+        color: $body-color;
+    }
+}
+
+@media print {
+    header, footer, nav {
+        display: none;
+    }
+}

@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<partial name="LayoutPartials/_LayoutHead" />
+<body>
+    <partial name="LayoutPartials/_LayoutNav" />
+
+    <noscript class="noscript">
+        JavaScript is disabled in your browser.
+        <br />
+        Most of this site will not function properly without JavaScript enabled.
+    </noscript>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <partial name="LayoutPartials/_LayoutToasts" />
+    <partial name="LayoutPartials/_LayoutFooter" />
+</body>
+</html>

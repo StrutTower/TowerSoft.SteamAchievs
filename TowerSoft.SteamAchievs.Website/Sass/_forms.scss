@@ -1,0 +1,15 @@
+﻿///<reference path="_variablesShared.scss" />
+///<reference path="_variablesLight.scss" />
+///<reference path="_variablesDark.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables.scss" />
+
+.form-help-text {
+    opacity: 0.7;
+    padding-left: 10px;
+    font-size: 0.8rem;
+}
+
+.form-check ~ .form-help-text {
+    transform: translateY(-7px);
+    padding-left: 25px;
+}
