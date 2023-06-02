@@ -1,0 +1,23 @@
+﻿@model AchievementModel
+
+<div class="row g-0 achievement-row@(Model.Achieved ? " achieved" : "")">
+    <div class="col-auto">
+        @if (Model.Achieved) {
+            <img src="@Model.IconUrl" class="img-fluid" />
+        } else {
+            <img src="@Model.IconGrayUrl" class="img-fluid" />
+        }
+    </div>
+    <div class="col ps-2 position-relative">
+        <h5 display-for="Name" class="mb-0"></h5>
+        <div display-for="Description"></div>
+        @*<div>
+                <span class="badge bg-danger">Tags</span>
+            </div>*@
+
+        <small class="position-absolute bottom-0 end-0 text-faded pe-1">@(Math.Round(Model.GlobalCompletionPercentage, 1))%</small>
+        <a href="#" class="position-absolute top-0 end-0">
+            <span class="mdi mdi-fw mdi-square-edit-outline"></span>
+        </a>
+    </div>
+</div>

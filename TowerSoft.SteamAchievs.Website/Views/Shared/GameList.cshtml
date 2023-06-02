@@ -1,0 +1,9 @@
+﻿@model GameListModel
+@{
+    ViewData["title"] = Model.PageTitle;
+}
+
+
+@foreach (SteamGameListModel steamGame in Model.Games.OrderBy(x => x.SteamGame.Name)) {
+    <partial name="_GameListItem" model="steamGame" />
+}

@@ -5,13 +5,13 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
         [Key]
         public long SteamGameID { get; set; }
 
-        public long HowLongToBeathID { get; set; }
+        public long? HowLongToBeatID { get; set; }
 
-        public bool PerfectPossible { get; set; }
+        public bool? PerfectPossible { get; set; }
 
-        public int PlayNextScore { get; set; }
+        public int? PlayNextScore { get; set; }
 
-        public bool Finished { get; set; }
+        public bool? Finished { get; set; }
 
         public string ProtonDbRating { get; set; }
 

@@ -20,8 +20,12 @@
         /// </summary>
         public string LogPath { get; set; }
 
+        public List<long> IgnoredAppIDs { get; set; }
+
         public long DefaultSteamUserID { get; set; }
 
         public string DefaultSteamUserProfileUrl { get; set; }
+
+        public string CacheJsonPath { get; set; }
     }
 }

@@ -8,7 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using System.Net.Http;
 using TowerSoft.SteamAchievs.Lib.Config;
+using TowerSoft.SteamAchievs.Lib.Repository;
+using TowerSoft.SteamAchievs.Website.Areas.Admin.Services;
+using TowerSoft.SteamAchievs.Website.HtmlRenderers;
+using TowerSoft.SteamAchievs.Website.Services;
+using TowerSoft.SteamTower;
+using TowerSoft.TagHelpers.Options;
 
 namespace TowerSoft.SteamAchievs.Website {
     public class Startup {
@@ -28,8 +35,29 @@ namespace TowerSoft.SteamAchievs.Website {
             }).AddRazorRuntimeCompilation();
 
             services.Configure<AppSettings>(Configuration.GetSection("appSettings"));
+            services.Configure<ApiKeys>(Configuration.GetSection("apikeys"));
 
             AppSettings appSettings = Configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
+            ApiKeys apiKeys = Configuration.GetSection(nameof(ApiKeys)).Get<ApiKeys>();
+
+            RendererRegistration.RegisterDefaultRenderers();
+            RendererRegistration.Add<ColorPickerHtmlRenderer>("color");
+
+            services.AddHttpClient("steamApi", config => {
+                config.DefaultRequestHeaders.Add("Cookie", new[] { "birthtime =281347201", "lastagecheckage=1-0-1979", "wants_mature_content=1" });
+            }).ConfigurePrimaryHttpMessageHandler(() => {
+                return new HttpClientHandler {
+                    UseDefaultCredentials = true
+                };
+            });
+
+            services
+                .AddHttpContextAccessor()
+                .AddScoped<UnitOfWork>()
+                .AddScoped<GameDataService>()
+                .AddScoped<AchievementDataService>()
+                .AddScoped<AdminTagDataService>()
+                .AddScoped(x => new SteamApiClient(x.GetService<IHttpClientFactory>().CreateClient("steamApi"), apiKeys.Steam));
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)

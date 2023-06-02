@@ -10,8 +10,8 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
     public class PerfectGameRepository : DbRepository<PerfectGame> {
         public PerfectGameRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 
-        public async Task<PerfectGame> GetBySteamGameID(long steamGameID) {
-            return await GetSingleEntityAsync(WhereEqual(x => x.SteamGameID, steamGameID));
+        public PerfectGame GetBySteamGameID(long steamGameID) {
+            return GetSingleEntity(WhereEqual(x => x.SteamGameID, steamGameID));
         }
     }
 }

@@ -12,17 +12,33 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="TowerSoft.SteamGridDbWrapper" Version="1.0.0" />
-    <PackageReference Include="TowerSoft.SteamTower" Version="1.0.0" />
+    <PackageReference Include="TowerSoft.SteamTower" Version="0.1.2" />
     <PackageReference Include="TowerSoft.Utilities" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TowerSoft.SteamAchievs.Lib\TowerSoft.SteamAchievs.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsecrets.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.Production.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="tempData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

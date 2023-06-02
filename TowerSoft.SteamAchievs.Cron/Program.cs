@@ -1,14 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Serilog.Events;
+using TowerSoft.SteamAchievs.Cron.Jobs;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Repository;
 using TowerSoft.SteamAchievs.Lib.Services;
 using TowerSoft.SteamGridDbWrapper;
 using TowerSoft.SteamTower;
 
-ServiceProvider services = ConfigureServices();
 
+ServiceProvider services = ConfigureServices();
+services.GetService<FullGameSync>().StartJob();
 
 static ServiceProvider ConfigureServices() {
     IConfiguration configuration = new ConfigurationBuilder()
@@ -27,25 +30,26 @@ static ServiceProvider ConfigureServices() {
 
     ConfigureLogger(appSettings);
 
-    IServiceCollection services = new ServiceCollection()
+    IServiceCollection services = new ServiceCollection();
+
+    services.AddHttpClient("steamApi", config => {
+        config.DefaultRequestHeaders.Add("Cookie", new[] { "birthtime =281347201", "lastagecheckage=1-0-1979", "wants_mature_content=1" });
+    }).ConfigurePrimaryHttpMessageHandler(() => {
+        return new HttpClientHandler {
+            UseDefaultCredentials = true
+        };
+    });
+
+    services
         .AddLogging(c => c.AddSerilog())
         .AddSingleton(configuration)
         .Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)))
-        .AddScoped(x => new SteamApiClient(apiKeys.Steam))
+        .AddScoped<FullGameSync>()
+        .AddScoped(x => new SteamApiClient(x.GetService<IHttpClientFactory>().CreateClient("steamApi"), apiKeys.Steam))
         .AddScoped(x => new SteamGridClient(apiKeys.SteamGridDb))
-        //.AddScoped<SteamScraper>()
         .AddScoped<UnitOfWork>();
-        //.AddScoped<GameDataSync>()
-        //.AddScoped<UserStatsUpdater>()
-        //.AddScoped<GetPlaytimes>()
-        //.AddScoped<SteamDataLoader>()
-        ////.AddScoped<LastPlayedUpdate>()
-        //.AddScoped<SyncRecentGames>()
-        //.AddScoped<ScanPerfectGames>()
-        //.AddScoped<SyncProtonDbRating>();
 
-    //services.AddHttpClient<SteamApiClient>();
-    //services.AddHttpClient<SteamScraper>();
+
     services.AddHttpClient<HowLongToBeatService>(client => {
         client.BaseAddress = new Uri("https://howlongtobeat.com");
         client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0");
@@ -64,7 +68,8 @@ static ServiceProvider ConfigureServices() {
 static void ConfigureLogger(AppSettings appSettings) {
     Log.Logger = new LoggerConfiguration()
         .Enrich.FromLogContext()
-        .WriteTo.Console()
+        .MinimumLevel.Override("System.Net.Http", LogEventLevel.Warning)
+        .WriteTo.Console(Serilog.Events.LogEventLevel.Information)
         .WriteTo.File(
             Environment.ExpandEnvironmentVariables(appSettings.LogPath),
             Serilog.Events.LogEventLevel.Information,

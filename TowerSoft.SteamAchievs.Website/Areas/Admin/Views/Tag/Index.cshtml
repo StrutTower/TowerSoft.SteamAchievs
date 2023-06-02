@@ -1,0 +1,52 @@
+﻿@model AdminTagListModel
+@{
+    ViewData["title"] = "Tags";
+}
+
+<breadcrumbs>
+    <breadcrumb-item asp-action="Index" asp-controller="Home" asp-area=""><span class="mdi mdi-fw mdi-home"></span></breadcrumb-item>
+    <breadcrumb-item asp-action="Index" asp-controller="Home" asp-area="Admin">Site Management</breadcrumb-item>
+    <breadcrumb-item>@ViewData["title"]</breadcrumb-item>
+</breadcrumbs>
+
+<a asp-action="Edit" class="float-end">
+    <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Global Tag
+</a>
+
+<h3>@ViewData["title"]</h3>
+<hr />
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="min-width"></th>
+                <th>Name</th>
+                <th>Game</th>
+                <th>Color</th>
+                <th>Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (TagGameModel tag in Model.Tags.OrderBy(x => x.Tag.Name)) {
+                <tr>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@tag.Tag.ID">
+                            <span class="mdi mdi-fw mdi-square-edit-outline"></span>
+                        </a>
+                    </td>
+                    <td display-for="@tag.Tag.Name"></td>
+                    <td>
+                        @if (tag.SteamGame == null) {
+                            @:Global
+                        } else {
+                            @Html.DisplayFor(x => tag.SteamGame.Name)
+                        }
+                    </td>
+                    <td display-for="@tag.Tag.BackgroundColor"></td>
+                    <td display-for="@tag.Tag.IsActive"></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

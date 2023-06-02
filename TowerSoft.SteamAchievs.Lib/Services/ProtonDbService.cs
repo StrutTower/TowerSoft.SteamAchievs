@@ -9,7 +9,7 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
             this.httpClient = httpClient;
         }
 
-        public async Task<ProtonDbGame> GetGame(long steamGameID) {
+        public async Task<ProtonDbGame?> GetGame(long steamGameID) {
             try {
                 string json = await httpClient.GetStringAsync($"api/v1/reports/summaries/{steamGameID}.json");
                 ProtonDbGame protonDbGame = JsonConvert.DeserializeObject<ProtonDbGame>(json);

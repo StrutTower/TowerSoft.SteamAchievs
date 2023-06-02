@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TowerSoft.Repository.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TowerSoft.SteamAchievs.Lib.Domain {
-    public class SteamCategory {
-        [Autonumber]
+    public class SteamCategory : IEquatable<SteamCategory> {
+        [Key]
         public long ID { get; set; }
 
         [Required, MaxLength(100)]
         public string Name { get; set; }
+
+        public bool Equals(SteamCategory? other) {
+            return other != null && ID == other.ID;
+        }
+
+        public override int GetHashCode() {
+            return ID.GetHashCode();
+        }
     }
 }

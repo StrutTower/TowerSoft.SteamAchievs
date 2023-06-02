@@ -1,0 +1,29 @@
+﻿@model EditTagModel
+@{
+    bool editing = false;
+    if (Model != null && Model.Tag != null && Model.Tag.ID != 0) {
+        editing = true;
+        ViewData["title"] = "Edit Tag";
+    } else {
+        ViewData["title"] = "New Tag";
+    }
+}
+
+<breadcrumbs>
+    <breadcrumb-item asp-action="Index" asp-controller="Home" asp-area=""><span class="mdi mdi-fw mdi-home"></span></breadcrumb-item>
+    <breadcrumb-item asp-action="Index" asp-controller="Home" asp-area="Admin">Site Management</breadcrumb-item>
+    <breadcrumb-item asp-action="Index" asp-controller="Tag" asp-area="Admin">Tags</breadcrumb-item>
+    <breadcrumb-item>@ViewData["title"]</breadcrumb-item>
+</breadcrumbs>
+
+<h3>@ViewData["title"]</h3>
+<hr />
+
+<form action="" method="post">
+    @Html.HiddenFor(x => x.Tag.ID)
+
+    <hrFormField asp-for="Tag.Name"></hrFormField>
+    <hrFormField asp-for="Tag.BackgroundColor" renderer="color"></hrFormField>
+    <hrFormField asp-for="Tag.IsActive"></hrFormField>
+    <hrFormSubmit></hrFormSubmit>
+</form>

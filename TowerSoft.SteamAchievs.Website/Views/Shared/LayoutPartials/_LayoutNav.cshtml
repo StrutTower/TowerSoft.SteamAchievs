@@ -20,22 +20,20 @@
                         </a>
                     </li>
                     @*<li class="nav-item">
-                        <a asp-action="Login" asp-controller="Account" asp-area="" class="nav-link">
-                            Login
-                        </a>
-                    </li>*@
+                            <a asp-action="Login" asp-controller="Account" asp-area="" class="nav-link">
+                                Login
+                            </a>
+                        </li>*@
                 } else {
                     @*<li class="nav-item">
-                        <a asp-action="Logout" asp-controller="Account" asp-area="" class="nav-link">
-                            Logout
-                        </a>
-                    </li>*@
+                            <a asp-action="Logout" asp-controller="Account" asp-area="" class="nav-link">
+                                Logout
+                            </a>
+                        </li>*@
                 }
-                @if (User.IsInRole(RoleType.Admin)) {
-                    <li class="nav-item">
-                        <a asp-action="Index" asp-controller="Home" asp-area="Admin" class="nav-link">Site Management</a>
-                    </li>
-                }
+                <li class="nav-item">
+                    <a asp-action="Index" asp-controller="Home" asp-area="Admin" class="nav-link">Site Management</a>
+                </li>
             </ul>
         </div>
     </div>

@@ -36,6 +36,15 @@ a.disable-link {
     opacity: 0.8;
 }
 
+.min-width {
+    width: 1%;
+}
+
+a.link-section {
+    color: $body-color;
+    text-decoration:none;
+}
+
 footer {
     color: darken($body-color, 30);
 

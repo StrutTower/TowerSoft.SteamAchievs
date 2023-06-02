@@ -7,7 +7,6 @@ using TowerSoft.SteamAchievs.Website.Infrastructure;
 
 namespace TowerSoft.SteamAchievs.Website.Areas.Admin.Controllers {
     [Area("Admin")]
-    [Role(RoleType.Admin)]
     public class HomeController : CustomController {
         public IActionResult Index() {
             return View();

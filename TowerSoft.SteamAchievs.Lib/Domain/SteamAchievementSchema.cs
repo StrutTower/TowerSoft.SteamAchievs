@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TowerSoft.Repository.Attributes;
 
 namespace TowerSoft.SteamAchievs.Lib.Domain {
-    public class SteamAchievementSchema {
+    public class SteamAchievementSchema : IEquatable<SteamAchievementSchema> {
         [Key]
-        public string Key { get; set; }
+        public string KeyName { get; set; }
 
         [Key]
         public long SteamGameID { get; set; }
@@ -19,5 +20,15 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
         public string IconUrl { get; set; }
 
         public string IconGrayUrl { get; set; }
+
+        public double GlobalCompletionPercentage { get; set; }
+
+        public bool Equals(SteamAchievementSchema? other) {
+            return other != null && KeyName == other.KeyName && SteamGameID == other.SteamGameID;
+        }
+
+        public override int GetHashCode() {
+            return KeyName.GetHashCode() ^ SteamGameID.GetHashCode();
+        }
     }
 }

@@ -10,8 +10,8 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
     public class SteamCategoryRepository : DbRepository<SteamCategory> {
         public SteamCategoryRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 
-        public async Task<SteamCategory> GetByID(long id) {
-            return await GetSingleEntityAsync(WhereEqual(x => x.ID, id));
+        public SteamCategory GetByID(long id) {
+            return GetSingleEntity(WhereEqual(x => x.ID, id));
         }
     }
 }

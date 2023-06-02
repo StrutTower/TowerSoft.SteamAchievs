@@ -2,31 +2,25 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="display-4 text-center">ASP Core Template</div>
 
-
-@*Using onclick for easy demoing. Don't use onclick or other JS attributes in production*@
-<div>
-    <button type="button" class="btn btn-primary" onclick="toast('Default Toast')">Deafult Toast</button>
-</div>
-
-<br />
-<div>
-    <a href="#" asp-enabled="true">Enabled Link</a>
-    &nbsp;
-    &nbsp;
-    <a href="#" asp-enabled="false">Disabled Link</a>
-</div>
-
-<br />
-<div>
-    <span asp-visible="true">Visible Element</span>
-    &nbsp;
-    &nbsp;
-    <span asp-visible="false">Invisible Element</span>
-</div>
-
-<br />
-<div>
-    <truncate string="This is a truncated string and will end with ..." characters="23" />
+<div class="text-center">
+    <a asp-action="GameList" asp-route-id="@GameListType.Perfect">
+        Perfect Games
+    </a>
+    /
+    <a asp-action="GameList" asp-route-id="@GameListType.NonPerfect">
+        Non-Perfect Games
+    </a>
+    /
+    <a asp-action="GameList" asp-route-id="@GameListType.Incomplete">
+        Incomplete Games
+    </a>
+    /
+    <a asp-action="GameList" asp-route-id="@GameListType.PerfectPossible">
+        Perfect Possible Games
+    </a>
+    /
+    <a asp-action="GameList" asp-route-id="@GameListType.NoComplications">
+        No Complication Games
+    </a>
 </div>
