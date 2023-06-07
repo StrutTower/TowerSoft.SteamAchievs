@@ -12,6 +12,7 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
                     Name = userAppModel.OwnedApp.Name,
                     RequiredAge = userAppModel.SteamApp.RequiredAge,
                     ControllerSupport = userAppModel.SteamApp.ControllerSupport,
+                    Delisted = userAppModel.Delisted,
                     HeaderImageUrl = userAppModel.SteamApp.HeaderImage,
                     CapsuleImageUrl = userAppModel.SteamApp.CapsuleImage,
                     CapsuleImageV5Url = userAppModel.SteamApp.CapsuleImageV5,
@@ -46,7 +47,7 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
 
         internal static IEnumerable<SteamGameDescriptions> ToSteamGameDescriptions(List<UserAppModel> userAppModels) {
             foreach (UserAppModel userAppModel in userAppModels) {
-                yield return new SteamGameDescriptions {
+                SteamGameDescriptions model = new SteamGameDescriptions {
                     SteamGameID = userAppModel.OwnedApp.SteamAppID,
                     SupportedLanguages = userAppModel.SteamApp?.SupportedLanguages,
                     LegalNotice = userAppModel.SteamApp?.LegalNotice,
@@ -55,6 +56,12 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
                     AboutTheGame = userAppModel.SteamApp?.AboutTheGame,
                     ShortDescription = userAppModel.SteamApp?.ShortDescription
                 };
+
+                if (userAppModel.SteamApp.DlcIDs.SafeAny()) {
+                    model.DlcIDs = string.Join(",", userAppModel.SteamApp.DlcIDs);
+                }
+
+                yield return model;
             }
         }
 

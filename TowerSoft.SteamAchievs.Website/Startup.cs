@@ -54,6 +54,7 @@ namespace TowerSoft.SteamAchievs.Website {
             services
                 .AddHttpContextAccessor()
                 .AddScoped<UnitOfWork>()
+                .AddScoped<HomeDataService>()
                 .AddScoped<GameDataService>()
                 .AddScoped<AchievementDataService>()
                 .AddScoped<AdminTagDataService>()

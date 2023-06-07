@@ -16,6 +16,8 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public string BackgroundColor { get; set; }
 
+        public bool IsComplication { get; set; }
+
         public bool IsActive { get; set; }
     }
 }

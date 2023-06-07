@@ -18,7 +18,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="TowerSoft.SteamGridDbWrapper" Version="1.0.0" />
-    <PackageReference Include="TowerSoft.SteamTower" Version="0.1.2" />
+    <PackageReference Include="TowerSoft.SteamTower" Version="0.1.3" />
     <PackageReference Include="TowerSoft.Utilities" Version="0.2.0" />
   </ItemGroup>
 

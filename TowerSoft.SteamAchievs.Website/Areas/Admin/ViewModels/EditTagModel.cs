@@ -5,5 +5,7 @@ namespace TowerSoft.SteamAchievs.Website.Areas.Admin.ViewModels {
         public Tag Tag { get; set; }
 
         public SteamGame SteamGame { get; set; }
+
+        public bool ReturnToGameView { get; set; }
     }
 }

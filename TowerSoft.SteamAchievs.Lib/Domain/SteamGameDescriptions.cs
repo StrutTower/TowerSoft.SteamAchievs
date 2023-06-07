@@ -17,6 +17,8 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public string ShortDescription { get; set; }
 
+        public string DlcIDs { get; set; }
+
         public bool Equals(SteamGameDescriptions? other) {
             return other != null && SteamGameID == other.SteamGameID;
         }

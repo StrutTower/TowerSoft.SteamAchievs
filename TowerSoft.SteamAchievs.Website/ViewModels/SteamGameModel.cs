@@ -7,8 +7,10 @@ namespace TowerSoft.SteamAchievs.Website.ViewModels {
 
         public GameDetails GameDetails { get; set; }
 
+        public SteamGameDescriptions GameDescriptions { get; set; }
+
         public List<AchievementModel> Achievements { get; set; }
 
-        public List<Complication> Complications { get; set; }
+        public List<Tag> ComplicationTags { get; set; }
     }
 }

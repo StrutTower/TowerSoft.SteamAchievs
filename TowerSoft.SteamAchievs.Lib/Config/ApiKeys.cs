@@ -3,5 +3,7 @@
         public string Steam { get; set; }
 
         public string SteamGridDb { get; set; }
+
+        public string AchievementStats { get; set; }
     }
 }

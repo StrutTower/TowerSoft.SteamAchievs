@@ -14,6 +14,8 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public string ControllerSupport { get; set; }
 
+        public bool Delisted { get; set; }
+
         public string? HeaderImageUrl { get; set; }
 
         public string? CapsuleImageUrl { get; set; }

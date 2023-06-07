@@ -27,5 +27,7 @@ namespace TowerSoft.SteamAchievs.Cron.Models {
         public ProtonDbGame? ProtonDbGame { get; set; }
 
         public List<string> UserTags { get; set; }
+
+        public bool Delisted { get; set; }
     }
 }

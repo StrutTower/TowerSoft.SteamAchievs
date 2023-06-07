@@ -4,6 +4,21 @@
 }
 
 
-@foreach (SteamGameListModel steamGame in Model.Games.OrderBy(x => x.SteamGame.Name)) {
-    <partial name="_GameListItem" model="steamGame" />
-}
+<div class="row justify-content-end align-items-center mb-3">
+    <div class="col-auto">
+        Sort:
+    </div>
+    <div class="col-md-6">
+        <select class="form-select twr-sort-select" data-container-target="#game-list-container" data-item-target=".game-list-item">
+            @foreach (KeyValuePair<string, string> keyValuePair in Model.SortOptions) {
+                <option value="@keyValuePair.Key">@keyValuePair.Value</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div id="game-list-container">
+    @foreach (SteamGameListModel steamGame in Model.Games.OrderBy(x => x.SteamGame.Name)) {
+        <partial name="_GameListItem" model="steamGame" />
+    }
+</div>

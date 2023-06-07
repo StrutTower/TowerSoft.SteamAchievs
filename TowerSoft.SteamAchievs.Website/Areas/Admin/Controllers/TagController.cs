@@ -18,14 +18,18 @@ namespace TowerSoft.SteamAchievs.Website.Areas.Admin.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(long? id = null) {
+        public async Task<IActionResult> Edit(long? id = null, long? steamGameID = null) {
+            if (steamGameID.HasValue)
+                return View(await adminTagDataService.GetEditTagModel(null, null, steamGameID.Value));
             return View(await adminTagDataService.GetEditTagModel(id));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([Bind(Prefix = nameof(EditTagModel.Tag))]Tag tag) {
+        public async Task<IActionResult> Edit([Bind(Prefix = nameof(EditTagModel.Tag))] Tag tag, bool returnToGameView) {
             if (ModelState.IsValid) {
                 await adminTagDataService.AddOrUpdateTag(tag);
+                if (returnToGameView)
+                    return RedirectToAction("View", "Game", new { id = tag.SteamGameID, area = "" });
                 return RedirectToAction(nameof(Index));
             }
             return View(await adminTagDataService.GetEditTagModel(tag.ID, tag));

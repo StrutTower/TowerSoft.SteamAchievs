@@ -9,6 +9,6 @@ namespace TowerSoft.SteamAchievs.Website.ViewModels {
 
         public List<SteamUserAchievement> UserAchievements { get; set; }
 
-        public List<Complication> Complications { get; set; }
+        public List<Tag> ComplicationTags { get; set; }
     }
 }

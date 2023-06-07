@@ -1,26 +1,49 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 
 <div class="text-center">
-    <a asp-action="GameList" asp-route-id="@GameListType.Perfect">
-        Perfect Games
-    </a>
+    <a asp-action="GameList" asp-route-id="@GameListType.Perfect">Perfect Games</a>
     /
-    <a asp-action="GameList" asp-route-id="@GameListType.NonPerfect">
-        Non-Perfect Games
-    </a>
+    <a asp-action="GameList" asp-route-id="@GameListType.NonPerfect">Non-Perfect Games</a>
     /
-    <a asp-action="GameList" asp-route-id="@GameListType.Incomplete">
-        Incomplete Games
-    </a>
+    <a asp-action="GameList" asp-route-id="@GameListType.Incomplete">Incomplete Games</a>
     /
-    <a asp-action="GameList" asp-route-id="@GameListType.PerfectPossible">
-        Perfect Possible Games
-    </a>
+    <a asp-action="GameList" asp-route-id="@GameListType.PerfectPossible">Perfect Possible Games</a>
     /
-    <a asp-action="GameList" asp-route-id="@GameListType.NoComplications">
-        No Complication Games
-    </a>
+    <a asp-action="GameList" asp-route-id="@GameListType.NoComplications">No Complication Games</a>
 </div>
+
+<fieldset class="mb-4">
+    <legend>Testing Links</legend>
+    <p>
+        <a asp-action="View" asp-controller="Game" asp-route-id="377160">Fallout 4</a>
+    </p>
+    <p>
+        <a asp-action="View" asp-controller="Game" asp-route-id="10150">Prototype</a>
+    </p>
+    <p>
+        <a asp-action="View" asp-controller="Game" asp-route-id="4540">Titan Quest</a>
+    </p>
+</fieldset>
+
+<div class="row">
+    @foreach (RecentGame recentGame in Model.RecentGames) {
+        double progressWidth = (double)recentGame.CompletedAchievements / (double)recentGame.TotalAchievements * 100;
+
+        <a asp-action="View" asp-controller="Game" asp-route-id="@recentGame.SteamGameID" class="col-md-4 mb-3 link-section">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@recentGame.SteamGameID/header.jpg" class="img-fluid" />
+            <div>
+                <div style="width:@progressWidth%;background-color:white;height:5px;"></div>
+            </div>
+        </a>
+    }
+</div>
+@*
+    <br />
+    <select class="slim-select-basic">
+        <option> 1</option>
+        <option> 2</option>
+    </select>*@

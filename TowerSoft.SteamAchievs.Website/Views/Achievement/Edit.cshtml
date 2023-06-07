@@ -1,0 +1,17 @@
+﻿@model EditAchievementModel
+
+
+<form asp-action="Edit" asp-controller="Achievement" id="edit-achievement-form" data-achievement-key="@Model.AchievementKey">
+    @Html.HiddenFor(x => x.SteamGameID)
+    @Html.HiddenFor(x => x.AchievementKey)
+
+    <formField asp-for="DescriptionOverride"></formField>
+    <div class="mb-3">
+        <label asp-for="TagIDs"></label>
+        <select asp-for="TagIDs" asp-items="Model.TagList" class="slim-select-basic" multiple></select>
+        <span asp-validation-for="TagIDs"></span>
+        <description asp-for="TagIDs"></description>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

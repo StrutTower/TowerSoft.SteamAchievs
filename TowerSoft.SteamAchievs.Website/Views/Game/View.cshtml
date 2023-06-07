@@ -6,10 +6,40 @@
 
 <div class="row">
     <div class="col-12 col-lg-auto order-lg-last">
-        <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
+        @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid" />
+        } else {
+            <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
+        }
     </div>
     <div class="col-12 col-lg">
         <div class="display-6" display-for="SteamGame.Name"></div>
+        @if (Model.SteamGame.Delisted) {
+            <p><strong class="text-danger">This game has been delisted from Steam</strong></p>
+        }
+        <p>
+            <a href="https://store.steampowered.com/app/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">Steam</a>
+            /
+            <a href="https://steamhunters.com/apps/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">SteamHunters</a>
+        </p>
+        <p>
+            <a asp-action="Edit" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" id="edit-game-details-link">
+                Edit Game Details
+            </a>
+        </p>
+
+        <div class="mb-3">
+            <div id="game-details-container">
+                <partial name="_GameDetails" model="Model.GameDetails" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="column-label">Complications</div>
+            @foreach(Tag tag in Model.ComplicationTags) {
+                <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+            }
+        </div>
     </div>
 </div>
 
@@ -17,25 +47,71 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#achievement-tab-pane" type="button" role="tab">Achievements</button>
+        <button class="nav-link active" id="achievement-tab" data-bs-toggle="tab" data-bs-target="#achievement-tab-pane" type="button" role="tab">Achievements</button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab">Profile</button>
+        <button class="nav-link@(Model.SteamGame.Delisted ? " disabled" : "")" id="game-info-tab" data-bs-toggle="tab" data-bs-target="#game-info-tab-pane" type="button" role="tab">Game Info</button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
+        <button class="nav-link" id="hltb-tab" data-bs-toggle="tab" data-bs-target="#hltb-tab-pane" type="button" role="tab">HowLongToBeat</button>
     </li>
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active pt-1" id="achievement-tab-pane" role="tabpanel" tabindex="0">
-        @foreach (AchievementModel achievement in Model.Achievements.OrderByDescending(x => x.GlobalCompletionPercentage)) {
-            <partial name="_Achievement" model="achievement" />
+        @if (Model.Achievements.SafeAny()) {
+            <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@Model.SteamGame.ID" class="float-end">
+                <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
+            </a>
+            <h5 class="text-center">
+                @Model.Achievements.Count(x => x.Achieved) / @Model.Achievements.Count Achievements
+            </h5>
+            @foreach (AchievementModel achievement in Model.Achievements.OrderByDescending(x => x.GlobalCompletionPercentage)) {
+                <partial name="_Achievement" model="achievement" />
+            }
+        } else {
+            <h5 class="mt-3">This game does not have any achievements</h5>
         }
     </div>
-    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">...</div>
-    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div>
-    <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div>
+    <div class="tab-pane fade" id="game-info-tab-pane" role="tabpanel" tabindex="0">
+        <br />
+        @Html.Raw(Model.GameDescriptions.ShortDescription)
+        @Html.Raw(Model.GameDescriptions.AboutTheGame)
+        @Html.Raw(Model.GameDescriptions.DetailedDescription)
+        @Html.Raw(Model.GameDescriptions.LegalNotice)
+    </div>
+    <div class="tab-pane fade" id="hltb-tab-pane" role="tabpanel" tabindex="0">
+        <br />
+        <div class="row mb-3">
+            <div class="col-auto">
+                <div class="column-label">Main Story Time</div>
+                <div display-for="GameDetails.MainStoryTime" class="text-center"></div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">Main &amp; Sides</div>
+                <div display-for="GameDetails.MainAndSidesTime" class="text-center"></div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">Completionist</div>
+                <div display-for="GameDetails.CompletionistTime" class="text-center"></div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">All Styles</div>
+                <div display-for="GameDetails.AllStylesTime" class="text-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="game-view-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="game-view-modal-body"></div>
+        </div>
+    </div>
 </div>

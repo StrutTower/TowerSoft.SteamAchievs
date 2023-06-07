@@ -53,5 +53,20 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             }
             return GetEntities(query);
         }
+
+        public List<SteamGame> Search(string q) {
+            return GetEntities(Where(x => x.Name, Comparison.LikeBothSidesWildcard, q));
+        }
+
+        public List<SteamGame> GetWithAchievementsNeedingDescription() {
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery += $"" +
+                $"INNER JOIN SteamAchievementSchema sas ON {TableName}.ID = sas.SteamGameID " +
+                $"LEFT JOIN AchievementDetails ad ON {TableName}.ID = ad.SteamGameID " +
+                $"WHERE sas.Description IS NULL " +
+                $"AND ad.Description IS NULL " +
+                $"GROUP BY {TableName}.ID ";
+            return GetEntities(query);
+        }
     }
 }

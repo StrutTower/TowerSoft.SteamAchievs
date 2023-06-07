@@ -1,0 +1,13 @@
+﻿@model EditGameDetailsModel
+
+<form asp-action="Edit" asp-controller="Game" asp-area="" method="post" id="edit-game-details-form">
+    @Html.HiddenFor(x =>x.GameDetails.SteamGameID)
+
+    <formField asp-for="GameDetails.PerfectPossible" renderer="BooleanRadio"></formField>
+    <formField asp-for="GameDetails.PlayNextScore"></formField>
+    <formField asp-for="GameDetails.Finished" renderer="BooleanRadio"></formField>
+
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>

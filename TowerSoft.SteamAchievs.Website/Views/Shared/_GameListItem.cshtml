@@ -7,9 +7,21 @@
     bool perfect = achievedCount == Model.SteamGame.AchievmentCount;
 }
 
-<a asp-action="View" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" class="row link-section">
+<a asp-action="View" asp-controller="Game" asp-route-id="@Model.SteamGame.ID"
+   class="row link-section game-list-item border-bottom mb-2 pb-2"
+   data-name="@Model.SteamGame.Name"
+   data-count="@Model.SteamGame.AchievmentCount"
+   data-percent="@progressWidth"
+   data-playtime="@Model.SteamGame.TotalPlaytime"
+   data-review="@Model.SteamGame.ReviewScore"
+   data-metacritic="@Model.SteamGame.MetacriticScore"
+   data-playnext="@Model.GameDetails?.PlayNextScore">
     <div class="col-auto">
-        <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid d-none d-lg-block" style="max-height:200px;" />
+        @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid header-img d-none d-lg-block" />
+        } else {
+            <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid header-img d-none d-lg-block" />
+        }
         <img src="@Model.SteamGame.GridThumbUrl" class="img-fluid d-lg-none" style="max-width:100px;" />
     </div>
     <div class="col">
@@ -40,22 +52,29 @@
             }
         </div>
 
-        <div>
-            <div class="progress" role="progressbar" aria-valuenow="@achievedCount" aria-valuemin="0" aria-valuemax="@Model.SteamGame.AchievmentCount" style="height:1.5rem;">
-                <div class="progress-bar @(perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(progressWidth)%;">
-                    @Math.Round(progressWidth, 1)%
+        @if (Model.SteamGame.AchievmentCount > 0) {
+            <div>
+                <div class="progress" role="progressbar" aria-valuenow="@achievedCount" aria-valuemin="0" aria-valuemax="@Model.SteamGame.AchievmentCount" style="height:1.5rem;">
+                    <div class="progress-bar @(perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(progressWidth)%;">
+                        @Math.Round(progressWidth, 1)%
+                    </div>
                 </div>
             </div>
-        </div>
+            <p class="text-center">
+                @achievedCount / @Model.SteamGame.AchievmentCount Achievements
+            </p>
+        } else {
+            <p class="text-center text-faded">
+                <em>This game does not have any achievements</em>
+            </p>
+        }
 
-        @if (Model.Complications.SafeAny()) {
+        @if (Model.ComplicationTags.SafeAny()) {
             <div>
-                @foreach(Complication comp in Model.Complications.OrderBy(x => x.Name)) {
-                    <span class="badge" style="background-color:@comp.BackgroundColor" display-for="@comp.Name"></span>
+                @foreach (Tag tag in Model.ComplicationTags.OrderBy(x => x.Name)) {
+                    <span class="badge" style="background-color:@tag.BackgroundColor" display-for="@tag.Name"></span>
                 }
             </div>
         }
     </div>
 </a>
-
-<hr />

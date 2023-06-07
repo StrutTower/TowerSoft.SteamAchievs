@@ -7,13 +7,15 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public long? HowLongToBeatID { get; set; }
 
+        [Display(Name = "Perfect Possible")]
         public bool? PerfectPossible { get; set; }
 
+        [Display(Name = "Play Next Score")]
         public int? PlayNextScore { get; set; }
 
         public bool? Finished { get; set; }
 
-        public string ProtonDbRating { get; set; }
+        public string? ProtonDbRating { get; set; }
 
         public double MainStoryTime { get; set; }
 

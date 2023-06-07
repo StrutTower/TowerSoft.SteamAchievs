@@ -16,6 +16,12 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             return GetEntities(WhereEqual(x => x.SteamGameID, steamGameID));
         }
 
+        public List<AchievementTag> GetByKeyAndSteamGameID(string achievementKey, long steamGameID) {
+            return GetEntities(Query
+                .WhereEqual(x => x.AchievementKey, achievementKey)
+                .WhereEqual(x => x.SteamGameID, steamGameID));
+        }
+
         public List<AchievementTag> GetBySteamGameIDAndTagID(long steamGameID, long tagID) {
             return GetEntities(Query
                 .WhereEqual(x => x.SteamGameID, steamGameID)

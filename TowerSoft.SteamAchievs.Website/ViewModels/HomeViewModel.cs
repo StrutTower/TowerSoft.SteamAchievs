@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using TowerSoft.SteamAchievs.Lib.Domain;
 
 namespace TowerSoft.SteamAchievs.Website.ViewModels {
     public class HomeViewModel {
+        public List<RecentGame> RecentGames { get; set; }
     }
 }

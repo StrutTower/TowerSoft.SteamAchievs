@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using TowerSoft.SteamAchievs.Cron.Jobs;
+using TowerSoft.SteamAchievs.Cron.Utilities;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Repository;
 using TowerSoft.SteamAchievs.Lib.Services;
@@ -11,7 +12,9 @@ using TowerSoft.SteamTower;
 
 
 ServiceProvider services = ConfigureServices();
-services.GetService<FullGameSync>().StartJob();
+//services.GetService<FullGameSync>().StartJob();
+//services.GetService<HiddenAchievementSync>().StartJob();
+services.GetService<RecentGamesSync>().StartJob();
 
 static ServiceProvider ConfigureServices() {
     IConfiguration configuration = new ConfigurationBuilder()
@@ -33,20 +36,30 @@ static ServiceProvider ConfigureServices() {
     IServiceCollection services = new ServiceCollection();
 
     services.AddHttpClient("steamApi", config => {
-        config.DefaultRequestHeaders.Add("Cookie", new[] { "birthtime =281347201", "lastagecheckage=1-0-1979", "wants_mature_content=1" });
+        config.DefaultRequestHeaders.Add("Cookie", new[] { 
+            "birthtime=281347201", 
+            "lastagecheckage=1-0-1979", 
+            "wants_mature_content=1" 
+        });
     }).ConfigurePrimaryHttpMessageHandler(() => {
         return new HttpClientHandler {
             UseDefaultCredentials = true
         };
     });
 
+    services.AddHttpClient<AchievementStatsService>("achievementStats", client => { });
+
     services
         .AddLogging(c => c.AddSerilog())
         .AddSingleton(configuration)
         .Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)))
         .AddScoped<FullGameSync>()
+        .AddScoped<HiddenAchievementSync>()
+        .AddScoped<RecentGamesSync>()
+        .AddScoped<SteamDataService>()
         .AddScoped(x => new SteamApiClient(x.GetService<IHttpClientFactory>().CreateClient("steamApi"), apiKeys.Steam))
         .AddScoped(x => new SteamGridClient(apiKeys.SteamGridDb))
+        .AddScoped(x => new AchievementStatsService(x.GetService<IHttpClientFactory>().CreateClient("achievementStats"), apiKeys.AchievementStats))
         .AddScoped<UnitOfWork>();
 
 
