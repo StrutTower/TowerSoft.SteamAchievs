@@ -19,7 +19,7 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         private readonly SteamDataService steamDataService;
         private readonly AppSettings appSettings;
 
-        public RecentGamesSync(UnitOfWork uow, SteamApiClient steamApi, SteamDataService steamDataService, 
+        public RecentGamesSync(UnitOfWork uow, SteamApiClient steamApi, SteamDataService steamDataService,
             IOptionsSnapshot<AppSettings> appSettings) {
             this.uow = uow;
             this.steamDataService = steamDataService;
@@ -47,15 +47,21 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 }
             }
 
-            foreach(UserAppModel model in userAppDatas) {
+            steamDataService.SyncSteamGames(userAppDatas);
+
+            foreach (UserAppModel model in userAppDatas) {
                 if (!existingRecentGames.Select(x => x.SteamGameID).Contains(model.SteamApp.ID)) {
+                    bool hasAchievements = false;
+                    if (model.GameStatsSchema != null && model.GameStatsSchema.Achievements.SafeAny())
+                        hasAchievements = true;
+
                     RecentGame newRecent = new() {
                         SteamGameID = model.SteamApp.ID,
                         FirstDetected = DateTime.Now,
-                        HasAchievements = model.GameStatsSchema.Achievements.SafeAny(),
-                        TotalAchievements = model.GameStatsSchema.Achievements?.Count ?? 0,
+                        HasAchievements = hasAchievements,
+                        TotalAchievements = model.GameStatsSchema?.Achievements?.Count ?? 0,
                         CompletedAchievements = model.UserAchievements?.Where(x => x.Achieved).Count() ?? 0
-                    }; 
+                    };
                     recentGameRepo.Add(newRecent);
                 }
             }

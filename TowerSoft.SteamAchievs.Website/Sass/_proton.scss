@@ -1,0 +1,27 @@
+.proton-db-badge {
+    color: black;
+    padding: .1rem 1rem;
+    border-radius:4px;
+    font-weight:600;
+    letter-spacing:1px;
+
+    &.proton-platinum {
+        background: rgb(180, 199, 220);
+    }
+
+    &.proton-gold {
+        background: rgb(207, 181, 59);
+    }
+
+    &.proton-silver {
+        background: rgb(166, 166, 166);
+    }
+
+    &.proton-bronze {
+        background: rgb(205, 127, 50);
+    }
+
+    &.proton-borked {
+        background: red;
+    }
+}

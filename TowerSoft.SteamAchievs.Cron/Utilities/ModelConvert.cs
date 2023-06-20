@@ -31,7 +31,7 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
                     RecommendationCount = userAppModel.SteamApp.RecommendationCount,
                     ReviewScore = userAppModel.ReviewSummary.ReviewScore,
                     ReviewDescription = userAppModel.ReviewSummary.ReivewDescription,
-                    AchievmentCount = userAppModel.GameStatsSchema?.Achievements?.Count ?? 0,
+                    AchievementCount = userAppModel.GameStatsSchema?.Achievements?.Count ?? 0,
                     ReleaseDate = userAppModel.SteamApp?.ReleaseDate?.Date,
                     IsComingSoon = userAppModel.SteamApp?.ReleaseDate?.IsComingSoon,
                     DeckCompatibility = userAppModel.DeckCompatibility?.Compatibility,

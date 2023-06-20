@@ -26,7 +26,7 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             Run();
         }
 
-        public void Run() {
+        private void Run() {
             List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetWithAchievementsNeedingDescription();
             logger.LogInformation($"Running HiddenAchievementSync on {games.Count} games.");
 

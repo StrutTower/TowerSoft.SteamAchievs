@@ -40,16 +40,22 @@ namespace TowerSoft.SteamAchievs.Website.Services {
         public GameListModel GetGameListModel(GameListType gameListType) {
             GameListModel model = new() {
                 PageTitle = EnumUtilities.GetEnumDisplayName(gameListType),
-                Games = GetSteamGameListModel(uow.GetRepo<SteamGameRepository>().GetByGameListType(gameListType)),
+                Games = GetSteamGameListModel(uow.GetRepo<SteamGameRepository>().GetByGameListType(gameListType)).OrderBy(x => x.SteamGame.Name).ToList(),
                 SortOptions = GetSortOptions()
             };
+
+            if (gameListType == GameListType.HasPlayNextScore) {
+                model.DefaultSortOption = "playNextSortDesc";
+                model.Games = model.Games.OrderByDescending(x => x?.GameDetails?.PlayNextScore).ToList();
+            }
+
             return model;
         }
 
         public GameListModel GetGameListModel(List<SteamGame> games, string pageTitle) {
             GameListModel model = new() {
                 PageTitle = pageTitle,
-                Games = GetSteamGameListModel(games),
+                Games = GetSteamGameListModel(games).OrderBy(x => x.SteamGame.Name).ToList(),
                 SortOptions = GetSortOptions()
             };
             return model;
@@ -120,6 +126,7 @@ namespace TowerSoft.SteamAchievs.Website.Services {
             if (existing == null) {
                 repo.Add(gameDetails);
             } else {
+                existing.HowLongToBeatID = gameDetails.HowLongToBeatID;
                 existing.PerfectPossible = gameDetails.PerfectPossible;
                 existing.PlayNextScore = gameDetails.PlayNextScore;
                 existing.Finished = gameDetails.Finished;

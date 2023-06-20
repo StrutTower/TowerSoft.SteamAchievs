@@ -22,7 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="appsecrets.json" />
+    <None Include="appsecrets.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

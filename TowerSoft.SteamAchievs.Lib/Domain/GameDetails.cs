@@ -17,12 +17,12 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public string? ProtonDbRating { get; set; }
 
-        public double MainStoryTime { get; set; }
+        public double? MainStoryTime { get; set; }
 
-        public double MainAndSidesTime { get; set; }
+        public double? MainAndSidesTime { get; set; }
 
-        public double CompletionistTime { get; set; }
+        public double? CompletionistTime { get; set; }
 
-        public double AllStylesTime { get; set; }
+        public double? AllStylesTime { get; set; }
     }
 }

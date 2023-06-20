@@ -18,6 +18,8 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
         [Display(Name = "Incomplete Games")]
         Incomplete,
         [Display(Name = "Perfect Possible Games")]
-        PerfectPossible
+        PerfectPossible,
+        [Display(Name = "With Play Next Score")]
+        HasPlayNextScore,
     }
 }

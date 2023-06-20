@@ -52,7 +52,7 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public string ReviewDescription { get; set; }
 
-        public int AchievmentCount { get; set; }
+        public int AchievementCount { get; set; }
 
         public DateTime? ReleaseDate { get; set; }
 

@@ -28,14 +28,14 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         }
 
         public void Run() {
-            //List<UserAppModel> userAppModels = GetOwnedAppData();
+            List<UserAppModel> userAppModels = GetOwnedAppData();
 
             //string json = JsonConvert.SerializeObject(userAppModels);
             //File.WriteAllText(appSettings.CacheJsonPath, json);
 
-            List<UserAppModel> userAppModels =
-                JsonConvert.DeserializeObject<List<UserAppModel>>(
-                    File.ReadAllText("tempData.json"));
+            //List<UserAppModel> userAppModels =
+            //    JsonConvert.DeserializeObject<List<UserAppModel>>(
+            //        File.ReadAllText("tempData.json"));
 
             steamDataService.RunAllSyncs(userAppModels);
         }

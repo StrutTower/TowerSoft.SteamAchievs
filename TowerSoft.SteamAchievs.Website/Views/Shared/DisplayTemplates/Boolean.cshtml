@@ -2,7 +2,7 @@
 @if (Model.HasValue && Model.Value) {
     <span class="mdi mdi-fw mdi-checkbox-marked-outline text-success"></span>@:True
 } else if (Model.HasValue) {
-    <span class="mdi mdi-fw mdi-checkbox-blank-off-outline text-danger"></span>@:False
+    <span class="mdi mdi-fw mdi-window-close text-danger"></span>@:False
 } else {
-    <span class="mdi mdi-fw mdi-checkbox-blank-outline text-muted"></span>@:Null
+    <span class="mdi mdi-fw mdi-null text-muted"></span>@:Null
 }

@@ -2,15 +2,15 @@
 @{
     int achievedCount = Model.UserAchievements.Where(x => x.Achieved).Count();
 
-    double progressWidth = (double)achievedCount / (double)Model.SteamGame.AchievmentCount * 100;
+    double progressWidth = (double)achievedCount / (double)Model.SteamGame.AchievementCount * 100;
 
-    bool perfect = achievedCount == Model.SteamGame.AchievmentCount;
+    bool perfect = achievedCount == Model.SteamGame.AchievementCount;
 }
 
 <a asp-action="View" asp-controller="Game" asp-route-id="@Model.SteamGame.ID"
-   class="row link-section game-list-item border-bottom mb-2 pb-2"
+   class="row link-section game-list-item border-bottom pt-2 pb-2"
    data-name="@Model.SteamGame.Name"
-   data-count="@Model.SteamGame.AchievmentCount"
+   data-count="@Model.SteamGame.AchievementCount"
    data-percent="@progressWidth"
    data-playtime="@Model.SteamGame.TotalPlaytime"
    data-review="@Model.SteamGame.ReviewScore"
@@ -36,37 +36,51 @@
                 @TimeSpan.FromMinutes(Model.SteamGame.TotalPlaytime).ToLongString()
             }
 
-            @if (Model.SteamGame.MetacriticScore > 0) {
-                @:|
-                <small class="small-caps">Reviews:</small> @Html.DisplayFor(x => x.SteamGame.ReviewDescription)
-            }
-
-            @if (Model.SteamGame.RecommendationCount > 0) {
-                @:|
-                <small class="small-caps">Recommendations:</small> @Html.DisplayFor(x => x.SteamGame.RecommendationCount)
-            }
-
-            @if (!perfect && Model.GameDetails?.PerfectPossible != null) {
-                @:|
+            @if (Model.GameDetails?.PerfectPossible != null) {
+                <span class="text-faded font-weight-semibold">|</span>
                 <small class="small-caps">Perfect Possible:</small> @Html.DisplayFor(x => x.GameDetails.PerfectPossible)
+            }
+
+            @if (Model.SteamGame.DeckCompatibility != null) {
+                <span class="text-faded font-weight-semibold">|</span>
+                <small class="small-caps">Deck Compatibility:</small> @Html.DisplayFor(x => x.SteamGame.DeckCompatibility)
             }
         </div>
 
-        @if (Model.SteamGame.AchievmentCount > 0) {
-            <div>
-                <div class="progress" role="progressbar" aria-valuenow="@achievedCount" aria-valuemin="0" aria-valuemax="@Model.SteamGame.AchievmentCount" style="height:1.5rem;">
-                    <div class="progress-bar @(perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(progressWidth)%;">
-                        @Math.Round(progressWidth, 1)%
+        @if (Model.SteamGame.AchievementCount > 0) {
+            <div class="row">
+                <div class="col">
+                    <div class="progress" role="progressbar" aria-valuenow="@achievedCount" aria-valuemin="0" aria-valuemax="@Model.SteamGame.AchievementCount" style="height:1.5rem;">
+                        <div class="progress-bar @(perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(progressWidth)%;">
+                            @Math.Round(progressWidth, 1)%
+                        </div>
                     </div>
                 </div>
+                <div class="col-auto">
+                    @achievedCount / @Model.SteamGame.AchievementCount
+                </div>
             </div>
-            <p class="text-center">
-                @achievedCount / @Model.SteamGame.AchievmentCount Achievements
-            </p>
         } else {
             <p class="text-center text-faded">
                 <em>This game does not have any achievements</em>
             </p>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.SteamGame.ReviewDescription)) {
+            <small class="small-caps">Review:</small> @Html.DisplayFor(x => x.SteamGame.ReviewDescription)
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.SteamGame.ReviewDescription) && Model.SteamGame.RecommendationCount > 0) {
+            <span class="text-faded font-weight-semibold">|</span>
+        }
+
+        @if (Model.SteamGame.RecommendationCount > 0) {
+            <small class="small-caps">Recommendations:</small> @Html.DisplayFor(x => x.SteamGame.RecommendationCount)
+        }
+
+        @if (Model.SteamGame.MetacriticScore > 0) {
+            <span class="text-faded font-weight-semibold">|</span>
+            <small class="small-caps">Metacritic:</small> @Html.DisplayFor(x => x.SteamGame.MetacriticScore)
         }
 
         @if (Model.ComplicationTags.SafeAny()) {

@@ -54,10 +54,10 @@ $(document).ready(function () {
                 itemsArray = itemsArray.sort(metacriticScoreDesc);
                 break;
             case 'playNextSortAsc':
-                itemsArray = itemsArray.sort(playNextAsc);
+                itemsArray = itemsArray.sort(playNextSortAsc);
                 break;
             case 'playNextSortDesc':
-                itemsArray = itemsArray.sort(playNextDesc);
+                itemsArray = itemsArray.sort(playNextSortDesc);
                 break;
         }
 
@@ -104,7 +104,7 @@ $(document).ready(function () {
         return +b.dataset.metacritic - +a.dataset.metacritic;
     }
     function playNextSortAsc(a, b) {
-        return +a.dataset.playpriority - +b.dataset.playpriority;
+        return +a.dataset.playnext - +b.dataset.playnext;
     }
     function playNextSortDesc(a, b) {
         return +b.dataset.playnext - +a.dataset.playnext;

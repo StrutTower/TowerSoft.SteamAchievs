@@ -1,0 +1,16 @@
+﻿@model TowerSoft.SteamTower.Models.DeckCompatibilityType
+
+@switch (Model) {
+    case TowerSoft.SteamTower.Models.DeckCompatibilityType.Verified:
+        <span class="mdi mdi-fw mdi-check-circle text-success"></span>@:Verified
+        break;
+    case TowerSoft.SteamTower.Models.DeckCompatibilityType.Playable:
+        <span class="mdi mdi-fw mdi-alert-circle" style="color: yellow;"></span>@:Playable
+        break;
+    case TowerSoft.SteamTower.Models.DeckCompatibilityType.Unknown:
+        <span class="mdi mdi-fw mdi-cancel"></span>@:Unknown
+        break;
+    case TowerSoft.SteamTower.Models.DeckCompatibilityType.Unsupported:
+        <span class="mdi mdi-fw mdi-close-circle text-danger"></span>@:Unsupported
+        break;
+}

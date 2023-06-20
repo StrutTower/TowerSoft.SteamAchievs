@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
+using System.Diagnostics;
 using TowerSoft.SteamAchievs.Cron.Jobs;
+using TowerSoft.SteamAchievs.Cron.Services;
 using TowerSoft.SteamAchievs.Cron.Utilities;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Repository;
@@ -12,9 +14,24 @@ using TowerSoft.SteamTower;
 
 
 ServiceProvider services = ConfigureServices();
-//services.GetService<FullGameSync>().StartJob();
-//services.GetService<HiddenAchievementSync>().StartJob();
-services.GetService<RecentGamesSync>().StartJob();
+
+if (Debugger.IsAttached) {
+    //services.GetService<FullGameSync>().StartJob();
+    //services.GetService<HiddenAchievementSync>().StartJob();
+    //services.GetService<RecentGamesSync>().StartJob();
+    services.GetService<HowLongToBeatSync>().StartJob();
+    //services.GetService<UpdateGameDetails>().StartJob();
+    //services.GetService<ProtonDbSync>().StartJob();
+    Environment.Exit(1);
+}
+
+if (args.Contains("-full"))
+    services.GetService<FullGameSync>().StartJob();
+if (args.Contains("-recent"))
+    services.GetService<RecentGamesSync>().StartJob();
+if (args.Contains("-hidden"))
+    services.GetService<HiddenAchievementSync>().StartJob();
+
 
 static ServiceProvider ConfigureServices() {
     IConfiguration configuration = new ConfigurationBuilder()
@@ -36,10 +53,10 @@ static ServiceProvider ConfigureServices() {
     IServiceCollection services = new ServiceCollection();
 
     services.AddHttpClient("steamApi", config => {
-        config.DefaultRequestHeaders.Add("Cookie", new[] { 
-            "birthtime=281347201", 
-            "lastagecheckage=1-0-1979", 
-            "wants_mature_content=1" 
+        config.DefaultRequestHeaders.Add("Cookie", new[] {
+            "birthtime=281347201",
+            "lastagecheckage=1-0-1979",
+            "wants_mature_content=1"
         });
     }).ConfigurePrimaryHttpMessageHandler(() => {
         return new HttpClientHandler {
@@ -56,6 +73,9 @@ static ServiceProvider ConfigureServices() {
         .AddScoped<FullGameSync>()
         .AddScoped<HiddenAchievementSync>()
         .AddScoped<RecentGamesSync>()
+        .AddScoped<HowLongToBeatSync>()
+        .AddScoped<UpdateGameDetails>()
+        .AddScoped<ProtonDbSync>()
         .AddScoped<SteamDataService>()
         .AddScoped(x => new SteamApiClient(x.GetService<IHttpClientFactory>().CreateClient("steamApi"), apiKeys.Steam))
         .AddScoped(x => new SteamGridClient(apiKeys.SteamGridDb))

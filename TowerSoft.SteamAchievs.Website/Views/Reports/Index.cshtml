@@ -1,0 +1,81 @@
+﻿@model TowerSoft.SteamAchievs.Lib.Models.SearchModel
+
+<div class="text-center">
+    <a asp-action="NullPerfectPossible">Missing Perfect Possible</a>
+    /
+    <a asp-action="NullPlayPriority">Missing Play Priority</a>
+    /
+    <a asp-action="NullFinished">Missing Finished</a>
+</div>
+
+<hr />
+
+Advanced search will go here
+
+<form asp-action="Search" method="post">
+    <div class="row">
+        <div class="col mb-3">
+            <formField asp-for="Name"></formField>
+        </div>
+        <div class="col mb-3">
+            <label asp-for="PlayNextScore"></label>
+            <div class="row">
+                <div class="col-auto">
+                    <select asp-for="PlayNextScoreComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                </div>
+                <div class="col">
+                    <input asp-for="PlayNextScore" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 col-md-3 mb-3">
+            <label asp-for="MainTime"></label>
+            <div class="row">
+                <div class="col-auto">
+                    <select asp-for="MainTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                </div>
+                <div class="col">
+                    <input asp-for="MainTime" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+            <label asp-for="MainAndSidesTime"></label>
+            <div class="row">
+                <div class="col-auto">
+                    <select asp-for="MainAndSidesTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                </div>
+                <div class="col">
+                    <input asp-for="MainAndSidesTime" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+            <label asp-for="CompletionistTime"></label>
+            <div class="row">
+                <div class="col-auto">
+                    <select asp-for="CompletionistTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                </div>
+                <div class="col">
+                    <input asp-for="CompletionistTime" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+            <label asp-for="AllStylesTime"></label>
+            <div class="row">
+                <div class="col-auto">
+                    <select asp-for="AllStylesTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                </div>
+                <div class="col">
+                    <input asp-for="AllStylesTime" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>

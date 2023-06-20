@@ -7,5 +7,7 @@ namespace TowerSoft.SteamAchievs.Website.ViewModels {
         public List<SteamGameListModel> Games { get; set; }
 
         public List<KeyValuePair<string, string>> SortOptions { get; set; }
+
+        public string DefaultSortOption { get; set; }
     }
 }

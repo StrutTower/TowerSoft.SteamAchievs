@@ -1,18 +1,19 @@
-﻿using TowerSoft.SteamAchievs.Cron.Models;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using TowerSoft.SteamAchievs.Cron.Models;
+using TowerSoft.SteamAchievs.Cron.Services;
+using TowerSoft.SteamAchievs.Lib.Comparers;
 using TowerSoft.SteamAchievs.Lib.Config;
+using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
+using TowerSoft.SteamAchievs.Lib.Repository;
 using TowerSoft.SteamAchievs.Lib.Services;
+using TowerSoft.SteamAchievs.Lib.Utilities;
 using TowerSoft.SteamGridDbWrapper.Models;
 using TowerSoft.SteamGridDbWrapper;
 using TowerSoft.SteamTower.Models;
 using TowerSoft.Utilities;
 using TowerSoft.SteamTower;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using TowerSoft.SteamAchievs.Lib.Comparers;
-using TowerSoft.SteamAchievs.Lib.Domain;
-using TowerSoft.SteamAchievs.Lib.Repository;
-using TowerSoft.SteamAchievs.Lib.Utilities;
 using TowerSoft.Repository;
 
 namespace TowerSoft.SteamAchievs.Cron.Utilities {
@@ -129,7 +130,7 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
             SyncSteamUserAchievements(userAppModels);
         }
 
-        private void SyncSteamGames(List<UserAppModel> userAppModels) {
+        internal void SyncSteamGames(List<UserAppModel> userAppModels) {
             SteamGameRepository repo = uow.GetRepo<SteamGameRepository>();
             var dbEntities = repo.GetAll().ToHashSet();
             var steamEntities = ModelConvert.ToSteamGames(userAppModels).ToHashSet();

@@ -23,10 +23,15 @@
             <a href="https://steamhunters.com/apps/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">SteamHunters</a>
         </p>
         <p>
-            <a asp-action="Edit" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" id="edit-game-details-link">
-                Edit Game Details
-            </a>
+            <a asp-action="Edit" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" id="edit-game-details-link">Edit Game Details</a>
         </p>
+
+        <div class="row mb-3">
+            <div class="col-auto">
+                <div class="column-label">Deck Compatibility</div>
+                <div display-for="SteamGame.DeckCompatibility" class="text-center"></div>
+            </div>
+        </div>
 
         <div class="mb-3">
             <div id="game-details-container">
@@ -34,12 +39,14 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <div class="column-label">Complications</div>
-            @foreach(Tag tag in Model.ComplicationTags) {
-                <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
-            }
-        </div>
+        @if (Model.ComplicationTags.SafeAny()) {
+            <div class="mb-3">
+                <div class="column-label">Complications</div>
+                @foreach (Tag tag in Model.ComplicationTags) {
+                    <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+                }
+            </div>
+        }
     </div>
 </div>
 
@@ -59,12 +66,19 @@
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active pt-1" id="achievement-tab-pane" role="tabpanel" tabindex="0">
         @if (Model.Achievements.SafeAny()) {
-            <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@Model.SteamGame.ID" class="float-end">
-                <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
-            </a>
-            <h5 class="text-center">
-                @Model.Achievements.Count(x => x.Achieved) / @Model.Achievements.Count Achievements
-            </h5>
+            <div>
+                <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@Model.SteamGame.ID" class="float-end">
+                    <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
+                </a>
+                <h5 class="text-center">
+                    @Model.Achievements.Count(x => x.Achieved) / @Model.Achievements.Count Achievements
+                </h5>
+            </div>
+            <div class="row">
+                <div class="col">
+
+                </div>
+            </div>
             @foreach (AchievementModel achievement in Model.Achievements.OrderByDescending(x => x.GlobalCompletionPercentage)) {
                 <partial name="_Achievement" model="achievement" />
             }
