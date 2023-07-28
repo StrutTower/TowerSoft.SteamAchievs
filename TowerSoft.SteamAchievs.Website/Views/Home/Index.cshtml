@@ -1,10 +1,6 @@
 ﻿@model HomeViewModel
-@{
-    ViewData["Title"] = "Home Page";
-}
 
-
-<div class="text-center">
+<div class="text-center mb-3">
     <a asp-action="GameList" asp-route-id="@GameListType.Perfect">Perfect Games</a>
     /
     <a asp-action="GameList" asp-route-id="@GameListType.NonPerfect">Non-Perfect Games</a>
@@ -17,19 +13,6 @@
     /
     <a asp-action="GameList" asp-route-id="@GameListType.HasPlayNextScore">With Play Next Score</a>
 </div>
-
-<fieldset class="mb-4">
-    <legend>Testing Links</legend>
-    <p>
-        <a asp-action="View" asp-controller="Game" asp-route-id="377160">Fallout 4</a>
-    </p>
-    <p>
-        <a asp-action="View" asp-controller="Game" asp-route-id="10150">Prototype</a>
-    </p>
-    <p>
-        <a asp-action="View" asp-controller="Game" asp-route-id="4540">Titan Quest</a>
-    </p>
-</fieldset>
 
 <div class="row">
     @foreach (RecentGame recentGame in Model.RecentGames) {

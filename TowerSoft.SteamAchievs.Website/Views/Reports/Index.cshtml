@@ -6,75 +6,185 @@
     <a asp-action="NullPlayPriority">Missing Play Priority</a>
     /
     <a asp-action="NullFinished">Missing Finished</a>
+    /
+    <a asp-action="NullTimes">Missing How Long To Beat Data</a>
 </div>
 
 <hr />
 
-Advanced search will go here
+
+<h5>Advanced Search/Report</h5>
 
 <form asp-action="Search" method="post">
     <div class="row">
-        <div class="col mb-3">
+        <div class="col-12 col-md mb-3">
             <formField asp-for="Name"></formField>
         </div>
+
         <div class="col mb-3">
             <label asp-for="PlayNextScore"></label>
-            <div class="row">
+            <div class="row g-0">
                 <div class="col-auto">
-                    <select asp-for="PlayNextScoreComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                    <select asp-for="PlayNextScoreComparison" asp-items="@Html.GetEnumSelectList<SearchIntComparisonType>()" class="form-select"></select>
                 </div>
-                <div class="col">
-                    <input asp-for="PlayNextScore" class="form-control" />
+                <div class="col border-start border-secondary">
+                    <div class="input-group">
+                        <input asp-for="PlayNextScore" class="form-control" />
+                        <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="col mb-3">
+            <label asp-for="HasAchievements"></label>
+            <select asp-for="HasAchievements" asp-items="@Html.GetEnumSelectList<SearchBooleanType>()" class="form-select"></select>
+        </div>
     </div>
+
     <div class="row">
-        <div class="col-6 col-md-3 mb-3">
-            <label asp-for="MainTime"></label>
-            <div class="row">
+        <div class="col mb-3">
+            <label asp-for="PerfectPossible"></label>
+            <div class="row g-0">
                 <div class="col-auto">
-                    <select asp-for="MainTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                    <select asp-for="PerfectPossibleComparison" asp-items="@Html.GetEnumSelectList<SearchComparisonType>()" class="form-select"></select>
                 </div>
-                <div class="col">
-                    <input asp-for="MainTime" class="form-control" />
+                <div class="col border-start border-secondary">
+                    <div class="input-group">
+                        <select asp-for="PerfectPossible" asp-items="@Html.GetEnumSelectList<SearchNullableBooleanType>()" class="form-select"></select>
+                        <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 mb-3">
-            <label asp-for="MainAndSidesTime"></label>
-            <div class="row">
+
+        <div class="col mb-3">
+            <label asp-for="Finished"></label>
+            <div class="row g-0">
                 <div class="col-auto">
-                    <select asp-for="MainAndSidesTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                    <select asp-for="FinishedComparison" asp-items="@Html.GetEnumSelectList<SearchComparisonType>()" class="form-select"></select>
                 </div>
-                <div class="col">
-                    <input asp-for="MainAndSidesTime" class="form-control" />
+                <div class="col border-start border-secondary">
+                    <div class="input-group">
+                        <select asp-for="Finished" asp-items="@Html.GetEnumSelectList<SearchNullableBooleanType>()" class="form-select"></select>
+                        <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 mb-3">
-            <label asp-for="CompletionistTime"></label>
-            <div class="row">
+
+        <div class="col mb-3">
+            <label asp-for="Delisted"></label>
+            <div class="row g-0">
                 <div class="col-auto">
-                    <select asp-for="CompletionistTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
+                    <select asp-for="DelistedComparison" asp-items="@Html.GetEnumSelectList<SearchComparisonType>()" class="form-select"></select>
                 </div>
-                <div class="col">
-                    <input asp-for="CompletionistTime" class="form-control" />
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 mb-3">
-            <label asp-for="AllStylesTime"></label>
-            <div class="row">
-                <div class="col-auto">
-                    <select asp-for="AllStylesTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchComparisonType>()" class="form-select"></select>
-                </div>
-                <div class="col">
-                    <input asp-for="AllStylesTime" class="form-control" />
+                <div class="col border-start border-secondary">
+                    <div class="input-group">
+                        <select asp-for="Delisted" asp-items="@Html.GetEnumSelectList<SearchNullableBooleanType>()" class="form-select"></select>
+                        <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col mb-3">
+            <label asp-for="SteamReviewScore"></label>
+            <div class="row g-0">
+                <div class="col-auto">
+                    <select asp-for="SteamReviewScoreComparison" asp-items="@Html.GetEnumSelectList<SearchIntComparisonType>()" class="form-select"></select>
+                </div>
+                <div class="col border-start border-secondary">
+                    <div class="input-group">
+                        <input asp-for="SteamReviewScore" class="form-control" />
+                        <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mb-3">
+            <label asp-for="MetacriticScore"></label>
+            <div class="row g-0">
+                <div class="col-auto">
+                    <select asp-for="MetacriticScoreComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchIntComparisonType>()" class="form-select"></select>
+                </div>
+                <div class="col border-start border-secondary">
+                    <div class="input-group">
+                        <input asp-for="MetacriticScore" class="form-control" />
+                        <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <fieldset class="mb-3">
+        <legend>How Long To Beat</legend>
+        <div class="row">
+            <div class="col-6 col-lg-3 mb-3">
+                <label asp-for="MainTime"></label>
+                <div class="row g-0">
+                    <div class="col-auto">
+                        <select asp-for="MainTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchIntComparisonType>()" class="form-select"></select>
+                    </div>
+                    <div class="col border-start border-secondary">
+                        <div class="input-group">
+                            <input asp-for="MainTime" class="form-control" />
+                            <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3 mb-3">
+                <label asp-for="MainAndSidesTime"></label>
+                <div class="row g-0">
+                    <div class="col-auto">
+                        <select asp-for="MainAndSidesTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchIntComparisonType>()" class="form-select"></select>
+                    </div>
+                    <div class="col border-start border-secondary">
+                        <div class="input-group">
+                            <input asp-for="MainAndSidesTime" class="form-control" />
+                            <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3 mb-3">
+                <label asp-for="CompletionistTime"></label>
+                <div class="row g-0">
+                    <div class="col-auto">
+                        <select asp-for="CompletionistTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchIntComparisonType>()" class="form-select"></select>
+                    </div>
+                    <div class="col border-start border-secondary">
+                        <div class="input-group">
+                            <input asp-for="CompletionistTime" class="form-control" />
+                            <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3 mb-3">
+                <label asp-for="AllStylesTime"></label>
+                <div class="row g-0">
+                    <div class="col-auto">
+                        <select asp-for="AllStylesTimeComparison" asp-items="@Html.GetEnumSelectList<TowerSoft.SteamAchievs.Lib.Models.SearchIntComparisonType>()" class="form-select"></select>
+                    </div>
+                    <div class="col border-start border-secondary">
+                        <div class="input-group">
+                            <input asp-for="AllStylesTime" class="form-control" />
+                            <button type="button" class="btn btn-secondary search-clear-button"><span class="mdi mdi-trash-can"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
     <div class="text-center">
         <button type="submit" class="btn btn-primary">Search</button>
     </div>

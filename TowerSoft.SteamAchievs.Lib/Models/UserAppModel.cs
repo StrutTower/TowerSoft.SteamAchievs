@@ -2,7 +2,7 @@
 using TowerSoft.SteamGridDbWrapper.Models;
 using TowerSoft.SteamTower.Models;
 
-namespace TowerSoft.SteamAchievs.Cron.Models {
+namespace TowerSoft.SteamAchievs.Lib.Models {
     public class UserAppModel {
         public SteamApp SteamApp { get; set; }
 

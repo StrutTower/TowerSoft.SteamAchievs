@@ -1,0 +1,10 @@
+﻿@model SteamGameListModel
+
+@if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
+    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid header-img d-none d-lg-block" />
+} else {
+    <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid header-img d-none d-lg-block" />
+}
+<img src="https://steamcdn-a.akamaihd.net/steam/apps/@Model.SteamGame.ID/library_600x900.jpg" class="img-fluid d-lg-none"
+     onerror="this.onerror=null; this.src = '@Model.SteamGame.GridThumbUrl'"
+     style="max-width:110px;" />

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TowerSoft.Repository.Attributes;
 
 namespace TowerSoft.SteamAchievs.Lib.Domain {
     public class SteamUserTag : IEquatable<SteamUserTag> {

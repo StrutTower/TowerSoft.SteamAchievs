@@ -1,9 +1,9 @@
-﻿using TowerSoft.SteamAchievs.Cron.Models;
-using TowerSoft.SteamAchievs.Lib.Domain;
+﻿using TowerSoft.SteamAchievs.Lib.Domain;
+using TowerSoft.SteamAchievs.Lib.Models;
 using TowerSoft.SteamTower.Models;
 using TowerSoft.Utilities;
 
-namespace TowerSoft.SteamAchievs.Cron.Utilities {
+namespace TowerSoft.SteamAchievs.Lib.Utilities {
     internal static class ModelConvert {
         internal static IEnumerable<SteamGame> ToSteamGames(List<UserAppModel> userAppModels) {
             foreach (UserAppModel userAppModel in userAppModels) {

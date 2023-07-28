@@ -1,21 +1,19 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using TowerSoft.SteamAchievs.Cron.Models;
-using TowerSoft.SteamAchievs.Cron.Utilities;
 using TowerSoft.SteamAchievs.Lib.Config;
-using TowerSoft.SteamAchievs.Lib.Repository;
+using TowerSoft.SteamAchievs.Lib.Models;
+using TowerSoft.SteamAchievs.Lib.Services;
 using TowerSoft.SteamTower;
 using TowerSoft.SteamTower.Models;
 
 namespace TowerSoft.SteamAchievs.Cron.Jobs {
     public class FullGameSync {
         private readonly SteamApiClient steamApi;
-        private readonly SteamDataService steamDataService;
+        private readonly SteamSyncService steamDataService;
         private readonly AppSettings appSettings;
         private readonly ILogger logger;
 
-        public FullGameSync(SteamApiClient steamApi, SteamDataService steamDataService,
+        public FullGameSync(SteamApiClient steamApi, SteamSyncService steamDataService,
             IOptions<AppSettings> appSettings, ILogger<FullGameSync> logger) {
             this.steamApi = steamApi;
             this.steamDataService = steamDataService;

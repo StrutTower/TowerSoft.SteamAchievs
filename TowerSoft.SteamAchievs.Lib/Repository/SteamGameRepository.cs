@@ -1,5 +1,6 @@
 ﻿using Org.BouncyCastle.Math.EC.Endo;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -108,10 +109,20 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             return GetEntities(query);
         }
 
-        public List<SteamGame> AdvancedSearch(SearchModel model) {
+        public List<SteamGame> GetWithoutHltbData() {
             QueryBuilder query = GetQueryBuilder();
             query.SqlQuery +=
                 $"INNER JOIN gamedetails gd ON {TableName}.ID = gd.SteamGameID " +
+                $"WHERE gd.MainStoryTime IS NULL " +
+                $"AND gd.MainAndSidesTime IS NULL " +
+                $"AND gd.CompletionistTime IS NULL ";
+            return GetEntities(query);
+        }
+
+        public List<SteamGame> AdvancedSearch(SearchModel model) {
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery +=
+                $"LEFT JOIN gamedetails gd ON {TableName}.ID = gd.SteamGameID " +
                 $"WHERE ";
 
             List<string> statements = new();
@@ -121,34 +132,101 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
                 query.AddParameter("@Name", $"%{model.Name}%");
             }
 
-            if (model.PlayNextScore.HasValue) {
-                statements.Add($"gd.PlayNextScore {EnumUtilities.GetEnumDisplayName(model.PlayNextScoreComparison)} @PlayNextScore");
-                query.AddParameter("@PlayNextScore", model.PlayNextScore);
-            }
+            GetIntSearchQuery(query, statements, model.SteamReviewScore, model.SteamReviewScoreComparison, $"{TableName}.ReviewScore", "@SteamReviewScore");
+            GetIntSearchQuery(query, statements, model.MetacriticScore, model.MetacriticScoreComparison, $"{TableName}.MetacriticScore", "@MetacriticScore");
+            GetIntSearchQuery(query, statements, model.PlayNextScore, model.PlayNextScoreComparison, "gd.PlayNextScore", "@PlayNextScore");
 
-            if (model.MainTime.HasValue) {
-                statements.Add($"gd.MainStoryTime {EnumUtilities.GetEnumDisplayName(model.MainTimeComparison)} @MainTime");
-                query.AddParameter("@MainTime", model.MainTime);
-            }
+            GetDoubleSearchQuery(query, statements, model.MainTime, model.MainTimeComparison, "gd.MainStoryTime", "@MainTime");
+            GetDoubleSearchQuery(query, statements, model.MainAndSidesTime, model.MainAndSidesTimeComparison, "gd.MainAndSidesTime", "@MainAndSidesTime");
+            GetDoubleSearchQuery(query, statements, model.CompletionistTime, model.CompletionistTimeComparison, "gd.CompletionistTime", "@CompletionistTime");
+            GetDoubleSearchQuery(query, statements, model.AllStylesTime, model.AllStylesTimeComparison, "gd.AllStylesTime", "@AllStylesTime");
 
-            if (model.MainAndSidesTime.HasValue) {
-                statements.Add($"gd.MainAndSidesTime {EnumUtilities.GetEnumDisplayName(model.MainAndSidesTimeComparison)} @MainAndSidesTime");
-                query.AddParameter("@MainAndSidesTime", model.MainAndSidesTime);
-            }
+            GetNullableBooleanQuery(query, statements, model.PerfectPossible, model.PerfectPossibleComparison, "gd.PerfectPossible", "@PerfectPossible");
+            GetNullableBooleanQuery(query, statements, model.Finished, model.FinishedComparison, "gd.Finished", "@Finished");
+            GetNullableBooleanQuery(query, statements, model.Delisted, model.DelistedComparison, $"{TableName}.Delisted", "@Delisted");
 
-            if (model.CompletionistTime.HasValue) {
-                statements.Add($"gd.CompletionistTime {EnumUtilities.GetEnumDisplayName(model.CompletionistTimeComparison)} @CompletionistTime");
-                query.AddParameter("@CompletionistTime", model.CompletionistTime);
-            }
 
-            if (model.AllStylesTime.HasValue) {
-                statements.Add($"gd.AllStylesTime {EnumUtilities.GetEnumDisplayName(model.AllStylesTimeComparison)} @AllStylesTime");
-                query.AddParameter("@AllStylesTime", model.AllStylesTime);
+            switch (model.HasAchievements) {
+                case SearchBooleanType.True:
+                    statements.Add($"{TableName}.AchievementCount > 0");
+                    break;
+                case SearchBooleanType.False:
+                    statements.Add($"{TableName}.AchievementCount == 0");
+                    break;
             }
 
             query.SqlQuery += string.Join(" AND ", statements);
 
             return GetEntities(query);
+        }
+
+        private void GetIntSearchQuery(QueryBuilder query, List<string> statements, long? value, SearchIntComparisonType comparisonType, string columnName, string placeholderName) {
+            if (comparisonType == SearchIntComparisonType.NullValue) {
+                statements.Add($"{columnName} IS NULL");
+            } else if (value.HasValue) {
+                statements.Add($"{columnName} {GetComparisonOperator(comparisonType)} {placeholderName}");
+                query.AddParameter(placeholderName, value);
+            }
+        }
+        private void GetDoubleSearchQuery(QueryBuilder query, List<string> statements, double? value, SearchIntComparisonType comparisonType, string columnName, string placeholderName) {
+            if (comparisonType == SearchIntComparisonType.NullValue) {
+                statements.Add($"{columnName} IS NULL");
+            } else if (value.HasValue) {
+                statements.Add($"{columnName} {GetComparisonOperator(comparisonType)} {placeholderName}");
+                query.AddParameter(placeholderName, value);
+            }
+        }
+
+        private void GetNullableBooleanQuery(QueryBuilder query, List<string> statements, SearchNullableBooleanType value, SearchComparisonType comparisonType, string columnName, string placeholderName) {
+
+            if (value == SearchNullableBooleanType.Null && comparisonType == SearchComparisonType.Equals) {
+                statements.Add($"{columnName} IS NULL");
+            } else if (value == SearchNullableBooleanType.Null && comparisonType == SearchComparisonType.NotEquals) {
+                statements.Add($"{columnName} IS NOT NULL");
+            } else if (value != SearchNullableBooleanType.Skip) {
+
+                if (comparisonType == SearchComparisonType.NotEquals) {
+                    statements.Add($"NOT {columnName} <=> {placeholderName}");
+                } else {
+                    statements.Add($"{columnName} {GetComparisonOperator(comparisonType)} {placeholderName}");
+                }
+                if (value == SearchNullableBooleanType.True) {
+                    query.AddParameter(placeholderName, true);
+                } else if (value == SearchNullableBooleanType.False) {
+                    query.AddParameter(placeholderName, false);
+                }
+            }
+
+        }
+
+        private string GetComparisonOperator(SearchComparisonType searchComparisonType) {
+            switch (searchComparisonType) {
+                case SearchComparisonType.Equals:
+                    return "=";
+                case SearchComparisonType.NotEquals:
+                    return "<>";
+                default:
+                    return null;
+            }
+        }
+
+        private string GetComparisonOperator(SearchIntComparisonType searchIntComparisonType) {
+            switch (searchIntComparisonType) {
+                case SearchIntComparisonType.Equals:
+                    return "=";
+                case SearchIntComparisonType.NotEquals:
+                    return "<>";
+                case SearchIntComparisonType.LessThan:
+                    return "<";
+                case SearchIntComparisonType.LessThanOrEqual:
+                    return "<=";
+                case SearchIntComparisonType.GreaterThan:
+                    return ">";
+                case SearchIntComparisonType.GreaterThanOrEqual:
+                    return ">=";
+                default:
+                    return null;
+            }
         }
     }
 }

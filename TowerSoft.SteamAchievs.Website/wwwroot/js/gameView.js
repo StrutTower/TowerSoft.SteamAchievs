@@ -1,5 +1,8 @@
 $(document).ready(function () {
-    var gameViewModal = new bootstrap.Modal(document.getElementById('game-view-modal'));
+    var modelElement = document.getElementById('game-view-modal');
+    if (modelElement !== null) {
+        var gameViewModal = new bootstrap.Modal(modelElement);
+    }
 
     $('#achievement-tab-pane').on('click', '.edit-achievement-link', function (e) {
         e.preventDefault();

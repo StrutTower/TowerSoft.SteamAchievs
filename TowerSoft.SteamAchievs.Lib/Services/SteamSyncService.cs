@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using TowerSoft.SteamAchievs.Cron.Models;
-using TowerSoft.SteamAchievs.Cron.Services;
 using TowerSoft.SteamAchievs.Lib.Comparers;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
-using TowerSoft.SteamAchievs.Lib.Services;
 using TowerSoft.SteamAchievs.Lib.Utilities;
 using TowerSoft.SteamGridDbWrapper.Models;
 using TowerSoft.SteamGridDbWrapper;
@@ -16,19 +13,19 @@ using TowerSoft.Utilities;
 using TowerSoft.SteamTower;
 using TowerSoft.Repository;
 
-namespace TowerSoft.SteamAchievs.Cron.Utilities {
-    public class SteamDataService {
+namespace TowerSoft.SteamAchievs.Lib.Services {
+    public class SteamSyncService {
         private readonly UnitOfWork uow;
         private readonly SteamApiClient steamApi;
         private readonly SteamGridClient steamGridClient;
         private readonly ProtonDbService protonDbService;
         private readonly HowLongToBeatService howLongToBeatService;
-        private readonly ILogger<SteamDataService> logger;
+        private readonly ILogger logger;
         private readonly AppSettings appSettings;
 
-        public SteamDataService(UnitOfWork uow, SteamApiClient steamApi, SteamGridClient steamGridClient,
+        public SteamSyncService(UnitOfWork uow, SteamApiClient steamApi, SteamGridClient steamGridClient,
             ProtonDbService protonDbService, HowLongToBeatService howLongToBeatService,
-            IOptionsSnapshot<AppSettings> appSettings, ILogger<SteamDataService> logger) {
+            IOptionsSnapshot<AppSettings> appSettings, ILogger<SteamSyncService> logger) {
             this.uow = uow;
             this.steamApi = steamApi;
             this.steamGridClient = steamGridClient;
@@ -38,10 +35,12 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
             this.logger = logger;
         }
 
-        internal List<UserAppModel> LoadSteamData(List<OwnedApp> ownedApps) {
+        public List<UserAppModel> LoadSteamData(List<OwnedApp> ownedApps) {
             List<UserAppModel> userAppModels = new();
             int count = 1;
             foreach (OwnedApp ownedApp in ownedApps.OrderBy(x => x.Name)) {
+                ownedApp.Name = ownedApp.Name.SafeTrim();
+
                 if (appSettings.IgnoredAppIDs.Contains(ownedApp.SteamAppID)) {
                     logger.LogInformation($"ID {ownedApp.SteamAppID} is ignored. Skipping {ownedApp.Name}");
                     continue;
@@ -49,6 +48,8 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
                 // Making requests too quickly seems to cause a short soft ban from Steam's API
 
                 SteamApp steamApp = steamApi.StoreClient.GetSteamApp(ownedApp.SteamAppID).Result;
+                steamApp.Name = steamApp.Name.SafeTrim();
+
                 List<GlobalAchievementStat> globalAchievements = steamApi.UserStatsClient.GetGlobalAchievementStats(ownedApp.SteamAppID).Result;
 
 
@@ -119,7 +120,7 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
         }
 
         #region Syncs
-        internal void RunAllSyncs(List<UserAppModel> userAppModels) {
+        public void RunAllSyncs(List<UserAppModel> userAppModels) {
             SyncSteamGames(userAppModels);
             SyncSteamGameDescriptions(userAppModels);
             SyncSteamCategories(userAppModels);
@@ -130,7 +131,7 @@ namespace TowerSoft.SteamAchievs.Cron.Utilities {
             SyncSteamUserAchievements(userAppModels);
         }
 
-        internal void SyncSteamGames(List<UserAppModel> userAppModels) {
+        public void SyncSteamGames(List<UserAppModel> userAppModels) {
             SteamGameRepository repo = uow.GetRepo<SteamGameRepository>();
             var dbEntities = repo.GetAll().ToHashSet();
             var steamEntities = ModelConvert.ToSteamGames(userAppModels).ToHashSet();

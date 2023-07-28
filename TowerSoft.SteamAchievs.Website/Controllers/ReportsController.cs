@@ -39,5 +39,10 @@ namespace TowerSoft.SteamAchievs.Website.Controllers {
             List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetWithNullFinished();
             return View("GameList", gameDataService.GetGameListModel(games, "Missing Finished"));
         }
+
+        public IActionResult NullTimes() {
+            List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetWithoutHltbData();
+            return View("GameList", gameDataService.GetGameListModel(games, "Missing How Long to Beat Data"));
+        }
     }
 }

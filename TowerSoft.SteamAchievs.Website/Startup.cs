@@ -8,12 +8,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using System;
 using System.Net.Http;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Repository;
+using TowerSoft.SteamAchievs.Lib.Services;
 using TowerSoft.SteamAchievs.Website.Areas.Admin.Services;
 using TowerSoft.SteamAchievs.Website.HtmlRenderers;
 using TowerSoft.SteamAchievs.Website.Services;
+using TowerSoft.SteamGridDbWrapper;
 using TowerSoft.SteamTower;
 using TowerSoft.TagHelpers.Options;
 
@@ -44,11 +47,25 @@ namespace TowerSoft.SteamAchievs.Website {
             RendererRegistration.Add<ColorPickerHtmlRenderer>("color");
 
             services.AddHttpClient("steamApi", config => {
-                config.DefaultRequestHeaders.Add("Cookie", new[] { "birthtime =281347201", "lastagecheckage=1-0-1979", "wants_mature_content=1" });
+                config.DefaultRequestHeaders.Add("Cookie", new[] {
+            "birthtime=281347201",
+            "lastagecheckage=1-0-1979",
+            "wants_mature_content=1"
+        });
             }).ConfigurePrimaryHttpMessageHandler(() => {
                 return new HttpClientHandler {
                     UseDefaultCredentials = true
                 };
+            });
+            services.AddHttpClient<HowLongToBeatService>(client => {
+                client.BaseAddress = new Uri("https://howlongtobeat.com");
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0");
+                client.DefaultRequestHeaders.Add("origin", "https://howlongtobeat.com/");
+                client.DefaultRequestHeaders.Add("referer", "https://howlongtobeat.com/");
+            });
+            services.AddHttpClient<ProtonDbService>(client => {
+                client.BaseAddress = new Uri("https://www.protondb.com");
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0");
             });
 
             services
@@ -58,6 +75,8 @@ namespace TowerSoft.SteamAchievs.Website {
                 .AddScoped<GameDataService>()
                 .AddScoped<AchievementDataService>()
                 .AddScoped<AdminTagDataService>()
+                .AddScoped<SteamSyncService>()
+                .AddScoped(x => new SteamGridClient(apiKeys.SteamGridDb))
                 .AddScoped(x => new SteamApiClient(x.GetService<IHttpClientFactory>().CreateClient("steamApi"), apiKeys.Steam));
 
             Log.Logger = new LoggerConfiguration()

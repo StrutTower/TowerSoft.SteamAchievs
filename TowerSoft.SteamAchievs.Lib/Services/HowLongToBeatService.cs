@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TowerSoft.SteamAchievs.Lib.Models;
 
-namespace TowerSoft.SteamAchievs.Cron.Services {
+namespace TowerSoft.SteamAchievs.Lib.Services {
     public class HowLongToBeatService {
         private readonly HttpClient httpClient;
 

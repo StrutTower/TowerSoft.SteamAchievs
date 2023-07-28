@@ -4,8 +4,6 @@ using Serilog;
 using Serilog.Events;
 using System.Diagnostics;
 using TowerSoft.SteamAchievs.Cron.Jobs;
-using TowerSoft.SteamAchievs.Cron.Services;
-using TowerSoft.SteamAchievs.Cron.Utilities;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Repository;
 using TowerSoft.SteamAchievs.Lib.Services;
@@ -76,7 +74,7 @@ static ServiceProvider ConfigureServices() {
         .AddScoped<HowLongToBeatSync>()
         .AddScoped<UpdateGameDetails>()
         .AddScoped<ProtonDbSync>()
-        .AddScoped<SteamDataService>()
+        .AddScoped<SteamSyncService>()
         .AddScoped(x => new SteamApiClient(x.GetService<IHttpClientFactory>().CreateClient("steamApi"), apiKeys.Steam))
         .AddScoped(x => new SteamGridClient(apiKeys.SteamGridDb))
         .AddScoped(x => new AchievementStatsService(x.GetService<IHttpClientFactory>().CreateClient("achievementStats"), apiKeys.AchievementStats))

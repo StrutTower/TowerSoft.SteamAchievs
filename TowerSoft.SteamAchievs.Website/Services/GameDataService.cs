@@ -18,12 +18,16 @@ namespace TowerSoft.SteamAchievs.Website.Services {
         }
 
         public SteamGameModel GetSteamGameModel(long id) {
+            SteamGame game = uow.GetRepo<SteamGameRepository>().GetByID(id);
             SteamGameModel model = new() {
-                SteamGame = uow.GetRepo<SteamGameRepository>().GetByID(id),
+                SteamGame = game,
                 GameDetails = uow.GetRepo<GameDetailsRepository>().GetBySteamGameID(id),
                 GameDescriptions = uow.GetRepo<SteamGameDescriptionsRepository>().GetBySteamGameID(id),
                 Achievements = achievementDataService.GetAchievementModels(id).ToList(),
-                ComplicationTags = new()
+                ComplicationTags = new(),
+                UserTags = GetSteamUserTagModels(game).ToList(),
+                Categories = GetSteamCategoryModels(game).ToList(),
+                AchievementTags = new List<Tag>()
             };
 
             Dictionary<long, Tag> tags = uow.GetRepo<TagRepository>().GetAll().ToDictionary(x => x.ID);
@@ -33,6 +37,8 @@ namespace TowerSoft.SteamAchievs.Website.Services {
                 if (tag.IsComplication && !model.ComplicationTags.Select(x => x.ID).Contains(tag.ID))
                     model.ComplicationTags.Add(tag);
             }
+
+            model.AchievementTags = tags.Values.Where(x => x.SteamGameID == null || x.SteamGameID == game.ID).ToList();
 
             return model;
         }
@@ -78,6 +84,32 @@ namespace TowerSoft.SteamAchievs.Website.Services {
                 new KeyValuePair<string, string>("playNextSortAsc", "Play Next Score"),
                 new KeyValuePair<string, string>("playNextSortDesc", "Play Next Score (Descending)"),
             };
+        }
+
+        private IEnumerable<SteamCategoryModel> GetSteamCategoryModels(SteamGame steamGame) {
+            Dictionary<long, SteamCategory> categories = uow.GetRepo<SteamCategoryRepository>().GetAll().ToDictionary(x => x.ID);
+            List<SteamGameCategory> gameCategories = uow.GetRepo<SteamGameCategoryRepository>().GetBySteamGameID(steamGame.ID);
+
+            foreach(SteamGameCategory gameCategory in gameCategories) {
+                yield return new() {
+                    SteamCategoryID = gameCategory.SteamCategoryID,
+                    SteamGameID = gameCategory.SteamGameID,
+                    Name = categories[gameCategory.SteamCategoryID].Name
+                };
+            }
+        }
+
+        private IEnumerable<SteamUserTagModel> GetSteamUserTagModels(SteamGame steamGame) {
+            Dictionary<long, SteamUserTag> categories = uow.GetRepo<SteamUserTagRepository>().GetAll().ToDictionary(x => x.ID);
+            List<SteamGameUserTag> gameCategories = uow.GetRepo<SteamGameUserTagRepository>().GetBySteamGameID(steamGame.ID);
+
+            foreach (SteamGameUserTag gameCategory in gameCategories) {
+                yield return new SteamUserTagModel {
+                    SteamUserTagID = gameCategory.SteamUserTagID,
+                    SteamGameID = gameCategory.SteamGameID,
+                    Name = categories[gameCategory.SteamUserTagID].Name
+                };
+            }
         }
 
         private List<SteamGameListModel> GetSteamGameListModel(List<SteamGame> games) {

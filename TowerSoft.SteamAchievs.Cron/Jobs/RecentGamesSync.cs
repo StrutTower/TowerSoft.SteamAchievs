@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TowerSoft.SteamAchievs.Cron.Models;
-using TowerSoft.SteamAchievs.Cron.Utilities;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Domain;
+using TowerSoft.SteamAchievs.Lib.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
+using TowerSoft.SteamAchievs.Lib.Services;
 using TowerSoft.SteamTower;
 using TowerSoft.Utilities;
 
@@ -16,10 +11,10 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
     internal class RecentGamesSync {
         private readonly UnitOfWork uow;
         private readonly SteamApiClient steamApi;
-        private readonly SteamDataService steamDataService;
+        private readonly SteamSyncService steamDataService;
         private readonly AppSettings appSettings;
 
-        public RecentGamesSync(UnitOfWork uow, SteamApiClient steamApi, SteamDataService steamDataService,
+        public RecentGamesSync(UnitOfWork uow, SteamApiClient steamApi, SteamSyncService steamDataService,
             IOptionsSnapshot<AppSettings> appSettings) {
             this.uow = uow;
             this.steamDataService = steamDataService;
@@ -50,11 +45,18 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             steamDataService.SyncSteamGames(userAppDatas);
 
             foreach (UserAppModel model in userAppDatas) {
-                if (!existingRecentGames.Select(x => x.SteamGameID).Contains(model.SteamApp.ID)) {
-                    bool hasAchievements = false;
-                    if (model.GameStatsSchema != null && model.GameStatsSchema.Achievements.SafeAny())
-                        hasAchievements = true;
+                bool hasAchievements = false;
+                if (model.GameStatsSchema != null && model.GameStatsSchema.Achievements.SafeAny())
+                    hasAchievements = true;
 
+                if (existingRecentGames.Select(x => x.SteamGameID).Contains(model.SteamApp.ID)) {
+                    RecentGame recentGame = existingRecentGames.Single(x => x.SteamGameID == model.SteamApp.ID);
+                    recentGame.HasAchievements = hasAchievements;
+                    recentGame.TotalAchievements = model.GameStatsSchema?.Achievements?.Count ?? 0;
+                    recentGame.CompletedAchievements = model.UserAchievements?.Where(x => x.Achieved).Count() ?? 0;
+                    recentGameRepo.Update(recentGame);
+
+                } else {
                     RecentGame newRecent = new() {
                         SteamGameID = model.SteamApp.ID,
                         FirstDetected = DateTime.Now,

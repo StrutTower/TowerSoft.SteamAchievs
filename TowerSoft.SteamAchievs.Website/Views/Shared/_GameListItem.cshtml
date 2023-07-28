@@ -17,34 +17,53 @@
    data-metacritic="@Model.SteamGame.MetacriticScore"
    data-playnext="@Model.GameDetails?.PlayNextScore">
     <div class="col-auto">
-        @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid header-img d-none d-lg-block" />
-        } else {
-            <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid header-img d-none d-lg-block" />
-        }
-        <img src="@Model.SteamGame.GridThumbUrl" class="img-fluid d-lg-none" style="max-width:100px;" />
+        <partial name="_GameListItemPicture" model="Model" />
     </div>
     <div class="col">
         <div class="display-6 d-none d-lg-block" display-for="SteamGame.Name"></div>
         <h4 class="d-lg-none" display-for="SteamGame.Name"></h4>
 
-        <div class="mb-1">
-            <small class="small-caps">Playtime:</small>
-            @if (Model.SteamGame.TotalPlaytime == 0) {
-                <em class="text-info">Unplayed</em>
-            } else {
-                @TimeSpan.FromMinutes(Model.SteamGame.TotalPlaytime).ToLongString()
-            }
+        <div class="row mb-1">
+            <div class="col-auto text-center">
+                <label class="column-label">Playtime</label>
+                <div>
+                    @if (Model.SteamGame.TotalPlaytime == 0) {
+                        <em class="text-info">Unplayed</em>
+                    } else {
+                        @TimeSpan.FromMinutes(Model.SteamGame.TotalPlaytime).ToLongString()
+                    }
+                </div>
+            </div>
 
             @if (Model.GameDetails?.PerfectPossible != null) {
-                <span class="text-faded font-weight-semibold">|</span>
-                <small class="small-caps">Perfect Possible:</small> @Html.DisplayFor(x => x.GameDetails.PerfectPossible)
+                <div class="col-auto text-center">
+                    <label class="column-label">Perfect Possible</label>
+                    <div display-for="GameDetails.PerfectPossible"></div>
+                </div>
             }
 
             @if (Model.SteamGame.DeckCompatibility != null) {
-                <span class="text-faded font-weight-semibold">|</span>
-                <small class="small-caps">Deck Compatibility:</small> @Html.DisplayFor(x => x.SteamGame.DeckCompatibility)
+                <div class="col-auto text-center">
+                    <label class="column-label">Deck Compatibility</label>
+                    <div display-for="SteamGame.DeckCompatibility"></div>
+                </div>
             }
+            @*<small class="small-caps">Playtime:</small>
+                @if (Model.SteamGame.TotalPlaytime == 0) {
+                    <em class="text-info">Unplayed</em>
+                } else {
+                    @TimeSpan.FromMinutes(Model.SteamGame.TotalPlaytime).ToLongString()
+                }
+
+                @if (Model.GameDetails?.PerfectPossible != null) {
+                    <span class="text-faded font-weight-semibold">|</span>
+                    <small class="small-caps">Perfect Possible:</small> @Html.DisplayFor(x => x.GameDetails.PerfectPossible)
+                }
+
+                @if (Model.SteamGame.DeckCompatibility != null) {
+                    <span class="text-faded font-weight-semibold">|</span>
+                    <small class="small-caps">Deck Compatibility:</small> @Html.DisplayFor(x => x.SteamGame.DeckCompatibility)
+                }*@
         </div>
 
         @if (Model.SteamGame.AchievementCount > 0) {
@@ -66,22 +85,28 @@
             </p>
         }
 
-        @if (!string.IsNullOrWhiteSpace(Model.SteamGame.ReviewDescription)) {
-            <small class="small-caps">Review:</small> @Html.DisplayFor(x => x.SteamGame.ReviewDescription)
-        }
+        <div class="row mb-1">
+            @if (!string.IsNullOrWhiteSpace(Model.SteamGame.ReviewDescription)) {
+                <div class="col-auto text-center">
+                    <label class="column-label">Reviews</label>
+                    <div display-for="SteamGame.ReviewDescription"></div>
+                </div>
+            }
 
-        @if (!string.IsNullOrWhiteSpace(Model.SteamGame.ReviewDescription) && Model.SteamGame.RecommendationCount > 0) {
-            <span class="text-faded font-weight-semibold">|</span>
-        }
+            @if (Model.SteamGame.RecommendationCount > 0) {
+                <div class="col-auto text-center">
+                    <label class="column-label">Recommendations</label>
+                    <div display-for="SteamGame.RecommendationCount"></div>
+                </div>
+            }
 
-        @if (Model.SteamGame.RecommendationCount > 0) {
-            <small class="small-caps">Recommendations:</small> @Html.DisplayFor(x => x.SteamGame.RecommendationCount)
-        }
-
-        @if (Model.SteamGame.MetacriticScore > 0) {
-            <span class="text-faded font-weight-semibold">|</span>
-            <small class="small-caps">Metacritic:</small> @Html.DisplayFor(x => x.SteamGame.MetacriticScore)
-        }
+            @if (Model.SteamGame.MetacriticScore > 0) {
+                <div class="col-auto text-center">
+                    <label class="column-label">Metacritic</label>
+                    <div display-for="SteamGame.MetacriticScore"></div>
+                </div>
+            }
+        </div>
 
         @if (Model.ComplicationTags.SafeAny()) {
             <div>

@@ -12,5 +12,10 @@ namespace TowerSoft.SteamAchievs.Website.ViewModels {
         public List<AchievementModel> Achievements { get; set; }
 
         public List<Tag> ComplicationTags { get; set; }
+
+        public List<SteamUserTagModel> UserTags { get; set; }
+
+        public List<SteamCategoryModel> Categories { get; set; }
+        public List<Tag> AchievementTags { get; internal set; }
     }
 }

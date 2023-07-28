@@ -1,8 +1,6 @@
 ﻿@model EditTagModel
 @{
-    bool editing = false;
-    if (Model != null && Model.Tag != null && Model.Tag.ID != 0) {
-        editing = true;
+    if (Model?.Tag?.ID != 0) {
         if (Model.SteamGame == null)
             ViewData["title"] = "Edit Tag";
         else

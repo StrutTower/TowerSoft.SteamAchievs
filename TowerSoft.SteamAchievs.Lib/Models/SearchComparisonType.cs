@@ -4,13 +4,9 @@ namespace TowerSoft.SteamAchievs.Lib.Models {
     public enum SearchComparisonType {
         [Display(Name = "=")]
         Equals,
-        [Display(Name = "<")]
-        LessThan,
-        [Display(Name = "<=")]
-        LessThanOrEqual,
-        [Display(Name = ">")]
-        GreaterThan,
-        [Display(Name = ">=")]
-        GreaterThanOrEqual,
+        [Display(Name = "<>")]
+        NotEquals,
+        [Display(Name = "Null")]
+        NullValue
     }
 }
