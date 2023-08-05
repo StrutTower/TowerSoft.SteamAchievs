@@ -162,6 +162,7 @@ namespace TowerSoft.SteamAchievs.Website.Services {
                 existing.PerfectPossible = gameDetails.PerfectPossible;
                 existing.PlayNextScore = gameDetails.PlayNextScore;
                 existing.Finished = gameDetails.Finished;
+                existing.NotifyIfAchievementsAdded = gameDetails.NotifyIfAchievementsAdded;
                 repo.Update(existing);
             }
             return existing;

@@ -15,6 +15,9 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public bool? Finished { get; set; }
 
+        [Display(Name = "Notify If Achievemnts Are Added")]
+        public bool NotifyIfAchievementsAdded { get; set; }
+
         public string? ProtonDbRating { get; set; }
 
         public double? MainStoryTime { get; set; }

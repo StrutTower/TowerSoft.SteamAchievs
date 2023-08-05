@@ -1,14 +1,6 @@
-﻿using Org.BouncyCastle.Math.EC.Endo;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TowerSoft.Repository;
+﻿using TowerSoft.Repository;
 using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
-using TowerSoft.Utilities;
 
 namespace TowerSoft.SteamAchievs.Lib.Repository {
     public class SteamGameRepository : DbRepository<SteamGame> {
@@ -145,13 +137,12 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             GetNullableBooleanQuery(query, statements, model.Finished, model.FinishedComparison, "gd.Finished", "@Finished");
             GetNullableBooleanQuery(query, statements, model.Delisted, model.DelistedComparison, $"{TableName}.Delisted", "@Delisted");
 
-
             switch (model.HasAchievements) {
                 case SearchBooleanType.True:
                     statements.Add($"{TableName}.AchievementCount > 0");
                     break;
                 case SearchBooleanType.False:
-                    statements.Add($"{TableName}.AchievementCount == 0");
+                    statements.Add($"{TableName}.AchievementCount = 0");
                     break;
             }
 

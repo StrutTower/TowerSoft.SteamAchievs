@@ -20,7 +20,9 @@
         <div class="col-12 col-md mb-3">
             <formField asp-for="Name"></formField>
         </div>
+    </div>
 
+    <div class="row">
         <div class="col mb-3">
             <label asp-for="PlayNextScore"></label>
             <div class="row g-0">
@@ -39,6 +41,13 @@
         <div class="col mb-3">
             <label asp-for="HasAchievements"></label>
             <select asp-for="HasAchievements" asp-items="@Html.GetEnumSelectList<SearchBooleanType>()" class="form-select"></select>
+        </div>
+
+        <div class="col mb-3">
+            <label asp-for="AchievementCompletionStatus"></label>
+            <select asp-for="AchievementCompletionStatus" asp-items="@Html.GetEnumSelectList<AchievementCompletionStatus>()" class="form-select">
+                <option value=""></option>
+            </select>
         </div>
     </div>
 
