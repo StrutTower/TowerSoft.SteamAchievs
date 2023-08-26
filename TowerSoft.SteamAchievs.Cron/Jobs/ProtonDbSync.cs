@@ -21,7 +21,10 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             this.logger = logger;
         }
         public void StartJob() {
+            logger.LogInformation($"Starting {nameof(ProtonDbSync)} Job");
+            DateTime startTime = DateTime.Now;
             Run();
+            logger.LogInformation($"Finished {nameof(ProtonDbSync)} Job. Total Runtime: {(int)Math.Floor(DateTime.Now.Subtract(startTime).TotalSeconds)}");
         }
 
         private void Run() {

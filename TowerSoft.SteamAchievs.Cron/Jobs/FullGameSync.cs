@@ -22,7 +22,10 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         }
 
         public void StartJob() {
+            logger.LogInformation($"Starting {nameof(FullGameSync)} Job");
+            DateTime startTime = DateTime.Now;
             Run();
+            logger.LogInformation($"Finished {nameof(FullGameSync)} Job. Total Runtime: {(int)Math.Floor(DateTime.Now.Subtract(startTime).TotalSeconds)}");
         }
 
         public void Run() {
@@ -34,6 +37,8 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             //List<UserAppModel> userAppModels =
             //    JsonConvert.DeserializeObject<List<UserAppModel>>(
             //        File.ReadAllText("tempData.json"));
+
+            var test = userAppModels.Where(x => x.SteamApp.Name.StartsWith("GRIS", StringComparison.OrdinalIgnoreCase)).ToList();
 
             steamDataService.RunAllSyncs(userAppModels);
         }

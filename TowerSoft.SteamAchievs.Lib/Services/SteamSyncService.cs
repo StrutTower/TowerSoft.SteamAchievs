@@ -48,7 +48,8 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                 // Making requests too quickly seems to cause a short soft ban from Steam's API
 
                 SteamApp steamApp = steamApi.StoreClient.GetSteamApp(ownedApp.SteamAppID).Result;
-                steamApp.Name = steamApp.Name.SafeTrim();
+                if (steamApp != null)
+                    steamApp.Name = steamApp.Name.SafeTrim();
 
                 List<GlobalAchievementStat> globalAchievements = steamApi.UserStatsClient.GetGlobalAchievementStats(ownedApp.SteamAppID).Result;
 

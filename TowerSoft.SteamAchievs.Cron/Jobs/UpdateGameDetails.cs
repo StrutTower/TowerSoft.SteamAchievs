@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,13 +10,18 @@ using TowerSoft.SteamAchievs.Lib.Repository;
 namespace TowerSoft.SteamAchievs.Cron.Jobs {
     public class UpdateGameDetails {
         private readonly UnitOfWork uow;
+        private readonly ILogger logger;
 
-        public UpdateGameDetails(UnitOfWork uow) {
+        public UpdateGameDetails(UnitOfWork uow, ILogger<UpdateGameDetails> logger) {
             this.uow = uow;
+            this.logger = logger;
         }
 
         public void StartJob() {
+            logger.LogInformation($"Starting {nameof(UpdateGameDetails)} Job");
+            DateTime startTime = DateTime.Now;
             Run();
+            logger.LogInformation($"Finished {nameof(UpdateGameDetails)} Job. Total Runtime: {(int)Math.Floor(DateTime.Now.Subtract(startTime).TotalSeconds)}");
         }
 
         private void Run() {

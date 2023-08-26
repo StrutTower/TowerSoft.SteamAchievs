@@ -14,15 +14,29 @@
     <a asp-action="GameList" asp-route-id="@GameListType.HasPlayNextScore">With Play Next Score</a>
 </div>
 
+@if (Model.PerfectLostGames.SafeAny()) {
+    <div class="alert alert-danger text-center font-weight-semibold">
+        <h5>
+            Perfect Status Has Been Lost on @Model.PerfectLostGames.Count game@(Model.PerfectLostGames.Count == 1 ? "" : "s")
+        </h5>
+        <a asp-action="PerfectLostGames" class="text-white">
+            View Perfect Lost Games
+        </a>
+    </div>
+}
+
 <div class="row">
-    @foreach (RecentGame recentGame in Model.RecentGames) {
+    @foreach (RecentGame recentGame in Model.RecentGames.OrderByDescending(x => x.FirstDetected)) {
         double progressWidth = (double)recentGame.CompletedAchievements / (double)recentGame.TotalAchievements * 100;
 
         <a asp-action="View" asp-controller="Game" asp-route-id="@recentGame.SteamGameID" class="col-md-4 mb-3 link-section">
             <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@recentGame.SteamGameID/header.jpg" class="img-fluid" />
-            <div>
-                <div style="width:@progressWidth%;background-color:white;height:5px;"></div>
-            </div>
+
+            @if (recentGame.HasAchievements) {
+                <div class="home-acheivement-progress-bar-wrapper">
+                    <div style="@("width:" + progressWidth + "%")" class="home-acheivement-progress-bar @(progressWidth == 100 ? "perfected-game-progress-bar" : "")"></div>
+                </div>
+            }
         </a>
     }
 </div>

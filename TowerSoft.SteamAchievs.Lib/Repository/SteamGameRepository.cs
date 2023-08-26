@@ -1,6 +1,7 @@
 ﻿using TowerSoft.Repository;
 using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
+using TowerSoft.Utilities;
 
 namespace TowerSoft.SteamAchievs.Lib.Repository {
     public class SteamGameRepository : DbRepository<SteamGame> {
@@ -218,6 +219,25 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
                 default:
                     return null;
             }
+        }
+
+        public List<SteamGame> GetByIDs(IEnumerable<long> ids) {
+            if (!ids.SafeAny()) return default;
+
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery +=
+                $"WHERE ID IN (";
+
+            int counter = 1;
+            List<string> inStatements = new();
+            foreach(long id in ids) {
+                inStatements.Add($"@{counter}");
+                query.AddParameter($"@{counter}", id);
+            }
+
+            query.SqlQuery += string.Join(",", inStatements) + ") ";
+
+            return GetEntities(query);
         }
     }
 }

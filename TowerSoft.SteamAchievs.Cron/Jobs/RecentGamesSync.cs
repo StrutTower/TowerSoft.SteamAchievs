@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
@@ -13,17 +14,22 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         private readonly SteamApiClient steamApi;
         private readonly SteamSyncService steamDataService;
         private readonly AppSettings appSettings;
+        private readonly ILogger logger;
 
         public RecentGamesSync(UnitOfWork uow, SteamApiClient steamApi, SteamSyncService steamDataService,
-            IOptionsSnapshot<AppSettings> appSettings) {
+            IOptionsSnapshot<AppSettings> appSettings, ILogger<RecentGamesSync> logger) {
             this.uow = uow;
             this.steamDataService = steamDataService;
             this.steamApi = steamApi;
             this.appSettings = appSettings.Value;
+            this.logger = logger;
         }
 
         public void StartJob() {
+            logger.LogInformation($"Starting {nameof(RecentGamesSync)} Job");
+            DateTime startTime = DateTime.Now;
             Run();
+            logger.LogInformation($"Finished {nameof(RecentGamesSync)} Job. Total Runtime: {(int)Math.Floor(DateTime.Now.Subtract(startTime).TotalSeconds)}");
         }
 
         private void Run() {

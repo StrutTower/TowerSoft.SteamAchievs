@@ -17,18 +17,29 @@ if (Debugger.IsAttached) {
     //services.GetService<FullGameSync>().StartJob();
     //services.GetService<HiddenAchievementSync>().StartJob();
     //services.GetService<RecentGamesSync>().StartJob();
-    services.GetService<HowLongToBeatSync>().StartJob();
+    //services.GetService<HowLongToBeatSync>().StartJob();
     //services.GetService<UpdateGameDetails>().StartJob();
     //services.GetService<ProtonDbSync>().StartJob();
     Environment.Exit(1);
 }
-
-if (args.Contains("-full"))
+if (args.Contains("-all")) {
     services.GetService<FullGameSync>().StartJob();
-if (args.Contains("-recent"))
-    services.GetService<RecentGamesSync>().StartJob();
-if (args.Contains("-hidden"))
+
     services.GetService<HiddenAchievementSync>().StartJob();
+    services.GetService<HowLongToBeatSync>().StartJob();
+    services.GetService<PerfectGameScan>().StartJob();
+    services.GetService<ProtonDbSync>().StartJob();
+    services.GetService<RecentGamesSync>().StartJob();
+    services.GetService<UpdateGameDetails>().StartJob();
+
+} else {
+    if (args.Contains("-full"))
+        services.GetService<FullGameSync>().StartJob();
+    if (args.Contains("-recent"))
+        services.GetService<RecentGamesSync>().StartJob();
+    if (args.Contains("-hidden"))
+        services.GetService<HiddenAchievementSync>().StartJob();
+}
 
 
 static ServiceProvider ConfigureServices() {
@@ -72,6 +83,7 @@ static ServiceProvider ConfigureServices() {
         .AddScoped<HiddenAchievementSync>()
         .AddScoped<RecentGamesSync>()
         .AddScoped<HowLongToBeatSync>()
+        .AddScoped<PerfectGameScan>()
         .AddScoped<UpdateGameDetails>()
         .AddScoped<ProtonDbSync>()
         .AddScoped<SteamSyncService>()

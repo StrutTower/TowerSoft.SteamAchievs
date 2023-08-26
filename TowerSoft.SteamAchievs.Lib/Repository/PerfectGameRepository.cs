@@ -13,5 +13,9 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
         public PerfectGame GetBySteamGameID(long steamGameID) {
             return GetSingleEntity(WhereEqual(x => x.SteamGameID, steamGameID));
         }
+
+        public List<PerfectGame> GetIncompleteNowGames() {
+            return GetEntities(WhereEqual(x => x.IsIncompleteNow, true));
+        }
     }
 }

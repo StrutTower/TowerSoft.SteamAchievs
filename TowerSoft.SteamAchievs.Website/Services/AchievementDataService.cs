@@ -97,7 +97,10 @@ namespace TowerSoft.SteamAchievs.Website.Services {
             EditAchievementModel model = new() {
                 SteamGameID = steamGameID,
                 AchievementKey = achievementKey,
+                SteamGame = uow.GetRepo<SteamGameRepository>().GetByID(steamGameID),
+                AchievementSchema = uow.GetRepo<SteamAchievementSchemaRepository>().Get(steamGameID, achievementKey)
             };
+
             AchievementDetails details = uow.GetRepo<AchievementDetailsRepository>().Get(steamGameID, achievementKey);
             if (details != null) {
                 model.DescriptionOverride = details.Description;

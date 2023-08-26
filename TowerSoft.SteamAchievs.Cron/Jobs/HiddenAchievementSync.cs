@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
@@ -23,7 +18,14 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         }
 
         public void StartJob() {
-            Run();
+            logger.LogInformation($"Starting {nameof(HiddenAchievementSync)} Job");
+            DateTime startTime = DateTime.Now;
+            try {
+                Run();
+            } catch (Exception ex) {
+                logger.LogWarning($"Exception occurred during {nameof(HiddenAchievementSync)} job." + Environment.NewLine + ex);
+            }
+            logger.LogInformation($"Finished {nameof(HiddenAchievementSync)} Job. Total Runtime: {(int)Math.Floor(DateTime.Now.Subtract(startTime).TotalSeconds)}");
         }
 
         private void Run() {

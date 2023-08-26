@@ -22,7 +22,10 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         }
 
         public void StartJob() {
+            logger.LogInformation($"Starting {nameof(HowLongToBeatSync)} Job");
+            DateTime startTime = DateTime.Now;
             Run();
+            logger.LogInformation($"Finished {nameof(HowLongToBeatSync)} Job. Total Runtime: {(int)Math.Floor(DateTime.Now.Subtract(startTime).TotalSeconds)}");
         }
 
         private void Run() {

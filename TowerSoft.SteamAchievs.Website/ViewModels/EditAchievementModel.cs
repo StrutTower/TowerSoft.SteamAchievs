@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TowerSoft.SteamAchievs.Lib.Domain;
 
 namespace TowerSoft.SteamAchievs.Website.ViewModels {
     public class EditAchievementModel {
@@ -15,5 +16,7 @@ namespace TowerSoft.SteamAchievs.Website.ViewModels {
         public List<long> TagIDs { get; set; }
 
         public SelectList TagList { get; set; }
+        public SteamGame SteamGame { get; internal set; }
+        public SteamAchievementSchema AchievementSchema { get; internal set; }
     }
 }

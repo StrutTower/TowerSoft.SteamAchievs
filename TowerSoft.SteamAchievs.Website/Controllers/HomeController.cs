@@ -23,5 +23,9 @@ namespace TowerSoft.SteamAchievs.Website.Controllers {
         public IActionResult GameList(GameListType id) {
             return View(gameDataService.GetGameListModel(id));
         }
+
+        public IActionResult PerfectLostGames() {
+            return View("GameList", gameDataService.GetPerfectLostGames());
+        }
     }
 }

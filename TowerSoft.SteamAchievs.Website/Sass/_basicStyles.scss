@@ -50,6 +50,19 @@ a.link-section {
     }
 }
 
+.home-acheivement-progress-bar {
+    background-color: white;
+    height: 5px;
+}
+
+.home-acheivement-progress-bar-wrapper {
+    background-color: #555;
+}
+
+.perfected-game-progress-bar {
+    background: linear-gradient(73deg, rgba(12,203,250,1) 0%, rgba(33,84,241,1) 50%, rgba(0,212,255,1) 100%);
+}
+
 footer {
     color: darken($body-color, 30);
 

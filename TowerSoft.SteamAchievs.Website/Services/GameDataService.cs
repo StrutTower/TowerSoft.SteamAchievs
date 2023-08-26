@@ -90,7 +90,7 @@ namespace TowerSoft.SteamAchievs.Website.Services {
             Dictionary<long, SteamCategory> categories = uow.GetRepo<SteamCategoryRepository>().GetAll().ToDictionary(x => x.ID);
             List<SteamGameCategory> gameCategories = uow.GetRepo<SteamGameCategoryRepository>().GetBySteamGameID(steamGame.ID);
 
-            foreach(SteamGameCategory gameCategory in gameCategories) {
+            foreach (SteamGameCategory gameCategory in gameCategories) {
                 yield return new() {
                     SteamCategoryID = gameCategory.SteamCategoryID,
                     SteamGameID = gameCategory.SteamGameID,
@@ -166,6 +166,19 @@ namespace TowerSoft.SteamAchievs.Website.Services {
                 repo.Update(existing);
             }
             return existing;
+        }
+
+        internal GameListModel GetPerfectLostGames() {
+            List<PerfectGame> missingPerfectGames = uow.GetRepo<PerfectGameRepository>().GetIncompleteNowGames();
+            List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetByIDs(missingPerfectGames.Select(x => x.SteamGameID));
+
+            GameListModel model = new() {
+                PageTitle = "Missing Perfect Game Status",
+                Games = GetSteamGameListModel(games).OrderBy(x => x.SteamGame.Name).ToList(),
+                SortOptions = GetSortOptions()
+            };
+
+            return model;
         }
     }
 }
