@@ -12,6 +12,11 @@ namespace TowerSoft.SteamAchievs.Website.Controllers {
         public IActionResult Index() {
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             Exception exception = exceptionHandlerPathFeature.Error;
+
+            if (exception is MessageException) {
+                return Message(exception.Message);
+            }
+
             if (IsAjaxRequest) {
                 return Json(new {
                     errorMessage = exception.Message

@@ -1,7 +1,6 @@
-///<reference path="_variablesShared.scss" />
-///<reference path="_variablesLight.scss" />
-///<reference path="_variablesDark.scss" />
+///<reference path="_variables.scss" />
 ///<reference path="../node_modules/bootstrap/scss/_variables.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables-dark.scss" />
 
 .achievement-row {
     border: 2px solid $border-color;
@@ -9,6 +8,18 @@
 
     &.achieved {
         border-color: $primary;
-        background: darken($primary, 23);
+        background: transparentize($primary, .75);
+    }
+}
+
+[data-bs-theme="dark"] {
+    .achievement-row {
+        border: 2px solid $border-color-dark;
+        margin-bottom: 3px;
+
+        &.achieved {
+            border-color: $primary;
+            background: darken($primary, 23);
+        }
     }
 }

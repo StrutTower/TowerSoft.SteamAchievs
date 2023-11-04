@@ -1,8 +1,7 @@
 ﻿@model SteamGameModel
 @{
-    ViewData["title"] = Model.SteamGame.Name;
+    ViewData["title"] = Model.SteamGame.NameClean;
 }
-
 
 <div class="row">
     <div class="col-12 col-lg-auto order-lg-last">
@@ -13,14 +12,19 @@
         }
     </div>
     <div class="col-12 col-lg">
-        <div class="display-6" display-for="SteamGame.Name"></div>
+        <div class="display-6" display-for="SteamGame.NameClean"></div>
         @if (Model.SteamGame.Delisted) {
             <p><strong class="text-danger">This game has been delisted from Steam</strong></p>
+        }
+        @if (!Model.Categories.SafeAny(x => x.Name == "Steam Cloud")) {
+            <p><strong class="text-danger">This game does not support Steam Cloud saves.</strong></p>
         }
         <p>
             <a href="https://store.steampowered.com/app/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">Steam</a>
             /
             <a href="https://steamhunters.com/apps/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">SteamHunters</a>
+            /
+            <a href="https://www.pcgamingwiki.com/w/index.php?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">PCGamingWiki</a>
         </p>
         <p>
             <a asp-action="Edit" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" id="edit-game-details-link">Edit Game Details</a>
@@ -87,7 +91,7 @@
                     </div>
                     <div class="col">
                         <select id="achievement-filter" hidden multiple>
-                            @foreach(var tag in Model. AchievementTags.OrderBy(x => x.Name)) {
+                            @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
                                 <option value="@tag.ID">@tag.Name</option>
                             }
                         </select>
@@ -101,6 +105,7 @@
             }
         </div>
     </div>
+
     <div class="tab-pane fade pt-2" id="game-info-tab-pane" role="tabpanel" tabindex="0">
         <div class="pt-2">
             <div>
@@ -120,6 +125,7 @@
             @Html.Raw(Model.GameDescriptions.LegalNotice)
         </div>
     </div>
+
     <div class="tab-pane fade pt-2" id="hltb-tab-pane" role="tabpanel" tabindex="0">
         <div class="pt-2">
             <div class="row mb-3">

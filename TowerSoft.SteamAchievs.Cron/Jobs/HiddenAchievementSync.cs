@@ -84,7 +84,7 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                     updateCount++;
                 }
 
-                logger.LogInformation($"{game.Name}: {updateCount} achievement descriptions updated");
+                logger.LogInformation($"{game.NameClean}: {updateCount} achievement descriptions updated");
             }
         }
     }

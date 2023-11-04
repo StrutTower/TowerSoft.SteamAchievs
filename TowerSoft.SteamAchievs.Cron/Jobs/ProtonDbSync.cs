@@ -30,11 +30,11 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         private void Run() {
             GameDetailsRepository repo = uow.GetRepo<GameDetailsRepository>();
 
-            List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetAll().OrderBy(x => x.Name).ToList();
+            List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetAll().OrderBy(x => x.NameClean).ToList();
             Dictionary<long, GameDetails> detailsDictionary = repo.GetAll().ToDictionary(x => x.SteamGameID);
 
             foreach (SteamGame game in games) {
-                logger.LogInformation($"Running proton db sync on {game.Name}");
+                logger.LogInformation($"Running proton db sync on {game.NameClean}");
                 ProtonDbGame protonDbGame = protonDbService.GetGame(game.ID).Result;
 
                 if (protonDbGame != null && !string.IsNullOrWhiteSpace(protonDbGame.Tier)) {

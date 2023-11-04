@@ -1,11 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TowerSoft.SteamAchievs.Lib.Config;
+﻿using Newtonsoft.Json;
 using TowerSoft.SteamAchievs.Lib.Models;
 
 namespace TowerSoft.SteamAchievs.Lib.Services {

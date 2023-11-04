@@ -8,6 +8,7 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
         [Key]
         public long ID { get; set; }
 
+        [Obsolete("Use NameClean instead")]
         public string Name { get; set; }
 
         public string RequiredAge { get; set; }
@@ -72,6 +73,13 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public DateTime? LastPlayedOn { get; set; }
 
+
+
+        public string NameClean {
+            get {
+                return Name.Replace("™", "").Replace("®", "");
+            }
+        }
 
         public bool Equals([AllowNull] SteamGame other) {
             return other != null && ID == other.ID;

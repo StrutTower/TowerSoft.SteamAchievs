@@ -1,0 +1,13 @@
+﻿///<reference path="_variables.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables-dark.scss" />
+
+.alert.alert-danger a {
+    color: $danger;
+}
+
+[data-bs-theme="dark"] {
+    .alert.alert-danger a {
+        color: darken($danger, 5);
+    }
+}

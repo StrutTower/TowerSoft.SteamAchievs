@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Repository;
+using TowerSoft.SteamAchievs.Website.Infrastructure;
 using TowerSoft.SteamAchievs.Website.ViewModels;
 using TowerSoft.Utilities;
 
@@ -19,6 +19,8 @@ namespace TowerSoft.SteamAchievs.Website.Services {
 
         public SteamGameModel GetSteamGameModel(long id) {
             SteamGame game = uow.GetRepo<SteamGameRepository>().GetByID(id);
+            if (game == null) throw new MessageException($"Unable to find a game with ID {id}.");
+
             SteamGameModel model = new() {
                 SteamGame = game,
                 GameDetails = uow.GetRepo<GameDetailsRepository>().GetBySteamGameID(id),

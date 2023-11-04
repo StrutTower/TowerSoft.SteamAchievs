@@ -1,0 +1,15 @@
+﻿html {
+    font-size: 14px;
+}
+
+@import "variables";
+@import "../node_modules/tower-bootstrap-theme/src/tower-bootstrap-theme.scss";
+
+
+@import "basicStyles";
+@import "tables";
+@import "icons";
+@import "images";
+@import "gameView";
+@import "proton";
+@import "fixes";

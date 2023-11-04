@@ -5,10 +5,10 @@
         <div class="text-white" id="navbar-navmenu">
             <ul class="navbar-nav ms-auto flex-row">
                 @*<li class="navbar-text mx-2">
-                    <environment include="Development">
-                        <span class="text-warning">Development Server</span>
-                    </environment>
-                </li>*@
+                        <environment include="Development">
+                            <span class="text-warning">Development Server</span>
+                        </environment>
+                    </li>*@
                 <li class="nav-item">
                     <form asp-action="Basic" asp-controller="Search" asp-area="" method="get" class="d-flex mt-1" role="search">
                         <input class="form-control me-2" type="search" name="q" placeholder="Search" maxlength="20" style="width:100px;">
@@ -23,6 +23,16 @@
                     <a asp-action="Index" asp-controller="Home" asp-area="Admin" class="nav-link">
                         <span class="mdi mdi-fw mdi-cog"></span><span class="d-none d-lg-inline">Site Management</span>
                     </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <span id="current-theme"></span> <span class="d-md-none">Switch Themes</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <button type="button" class="dropdown-item" data-bs-theme-value="light"><span class="mdi mdi-weather-sunny"></span> Light</button>
+                        <button type="button" class="dropdown-item" data-bs-theme-value="dark"><span class="mdi mdi-weather-night"></span> Dark</button>
+                        <button type="button" class="dropdown-item" data-bs-theme-value="auto"><span class="mdi mdi-theme-light-dark"></span> Auto</button>
+                    </div>
                 </li>
             </ul>
         </div>

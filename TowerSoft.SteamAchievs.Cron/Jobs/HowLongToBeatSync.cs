@@ -37,7 +37,7 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             foreach (SteamGame game in games) {
                 if (skipAppIDs.Contains(game.ID)) continue;
 
-                string searchName = game.Name.Replace("™", "").Replace(" - ", " ").Replace("®", "");
+                string searchName = game.NameClean.Replace("™", "").Replace(" - ", " ").Replace("®", "");
 
                 List<HltbModel> hltbModels = howLongToBeatService.Search(searchName).Result;
 
@@ -60,12 +60,12 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 HltbModel model = hltbModels.Single(x => x.ID == hltbID);
 
                 Update(game, model, detailsDictionary);
-            } else if (hltbModels.Where(x => x.Name.Equals(game.Name, StringComparison.OrdinalIgnoreCase)).Count() == 1) {
-                HltbModel model = hltbModels.Single(x => x.Name.Equals(game.Name, StringComparison.OrdinalIgnoreCase));
+            } else if (hltbModels.Where(x => x.Name.Equals(game.NameClean, StringComparison.OrdinalIgnoreCase)).Count() == 1) {
+                HltbModel model = hltbModels.Single(x => x.Name.Equals(game.NameClean, StringComparison.OrdinalIgnoreCase));
                 Update(game, model, detailsDictionary);
 
-            } else if (hltbModels.Where(x => x.Name.Replace(":", "").Equals(game.Name.Trim(), StringComparison.OrdinalIgnoreCase)).Count() == 1) {
-                HltbModel model = hltbModels.Single(x => x.Name.Replace(":", "").Equals(game.Name, StringComparison.OrdinalIgnoreCase));
+            } else if (hltbModels.Where(x => x.Name.Replace(":", "").Equals(game.NameClean.Trim(), StringComparison.OrdinalIgnoreCase)).Count() == 1) {
+                HltbModel model = hltbModels.Single(x => x.Name.Replace(":", "").Equals(game.NameClean, StringComparison.OrdinalIgnoreCase));
                 Update(game, model, detailsDictionary);
 
             } else {
@@ -76,13 +76,13 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
 
                         AttemptMatchAndSync(game, hltbModels2, detailsDictionary, searchName2);
                     }
-                } else if (game.Name.Contains("-")) {
-                    string searchName2 = game.Name.Substring(0, game.Name.IndexOf("-") - 1).SafeTrim();
+                } else if (game.NameClean.Contains("-")) {
+                    string searchName2 = game.Name.Substring(0, game.NameClean.IndexOf("-") - 1).SafeTrim();
                     List<HltbModel> hltbModels2 = howLongToBeatService.Search(searchName2).Result;
 
                     AttemptMatchAndSync(game, hltbModels2, detailsDictionary, searchName2);
                 } else {
-                    logger.LogInformation($"Unable to find a match for {game.Name}.\n   Possible matches " + string.Join(", ", hltbModels.Select(x => $"{x.Name} ({x.ReleaseYear})")));
+                    logger.LogInformation($"Unable to find a match for {game.NameClean}.\n   Possible matches " + string.Join(", ", hltbModels.Select(x => $"{x.Name} ({x.ReleaseYear})")));
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 gameDetail.CompletionistTime = completionistTime;
                 gameDetail.AllStylesTime = allStylesTime;
 
-                logger.LogInformation($"Updating '{game.Name}' HLTB times");
+                logger.LogInformation($"Updating '{game.NameClean}' HLTB times");
                 detailsRepo.Update(gameDetail);
             }
         }

@@ -31,11 +31,9 @@ var options = {
             '@mdi/font/css/materialdesignicons.css'
         ],
         workingDirectory: 'node_modules',
-        sassSourceLight: 'Sass/siteLight.scss',
-        sassSourceDark: 'Sass/siteDark.scss',
+        sassSource: 'Sass/site.scss',
         sassFiles: 'Sass/**/*.scss',
-        outputLight: 'bundle-light.css',
-        outputDark: 'bundle-dark.css',
+        output: 'bundle.css',
         dest: 'wwwroot/lib'
     },
     fonts: {
@@ -61,37 +59,53 @@ gulp.task('bundle-JS', function () {
         .pipe(gulp.dest(options.js.dest));
 });
 
-gulp.task('bundle-CSS-light', function () {
+gulp.task('bundle-CSS', function () {
     var libCSS = gulp.src(options.css.libFiles, { cwd: options.css.workingDirectory });
 
-    var siteCSS = gulp.src(options.css.sassSourceLight)
+    var siteCSS = gulp.src(options.css.sassSource)
         .pipe(sass({
             errLogToConsole: true
         }).on('error', sass.logError));
 
     return merge(libCSS, siteCSS)
-        .pipe(concat(options.css.outputLight))
+        .pipe(concat(options.css.output))
         .pipe(gulp.dest(options.css.dest))
-        .pipe(cleancss({ level: { 1: { specialComments: 0 } } }))
+        .pipe(cleancss())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest(options.css.dest));
 });
 
-gulp.task('bundle-CSS-dark', function () {
-    var libCSS = gulp.src(options.css.libFiles, { cwd: options.css.workingDirectory });
+//gulp.task('bundle-CSS-light', function () {
+//    var libCSS = gulp.src(options.css.libFiles, { cwd: options.css.workingDirectory });
 
-    var siteCSS = gulp.src(options.css.sassSourceDark)
-        .pipe(sass({
-            errLogToConsole: true
-        }).on('error', sass.logError));
+//    var siteCSS = gulp.src(options.css.sassSourceLight)
+//        .pipe(sass({
+//            errLogToConsole: true
+//        }).on('error', sass.logError));
 
-    return merge(libCSS, siteCSS)
-        .pipe(concat(options.css.outputDark))
-        .pipe(gulp.dest(options.css.dest))
-        .pipe(cleancss({ level: { 1: { specialComments: 0 } } }))
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(gulp.dest(options.css.dest));
-});
+//    return merge(libCSS, siteCSS)
+//        .pipe(concat(options.css.outputLight))
+//        .pipe(gulp.dest(options.css.dest))
+//        .pipe(cleancss())
+//        .pipe(rename({ suffix: '.min' }))
+//        .pipe(gulp.dest(options.css.dest));
+//});
+
+//gulp.task('bundle-CSS-dark', function () {
+//    var libCSS = gulp.src(options.css.libFiles, { cwd: options.css.workingDirectory });
+
+//    var siteCSS = gulp.src(options.css.sassSourceDark)
+//        .pipe(sass({
+//            errLogToConsole: true
+//        }).on('error', sass.logError));
+
+//    return merge(libCSS, siteCSS)
+//        .pipe(concat(options.css.outputDark))
+//        .pipe(gulp.dest(options.css.dest))
+//        .pipe(cleancss())
+//        .pipe(rename({ suffix: '.min' }))
+//        .pipe(gulp.dest(options.css.dest));
+//});
 
 gulp.task('copy-fonts', function () {
     return gulp.src(options.fonts.files)
@@ -99,8 +113,8 @@ gulp.task('copy-fonts', function () {
 });
 
 gulp.task('sass-watch', function () {
-    gulp.watch(options.css.sassFiles, gulp.parallel('bundle-CSS-light', 'bundle-CSS-dark'));
+    gulp.watch(options.css.sassFiles, gulp.parallel('bundle-CSS'));
 });
 
-gulp.task('default', gulp.parallel('bundle-JS', 'bundle-CSS-light', 'bundle-CSS-dark', 'copy-fonts'));
+gulp.task('default', gulp.parallel('bundle-JS', 'bundle-CSS', 'copy-fonts'));
 //#endregion

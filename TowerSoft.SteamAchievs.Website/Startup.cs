@@ -91,6 +91,7 @@ namespace TowerSoft.SteamAchievs.Website {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
+                //app.UseExceptionHandler("/Error");
             } else {
                 //app.UseHttpsRedirection();
                 app.UseExceptionHandler("/Error");

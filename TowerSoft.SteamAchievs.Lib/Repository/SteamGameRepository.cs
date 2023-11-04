@@ -233,6 +233,7 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             foreach(long id in ids) {
                 inStatements.Add($"@{counter}");
                 query.AddParameter($"@{counter}", id);
+                counter++;
             }
 
             query.SqlQuery += string.Join(",", inStatements) + ") ";

@@ -9,7 +9,7 @@
 
 <a asp-action="View" asp-controller="Game" asp-route-id="@Model.SteamGame.ID"
    class="row link-section game-list-item border-bottom pt-2 pb-2"
-   data-name="@Model.SteamGame.Name"
+   data-name="@Model.SteamGame.NameClean"
    data-count="@Model.SteamGame.AchievementCount"
    data-percent="@progressWidth"
    data-playtime="@Model.SteamGame.TotalPlaytime"
@@ -20,8 +20,8 @@
         <partial name="_GameListItemPicture" model="Model" />
     </div>
     <div class="col">
-        <div class="display-6 d-none d-lg-block" display-for="SteamGame.Name"></div>
-        <h4 class="d-lg-none" display-for="SteamGame.Name"></h4>
+        <div class="display-6 d-none d-lg-block" display-for="SteamGame.NameClean"></div>
+        <h4 class="d-lg-none" display-for="SteamGame.NameClean"></h4>
 
         <div class="row mb-1">
             <div class="col-auto text-center">

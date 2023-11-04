@@ -1,7 +1,6 @@
-﻿///<reference path="_variablesShared.scss" />
-///<reference path="_variablesLight.scss" />
-///<reference path="_variablesDark.scss" />
+﻿///<reference path="_variables.scss" />
 ///<reference path="../node_modules/bootstrap/scss/_variables.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables-dark.scss" />
 
 .noscript {
     display: block;
@@ -42,7 +41,7 @@ a.disable-link {
 
 a.link-section {
     color: $body-color;
-    text-decoration:none;
+    text-decoration: none;
     transition: background-color 0.2s ease;
 
     &:hover {
@@ -74,5 +73,24 @@ footer {
 @media print {
     header, footer, nav {
         display: none;
+    }
+}
+
+
+[data-bs-theme="dark"] {
+    a.disable-link {
+        color: $body-color-dark;
+    }
+
+    a.link-section {
+        color: $body-color-dark;
+    }
+
+    footer {
+        color: lighten($body-color-dark, 10);
+
+        a, a:link, a:visited {
+            color: $body-color-dark;
+        }
     }
 }
