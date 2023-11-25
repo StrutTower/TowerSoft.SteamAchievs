@@ -21,6 +21,10 @@
         <h5 display-for="Name" class="mb-0"></h5>
         <div display-for="Description"></div>
 
+        @if (Model.RemovedFromSteam) {
+                <div class="text-danger font-weight-bold">This achievement has been removed from Steam.</div>
+            }
+
         <div>
             @foreach (Tag tag in Model.Tags) {
                 <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>

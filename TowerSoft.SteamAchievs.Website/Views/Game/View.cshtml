@@ -3,6 +3,10 @@
     ViewData["title"] = Model.SteamGame.NameClean;
 }
 
+<div id="game-background-img">
+    <img src="@Model.SteamGame.BackgroundUrl" />
+</div>
+
 <div class="row">
     <div class="col-12 col-lg-auto order-lg-last">
         @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
@@ -11,7 +15,7 @@
             <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
         }
     </div>
-    <div class="col-12 col-lg">
+    <div class="col-12 col-lg font-shadow">
         <div class="display-6" display-for="SteamGame.NameClean"></div>
         @if (Model.SteamGame.Delisted) {
             <p><strong class="text-danger">This game has been delisted from Steam</strong></p>
@@ -69,7 +73,7 @@
         <button class="nav-link" id="hltb-tab" data-bs-toggle="tab" data-bs-target="#hltb-tab-pane" type="button" role="tab">HowLongToBeat</button>
     </li>
 </ul>
-<div class="tab-content" id="myTabContent">
+<div class="tab-content transparent-bg mb-0 pb-2" id="myTabContent">
     <div class="tab-pane fade show active" id="achievement-tab-pane" role="tabpanel" tabindex="0">
         <div class="pt-2">
             @if (Model.Achievements.SafeAny()) {
@@ -82,19 +86,29 @@
                     </h5>
                 </div>
                 <div class="row mb-2">
-                    <div class="col">
+                    <div class="col-md">
                         <select id="achieved-filter" class="form-select">
                             <option value="">All Achievements</option>
                             <option value="True">Completed Achievements</option>
                             <option value="False">Incompleted Achievements</option>
                         </select>
                     </div>
-                    <div class="col">
+                    <div class="col-md">
                         <select id="achievement-filter" hidden multiple>
                             @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
                                 <option value="@tag.ID">@tag.Name</option>
                             }
+                            <option value="BLANK">No Tags</option>
                         </select>
+                    </div>
+                    <div class="col-md">
+                        <select id="hide-tag-filter" hidden multiple>
+                            @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
+                                <option value="@tag.ID">@tag.Name</option>
+                            }
+                            <option value="BLANK">No Tags</option>
+                        </select>
+                        <div id="hide-filter-overridden" class="text-warning hidden">Overridden</div>
                     </div>
                 </div>
                 @foreach (AchievementModel achievement in Model.Achievements.OrderByDescending(x => x.GlobalCompletionPercentage)) {

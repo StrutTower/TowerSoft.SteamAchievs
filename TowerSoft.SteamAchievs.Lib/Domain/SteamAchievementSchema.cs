@@ -23,6 +23,8 @@ namespace TowerSoft.SteamAchievs.Lib.Domain {
 
         public double GlobalCompletionPercentage { get; set; }
 
+        public bool RemovedFromSteam { get; set; }
+
         public bool Equals(SteamAchievementSchema? other) {
             return other != null && KeyName == other.KeyName && SteamGameID == other.SteamGameID;
         }

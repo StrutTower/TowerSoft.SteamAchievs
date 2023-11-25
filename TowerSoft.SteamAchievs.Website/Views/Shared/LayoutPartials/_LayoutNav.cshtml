@@ -4,13 +4,8 @@
 
         <div class="text-white" id="navbar-navmenu">
             <ul class="navbar-nav ms-auto flex-row">
-                @*<li class="navbar-text mx-2">
-                        <environment include="Development">
-                            <span class="text-warning">Development Server</span>
-                        </environment>
-                    </li>*@
                 <li class="nav-item">
-                    <form asp-action="Basic" asp-controller="Search" asp-area="" method="get" class="d-flex mt-1" role="search">
+                    <form asp-action="Basic" asp-controller="Search" asp-area="" method="get" class="d-flex" role="search">
                         <input class="form-control me-2" type="search" name="q" placeholder="Search" maxlength="20" style="width:100px;">
                     </form>
                 </li>
@@ -26,7 +21,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <span id="current-theme"></span> <span class="d-md-none">Switch Themes</span>
+                        <span id="current-theme"></span>
                     </button>
                     <div class="dropdown-menu">
                         <button type="button" class="dropdown-item" data-bs-theme-value="light"><span class="mdi mdi-weather-sunny"></span> Light</button>

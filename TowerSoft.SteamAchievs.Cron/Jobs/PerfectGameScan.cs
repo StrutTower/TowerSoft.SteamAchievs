@@ -39,7 +39,7 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 // Check if any incomplete games need to be set back to complete
                 if (storedPerfectGames.ContainsKey(current.ID)) {
                     PerfectGame perfectGame = storedPerfectGames[current.ID];
-                    if (perfectGame.IsIncompleteNow) {
+                    if (currentPerfectGames.ContainsKey(current.ID) && perfectGame.IsIncompleteNow) {
                         perfectGame.IsIncompleteNow = false;
                         repo.Update(perfectGame);
                     } else {

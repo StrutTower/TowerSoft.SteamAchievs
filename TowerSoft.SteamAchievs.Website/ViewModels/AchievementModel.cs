@@ -20,6 +20,8 @@ namespace TowerSoft.SteamAchievs.Website.ViewModels {
 
         public double GlobalCompletionPercentage { get; set; }
 
+        public bool RemovedFromSteam { get; set; }
+
         public bool Achieved { get; set; }
 
         public DateTime? AchievedOn { get; set; }

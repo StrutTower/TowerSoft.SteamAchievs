@@ -62,6 +62,23 @@ a.link-section {
     background: linear-gradient(73deg, rgba(12,203,250,1) 0%, rgba(33,84,241,1) 50%, rgba(0,212,255,1) 100%);
 }
 
+#game-background-img {
+    position: absolute;
+    top: 0;
+    left: auto;
+    right: auto;
+    z-index: -1;
+    /*opacity:.5;*/
+}
+
+.transparent-bg {
+    background-color: transparentize($body-bg, .75);
+}
+
+.font-shadow {
+    text-shadow: 1px 1px 5px rgba(0,0,0,1);
+}
+
 footer {
     color: darken($body-color, 30);
 
@@ -78,6 +95,10 @@ footer {
 
 
 [data-bs-theme="dark"] {
+    .transparent-bg {
+        background-color: transparentize($body-bg-dark, .5);
+    }
+
     a.disable-link {
         color: $body-color-dark;
     }

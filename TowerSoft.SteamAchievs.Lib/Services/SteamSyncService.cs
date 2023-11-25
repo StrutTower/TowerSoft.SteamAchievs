@@ -188,6 +188,18 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
             var steamEntities = ModelConvert.ToSteamAchievementSchemas(userAppModels).ToHashSet();
 
             SyncData(repo, dbEntities, steamEntities, new AllPropertyComparer<SteamAchievementSchema>());
+
+
+            var removed = dbEntities.Where(x => userAppModels.Select(y => y.OwnedApp.SteamAppID).Contains(x.SteamGameID)).Except(steamEntities);
+            if (removed.SafeAny()) {
+
+                foreach (SteamAchievementSchema schema in removed) {
+                    if (!schema.RemovedFromSteam) {
+                        schema.RemovedFromSteam = true;
+                        repo.Update(schema);
+                    }
+                }
+            }
         }
 
         private void SyncSteamUserAchievements(List<UserAppModel> userAppModels) {
@@ -218,7 +230,7 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
             }
 
             //var removeList = databaseEntities.Except(steamEntities, defaultComparer);
-            //foreach(T remove in removeList) {
+            //foreach (T remove in removeList) {
             //    repo.Remove(remove);
             //}
 

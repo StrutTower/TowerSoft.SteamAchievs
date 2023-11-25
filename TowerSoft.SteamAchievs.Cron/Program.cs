@@ -16,6 +16,7 @@ ServiceProvider services = ConfigureServices();
 if (Debugger.IsAttached) {
     //services.GetService<FullGameSync>().StartJob();
     //services.GetService<HiddenAchievementSync>().StartJob();
+    services.GetService<PerfectGameScan>().StartJob();
     //services.GetService<RecentGamesSync>().StartJob();
     //services.GetService<HowLongToBeatSync>().StartJob();
     //services.GetService<UpdateGameDetails>().StartJob();

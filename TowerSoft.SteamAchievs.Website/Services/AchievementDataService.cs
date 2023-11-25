@@ -32,6 +32,7 @@ namespace TowerSoft.SteamAchievs.Website.Services {
                     IconUrl = schema.IconUrl,
                     IconGrayUrl = schema.IconGrayUrl,
                     GlobalCompletionPercentage = schema.GlobalCompletionPercentage,
+                    RemovedFromSteam = schema.RemovedFromSteam,
                     Tags = new()
                 };
 
@@ -72,6 +73,7 @@ namespace TowerSoft.SteamAchievs.Website.Services {
                 IconUrl = schema.IconUrl,
                 IconGrayUrl = schema.IconGrayUrl,
                 GlobalCompletionPercentage = schema.GlobalCompletionPercentage,
+                RemovedFromSteam = schema.RemovedFromSteam,
                 Tags = new()
             };
 
