@@ -64,11 +64,20 @@ a.link-section {
 
 #game-background-img {
     position: absolute;
-    top: 0;
-    left: auto;
-    right: auto;
+    top: 44px;
+    left: 0;
+    right: 0;
     z-index: -1;
-    /*opacity:.5;*/
+    overflow: hidden;
+    text-align: center;
+
+    img {
+        object-fit: cover;
+        object-position: 50% 0;
+        width: 100%;
+        max-width: 1438px;
+        height: 810px;
+    }
 }
 
 .transparent-bg {

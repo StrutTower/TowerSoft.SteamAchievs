@@ -73,27 +73,34 @@
         <button class="nav-link" id="hltb-tab" data-bs-toggle="tab" data-bs-target="#hltb-tab-pane" type="button" role="tab">HowLongToBeat</button>
     </li>
 </ul>
-<div class="tab-content transparent-bg mb-0 pb-2" id="myTabContent">
+<div class="tab-content mb-0 pb-2" id="myTabContent">
     <div class="tab-pane fade show active" id="achievement-tab-pane" role="tabpanel" tabindex="0">
         <div class="pt-2">
             @if (Model.Achievements.SafeAny()) {
-                <div>
-                    <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@Model.SteamGame.ID" class="btn btn-link float-end">
-                        <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
-                    </a>
-                    <h5 class="text-center">
-                        @Model.Achievements.Count(x => x.Achieved) / @Model.Achievements.Count Achievements
-                    </h5>
+                <div class="row">
+                    <div class="col-md-3 col-auto col-auto">
+
+                    </div>
+                    <div class="col-md-6 col text-md-center">
+                        <h5>
+                            @Model.Achievements.Count(x => x.Achieved) / @Model.Achievements.Count Achievements
+                        </h5>
+                    </div>
+                    <div class="col-md-3 col-auto text-md-end">
+                        <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@Model.SteamGame.ID" class="btn btn-link">
+                            <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
+                        </a>
+                    </div>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md">
+                <div class="row">
+                    <div class="col-md mb-2">
                         <select id="achieved-filter" class="form-select">
                             <option value="">All Achievements</option>
                             <option value="True">Completed Achievements</option>
                             <option value="False">Incompleted Achievements</option>
                         </select>
                     </div>
-                    <div class="col-md">
+                    <div class="col-md mb-2">
                         <select id="achievement-filter" hidden multiple>
                             @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
                                 <option value="@tag.ID">@tag.Name</option>
@@ -101,7 +108,7 @@
                             <option value="BLANK">No Tags</option>
                         </select>
                     </div>
-                    <div class="col-md">
+                    <div class="col-md mb-2">
                         <select id="hide-tag-filter" hidden multiple>
                             @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
                                 <option value="@tag.ID">@tag.Name</option>
@@ -169,7 +176,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Modal title</h1>
+                <h1 class="modal-title fs-5">Edit Achievement</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 

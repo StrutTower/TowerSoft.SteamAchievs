@@ -1,14 +1,13 @@
 ﻿@model EditAchievementModel
 
+<h3 display-for="AchievementSchema.Name"></h3>
+<hr />
+
 <h5>TrueSteamAchievements.com</h5>
 <p>
-    <a href="https://truesteamachievements.com/searchresults.aspx?search=@Model.AchievementSchema.Name" target="_blank" rel="noopener noreferrer">
-        Search Achievement
-    </a>
+    <a href="https://truesteamachievements.com/searchresults.aspx?search=@Model.AchievementSchema.Name" target="_blank" rel="noopener noreferrer">Search Achievement</a>
     /
-    <a href="https://truesteamachievements.com/searchresults.aspx?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">
-        Search Game
-    </a>
+    <a href="https://truesteamachievements.com/searchresults.aspx?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">Search Game</a>
 </p>
 
 <hr />
@@ -19,22 +18,16 @@
         Search Achievement
     </a>
     /
-    <a href="https://www.trueachievements.com/searchresults.aspx?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">
-        Search Game
-    </a>
+    <a href="https://www.trueachievements.com/searchresults.aspx?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">Search Game</a>
 </p>
 
 <hr />
 
 <h5>SteamHunters</h5>
 <p>
-    <a href="https://steamhunters.com/achievements?q=@Model.AchievementSchema.Name" target="_blank" rel="noopener noreferrer">
-        Search Achievement
-    </a>
+    <a href="https://steamhunters.com/achievements?q=@Model.AchievementSchema.Name" target="_blank" rel="noopener noreferrer">Search Achievement</a>
     /
-    <a href="https://steamhunters.com/games?q=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">
-        Search Game
-    </a>
+    <a href="https://steamhunters.com/games?q=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">Search Game</a>
 </p>
 
 <form asp-action="Edit" asp-controller="Achievement" id="edit-achievement-form" data-achievement-key="@Model.AchievementKey">
