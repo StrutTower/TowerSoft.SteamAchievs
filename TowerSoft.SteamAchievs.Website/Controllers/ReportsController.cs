@@ -10,10 +10,15 @@ namespace TowerSoft.SteamAchievs.Website.Controllers {
     public class ReportsController : Controller {
         private readonly UnitOfWork uow;
         private readonly GameDataService gameDataService;
+        private readonly SteamUserTagDataService steamUserTagDataService;
+        private readonly SteamCategoryDataService steamCategoryDataService;
 
-        public ReportsController(UnitOfWork uow, GameDataService gameDataService) {
+        public ReportsController(UnitOfWork uow, GameDataService gameDataService, SteamUserTagDataService steamUserTagDataService,
+            SteamCategoryDataService steamCategoryDataService) {
             this.uow = uow;
             this.gameDataService = gameDataService;
+            this.steamUserTagDataService = steamUserTagDataService;
+            this.steamCategoryDataService = steamCategoryDataService;
         }
 
         public IActionResult Index() {
@@ -43,6 +48,26 @@ namespace TowerSoft.SteamAchievs.Website.Controllers {
         public IActionResult NullTimes() {
             List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetWithoutHltbData();
             return View("GameList", gameDataService.GetGameListModel(games, "Missing How Long to Beat Data"));
+        }
+
+        public IActionResult SteamUserTags() {
+            return View("SteamCategories", steamUserTagDataService.GetSteamUserTagsListModel());
+        }
+
+        public IActionResult SteamUserTagGames(long id) {
+            SteamUserTag tag = uow.GetRepo<SteamUserTagRepository>().GetByID(id);
+            List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetBySteamUserTagID(id);
+            return View("GameList", gameDataService.GetGameListModel(games, $"{tag.Name} Tagged Games"));
+        }
+
+        public IActionResult SteamCategories() {
+            return View(steamCategoryDataService.GetSteamCategoriesListModel());
+        }
+
+        public IActionResult SteamCategoryGames(long id) {
+            SteamCategory category = uow.GetRepo<SteamCategoryRepository>().GetByID(id);
+            List<SteamGame> games = uow.GetRepo<SteamGameRepository>().GetBySteamCategoryID(id);
+            return View("GameList", gameDataService.GetGameListModel(games, $"{category.Name} Games"));
         }
     }
 }

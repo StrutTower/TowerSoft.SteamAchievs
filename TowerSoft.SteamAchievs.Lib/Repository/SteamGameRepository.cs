@@ -240,5 +240,23 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
 
             return GetEntities(query);
         }
+
+        public List<SteamGame> GetBySteamUserTagID(long steamUserTagID) {
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery += 
+                $"INNER JOIN steamgameusertag gt ON {TableName}.ID = gt.SteamGameID " +
+                $"WHERE gt.SteamUserTagID = @TagID";
+            query.AddParameter("@TagID", steamUserTagID);
+            return GetEntities(query);
+        }
+
+        public List<SteamGame> GetBySteamCategoryID(long steamCategoryID) {
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery +=
+                $"INNER JOIN steamgamecategory sgc ON {TableName}.ID = sgc.SteamGameID " +
+                $"WHERE sgc.SteamCategoryID = @CategoryID";
+            query.AddParameter("@CategoryID", steamCategoryID);
+            return GetEntities(query);
+        }
     }
 }

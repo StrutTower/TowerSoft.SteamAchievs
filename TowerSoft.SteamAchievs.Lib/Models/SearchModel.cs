@@ -7,6 +7,7 @@ namespace TowerSoft.SteamAchievs.Lib.Models {
         [Display(Name = "Has Achievements")]
         public SearchBooleanType HasAchievements { get; set; }
 
+        [Display(Name = "Achievement Completion Status")]
         public AchievementCompletionStatus? AchievementCompletionStatus { get; set; }
 
         [Display(Name = "Perfect Possible")]

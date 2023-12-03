@@ -74,6 +74,8 @@ namespace TowerSoft.SteamAchievs.Website {
                 .AddScoped<HomeDataService>()
                 .AddScoped<GameDataService>()
                 .AddScoped<AchievementDataService>()
+                .AddScoped<SteamUserTagDataService>()
+                .AddScoped<SteamCategoryDataService>()
                 .AddScoped<AdminTagDataService>()
                 .AddScoped<SteamSyncService>()
                 .AddScoped(x => new SteamGridClient(apiKeys.SteamGridDb))

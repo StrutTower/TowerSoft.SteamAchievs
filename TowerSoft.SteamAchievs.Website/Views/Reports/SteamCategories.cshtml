@@ -1,0 +1,11 @@
+﻿@model SteamCategoriesListModel
+@{
+    ViewData["title"] = "Steam Categories";
+}
+
+
+@foreach (SteamCategoryReportModel cat in Model.SteamCategories.OrderByDescending(x => x.GameCount)) {
+    <div>
+        <a asp-action="@Model.ResultsActionName" asp-route-id="@cat.ID" display-for="@cat.Name"></a> (@cat.GameCount Games)
+    </div>
+}
