@@ -1,0 +1,21 @@
+﻿
+@if (Minutes.HasValue) {
+    string output = string.Empty;
+    TimeSpan timeSpan = TimeSpan.FromMinutes(Minutes.Value);
+    if (timeSpan.TotalHours >= 1) {
+        output += $"{timeSpan.TotalHours.ToString("N1")} hour";
+        if (timeSpan.TotalHours != 1) output += "s";
+    } else {
+        if (timeSpan.Minutes > 0) {
+            output += $"{timeSpan.Minutes} minute";
+            if (timeSpan.Minutes != 1) output += "s";
+        }
+    }
+
+    @output
+}
+
+@code {
+    [Parameter]
+    public long? Minutes { get; set; }
+}

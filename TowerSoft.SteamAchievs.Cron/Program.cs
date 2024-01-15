@@ -14,11 +14,12 @@ using TowerSoft.SteamTower;
 ServiceProvider services = ConfigureServices();
 
 if (Debugger.IsAttached) {
+    //services.GetService<RemoveGameData>().Run();
     //services.GetService<FullGameSync>().StartJob();
     //services.GetService<HiddenAchievementSync>().StartJob();
-    services.GetService<PerfectGameScan>().StartJob();
+    //services.GetService<PerfectGameScan>().StartJob();
     //services.GetService<RecentGamesSync>().StartJob();
-    //services.GetService<HowLongToBeatSync>().StartJob();
+    services.GetService<HowLongToBeatSync>().StartJob();
     //services.GetService<UpdateGameDetails>().StartJob();
     //services.GetService<ProtonDbSync>().StartJob();
     Environment.Exit(1);
@@ -32,6 +33,7 @@ if (args.Contains("-all")) {
     services.GetService<ProtonDbSync>().StartJob();
     services.GetService<RecentGamesSync>().StartJob();
     services.GetService<UpdateGameDetails>().StartJob();
+
 
 } else {
     if (args.Contains("-full"))
@@ -88,6 +90,9 @@ static ServiceProvider ConfigureServices() {
         .AddScoped<UpdateGameDetails>()
         .AddScoped<ProtonDbSync>()
         .AddScoped<SteamSyncService>()
+#if DEBUG
+        .AddScoped<RemoveGameData>()
+#endif
         .AddScoped(x => new SteamApiClient(x.GetService<IHttpClientFactory>().CreateClient("steamApi"), apiKeys.Steam))
         .AddScoped(x => new SteamGridClient(apiKeys.SteamGridDb))
         .AddScoped(x => new AchievementStatsService(x.GetService<IHttpClientFactory>().CreateClient("achievementStats"), apiKeys.AchievementStats))

@@ -1,0 +1,38 @@
+﻿
+
+<div class="row g-0 achievement-row@(Model.UserAchievement.Achieved ? " achieved" : "")" data-achievement-key="@Model.Schema.KeyName">
+    <div class="col-auto">
+        @if (Model.UserAchievement.Achieved) {
+            <img src="@Model.Schema.IconUrl" class="img-fluid" style="max-height:64px;" />
+        } else {
+            <img src="@Model.Schema.IconGrayUrl" class="img-fluid" style="max-height:64px;" />
+        }
+    </div>
+    <div class="col ps-2 position-relative">
+        <h5 class="mb-0">@Model.Schema.Name</h5>
+        <div>@Model.Description</div>
+
+        @if (Model.Schema.RemovedFromSteam) {
+            <div class="text-danger font-weight-bold">This achievement has been removed from Steam.</div>
+        }
+
+        <div>
+            @foreach (TagModel tag in Model.AchievementTags) {
+                <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+            }
+        </div>
+
+        <small class="position-absolute bottom-0 end-0 text-faded pe-1">
+            @(Math.Round(Model.Schema.GlobalCompletionPercentage, 1))%
+        </small>
+        @*<a href="@Url.Action("Edit", "Achievement", new { steamGameID = Model.Schema.SteamGameID, achievementKey = Model.Schema.KeyName })"
+           class="position-absolute top-0 end-0 edit-achievement-link">
+            <span class="mdi mdi-fw mdi-square-edit-outline"></span>
+        </a>*@
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public AchievementViewModel Model { get; set; }
+}

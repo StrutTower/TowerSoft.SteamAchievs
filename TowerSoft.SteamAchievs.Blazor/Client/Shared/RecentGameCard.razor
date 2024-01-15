@@ -1,0 +1,19 @@
+﻿@if (RecentGame != null) {
+    double progressWidth = (double)RecentGame.CompletedAchievements / (double)RecentGame.TotalAchievements * 100;
+
+    <a href="/Game/View/@RecentGame.SteamGameID" class="col-md-4 mb-3 link-section">
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@RecentGame.SteamGameID/header.jpg" class="img-fluid" />
+
+        @if (RecentGame.HasAchievements) {
+            <div class="home-acheivement-progress-bar-wrapper">
+                <div style="@("width:" + progressWidth + "%")" class="home-acheivement-progress-bar @(progressWidth == 100 ? "perfected-game-progress-bar" : "")"></div>
+            </div>
+        }
+    </a>
+}
+
+@code {
+    [Parameter]
+    public RecentGameModel? RecentGame { get; set; }
+
+}

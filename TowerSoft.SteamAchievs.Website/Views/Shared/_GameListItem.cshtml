@@ -15,7 +15,10 @@
    data-playtime="@Model.SteamGame.TotalPlaytime"
    data-review="@Model.SteamGame.ReviewScore"
    data-metacritic="@Model.SteamGame.MetacriticScore"
-   data-playnext="@Model.GameDetails?.PlayNextScore">
+   data-playnext="@Model.GameDetails?.PlayNextScore"
+   data-mainstorytime="@Model.GameDetails?.MainStoryTime"
+   data-completionisttime="@Model.GameDetails?.CompletionistTime"
+   data-released="@Model?.SteamGame?.ReleaseDate?.Ticks">
     <div class="col-auto">
         <partial name="_GameListItemPicture" model="Model" />
     </div>
@@ -48,22 +51,13 @@
                     <div display-for="SteamGame.DeckCompatibility"></div>
                 </div>
             }
-            @*<small class="small-caps">Playtime:</small>
-                @if (Model.SteamGame.TotalPlaytime == 0) {
-                    <em class="text-info">Unplayed</em>
-                } else {
-                    @TimeSpan.FromMinutes(Model.SteamGame.TotalPlaytime).ToLongString()
-                }
 
-                @if (Model.GameDetails?.PerfectPossible != null) {
-                    <span class="text-faded font-weight-semibold">|</span>
-                    <small class="small-caps">Perfect Possible:</small> @Html.DisplayFor(x => x.GameDetails.PerfectPossible)
-                }
-
-                @if (Model.SteamGame.DeckCompatibility != null) {
-                    <span class="text-faded font-weight-semibold">|</span>
-                    <small class="small-caps">Deck Compatibility:</small> @Html.DisplayFor(x => x.SteamGame.DeckCompatibility)
-                }*@
+            @if (Model.SteamGame.ReleaseDate.HasValue) {
+                <div class="col-auto text-center">
+                    <label class="column-label">Released</label>
+                    <div display-for="SteamGame.ReleaseDate" template="ShortDate"></div>
+                </div>
+            }
         </div>
 
         @if (Model.SteamGame.AchievementCount > 0) {
@@ -104,6 +98,20 @@
                 <div class="col-auto text-center">
                     <label class="column-label">Metacritic</label>
                     <div display-for="SteamGame.MetacriticScore"></div>
+                </div>
+            }
+
+            @if (Model?.GameDetails?.MainStoryTime > 0) {
+                <div class="col-auto text-center">
+                    <label class="column-label">Main Story Time</label>
+                    <div display-for="GameDetails.MainStoryTime"></div>
+                </div>
+            }
+
+            @if (Model?.GameDetails?.CompletionistTime > 0) {
+                <div class="col-auto text-center">
+                    <label class="column-label">Completionist Time</label>
+                    <div display-for="GameDetails.CompletionistTime"></div>
                 </div>
             }
         </div>

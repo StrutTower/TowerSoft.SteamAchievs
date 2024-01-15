@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TowerSoft.SteamAchievs.Blazor.Shared.Models {
+    public class TagModel {
+        public long ID { get; set; }
+
+        public long? SteamGameID { get; set; }
+
+        public string Name { get; set; }
+
+        public string BackgroundColor { get; set; }
+
+        public bool IsComplication { get; set; }
+
+        public bool IsActive { get; set; }
+    }
+}

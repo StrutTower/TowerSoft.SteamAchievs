@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.SteamAchievs.Lib"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.SteamAchievs.Cron", "TowerSoft.SteamAchievs.Cron\TowerSoft.SteamAchievs.Cron.csproj", "{80598CEC-B792-4972-80C5-9EA045612D2A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.SteamAchievs.Blazor.Server", "TowerSoft.SteamAchievs.Blazor\Server\TowerSoft.SteamAchievs.Blazor.Server.csproj", "{6EB83433-1580-4887-B3B8-BAD5D068CEBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.SteamAchievs.Blazor.Client", "TowerSoft.SteamAchievs.Blazor\Client\TowerSoft.SteamAchievs.Blazor.Client.csproj", "{029C0A35-87E4-44AD-9B24-C8799EEFA26E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.SteamAchievs.Blazor.Shared", "TowerSoft.SteamAchievs.Blazor\Shared\TowerSoft.SteamAchievs.Blazor.Shared.csproj", "{B082DD1E-3DC2-4B54-AD75-7607730700EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{80598CEC-B792-4972-80C5-9EA045612D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80598CEC-B792-4972-80C5-9EA045612D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80598CEC-B792-4972-80C5-9EA045612D2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EB83433-1580-4887-B3B8-BAD5D068CEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EB83433-1580-4887-B3B8-BAD5D068CEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EB83433-1580-4887-B3B8-BAD5D068CEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EB83433-1580-4887-B3B8-BAD5D068CEBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{029C0A35-87E4-44AD-9B24-C8799EEFA26E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{029C0A35-87E4-44AD-9B24-C8799EEFA26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{029C0A35-87E4-44AD-9B24-C8799EEFA26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{029C0A35-87E4-44AD-9B24-C8799EEFA26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B082DD1E-3DC2-4B54-AD75-7607730700EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B082DD1E-3DC2-4B54-AD75-7607730700EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B082DD1E-3DC2-4B54-AD75-7607730700EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B082DD1E-3DC2-4B54-AD75-7607730700EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

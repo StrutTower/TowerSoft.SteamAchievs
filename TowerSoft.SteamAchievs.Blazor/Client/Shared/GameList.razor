@@ -1,0 +1,108 @@
+﻿
+<div class="mb-3">
+    <select class="form-select" @bind="SortOption" @bind:after="SortChange">
+        <option value="NameCleanAsc">Name (A-Z)</option>
+        <option value="NameCleanDesc">Name (Z-A)</option>
+        <option value="AchievCountAsc">Achievement Count</option>
+        <option value="AchievCountDesc">Achievement Count (Descending)</option>
+        <option value="CompletionAsc">Completion Percentage</option>
+        <option value="CompletionDesc">Completion Percentage (Descending)</option>
+        <option value="PlaytimeAsc">Playtime</option>
+        <option value="PlaytimeDesc">Playtime (Descending)</option>
+        <option value="ReviewScoreAsc">Review Score</option>
+        <option value="ReviewScoreDesc">Review Score (Descending)</option>
+        <option value="MetacriticAsc">Metacritic Score</option>
+        <option value="MetacriticDesc">Metacritic Score (Descending)</option>
+        <option value="PlayNextAsc">Play Next Score</option>
+        <option value="PlayNextDesc">Play Next Score (Descending)</option>
+        <option value="MainStoryAsc">Main Story Time</option>
+        <option value="MainStoryDesc">Main Story Time (Descending)</option>
+        <option value="CompletionistAsc">Completionist Time</option>
+        <option value="CompletionistDesc">Completionist Time (Descending)</option>
+        <option value="ReleaseDateAsc">Release Date</option>
+        <option value="ReleaseDateDesc">Release Date (Descending)</option>
+    </select>
+</div>
+
+<div id="game-list-container">
+    @foreach (GameListItemModel item in Model.Games) {
+        <GameListItem Model="item"></GameListItem>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public GameListModel Model { get; set; }
+
+    [Parameter]
+    public string SortOption { get; set; }
+
+    private void SortChange() {
+        if (string.IsNullOrWhiteSpace(SortOption)) {
+            Model.Games = Model.Games.OrderBy(x => x.SteamGame.NameClean).ToList();
+            return;
+        }
+        switch (SortOption) {
+            case "NameCleanAsc":
+                Model.Games = Model.Games.OrderBy(x => x.SteamGame.NameClean).ToList();
+                break;
+            case "NameCleanDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.SteamGame.NameClean).ToList();
+                break;
+            case "AchievCountAsc":
+                Model.Games = Model.Games.OrderBy(x => x.SteamGame.AchievementCount).ToList();
+                break;
+            case "AchievCountDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.SteamGame.AchievementCount).ToList();
+                break;
+            case "CompletionAsc":
+                Model.Games = Model.Games.OrderBy(x => x.AchievProgressWidth).ToList();
+                break;
+            case "CompletionDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.AchievProgressWidth).ToList();
+                break;
+            case "PlaytimeAsc":
+                Model.Games = Model.Games.OrderBy(x => x.SteamGame.TotalPlaytime).ToList();
+                break;
+            case "PlaytimeDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.SteamGame.TotalPlaytime).ToList();
+                break;
+            case "ReviewScoreAsc":
+                Model.Games = Model.Games.OrderBy(x => x.SteamGame.ReviewScore).ToList();
+                break;
+            case "ReviewScoreDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.SteamGame.ReviewScore).ToList();
+                break;
+            case "MetacriticAsc":
+                Model.Games = Model.Games.OrderBy(x => x.SteamGame.MetacriticScore).ToList();
+                break;
+            case "MetacriticDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.SteamGame.MetacriticScore).ToList();
+                break;
+            case "PlayNextAsc":
+                Model.Games = Model.Games.OrderBy(x => x.Details.PlayNextScore).ToList();
+                break;
+            case "PlayNextDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.Details.PlayNextScore).ToList();
+                break;
+            case "MainStoryAsc":
+                Model.Games = Model.Games.OrderBy(x => x.Details.MainStoryTime).ToList();
+                break;
+            case "MainStoryDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.Details.MainStoryTime).ToList();
+                break;
+            case "CompletionistAsc":
+                Model.Games = Model.Games.OrderBy(x => x.Details.CompletionistTime).ToList();
+                break;
+            case "CompletionistDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.Details.CompletionistTime).ToList();
+                break;
+            case "ReleaseDateAsc":
+                Model.Games = Model.Games.OrderBy(x => x.SteamGame.ReleaseDate).ToList();
+                break;
+            case "ReleaseDateDesc":
+                Model.Games = Model.Games.OrderByDescending(x => x.SteamGame.ReleaseDate).ToList();
+                break;
+        }
+    }
+}

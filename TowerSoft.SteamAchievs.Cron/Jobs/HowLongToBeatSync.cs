@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using TowerSoft.SteamAchievs.Lib.Config;
 using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
@@ -9,14 +11,16 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
     public class HowLongToBeatSync {
         private readonly UnitOfWork uow;
         private readonly HowLongToBeatService howLongToBeatService;
+        private readonly AppSettings appSettings;
         private readonly GameDetailsRepository detailsRepo;
         private readonly ILogger logger;
 
         private List<long> skipAppIDs = new List<long> { 42710, 10190, 42690, 325180 };
 
-        public HowLongToBeatSync(UnitOfWork uow, HowLongToBeatService howLongToBeatService, ILogger<HowLongToBeatSync> logger) {
+        public HowLongToBeatSync(UnitOfWork uow, HowLongToBeatService howLongToBeatService, IOptionsSnapshot<AppSettings> appSettings, ILogger<HowLongToBeatSync> logger) {
             this.uow = uow;
             this.howLongToBeatService = howLongToBeatService;
+            this.appSettings = appSettings.Value;
             this.detailsRepo = uow.GetRepo<GameDetailsRepository>();
             this.logger = logger;
         }
@@ -37,15 +41,50 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             foreach (SteamGame game in games) {
                 if (skipAppIDs.Contains(game.ID)) continue;
 
-                string searchName = game.NameClean.Replace("™", "").Replace(" - ", " ").Replace("®", "");
+                string searchName = game.NameClean
+                    .Replace("™", "")
+                    .Replace(" - ", " ")
+                    .Replace("®", "")
+                    .Replace("–", " ")
+                    .Replace("-", " ")
+                    .Replace(":", " ")
+                    .Replace("+", " ")
+                    .Replace("!", " ");
+                if (searchName.EndsWith(" HD", StringComparison.OrdinalIgnoreCase)) {
+                    searchName = searchName.Substring(0, searchName.Length - 3);
+                }
 
+                if (searchName.EndsWith(" - Remastered", StringComparison.OrdinalIgnoreCase)) {
+                    searchName = searchName.Substring(0, searchName.Length - 13);
+                }
+
+                if (searchName.EndsWith(" GOTY Edition", StringComparison.OrdinalIgnoreCase)) {
+                    searchName = searchName.Substring(0, searchName.Length - 13);
+                }
+
+                if (searchName.EndsWith(" Steam Edition", StringComparison.OrdinalIgnoreCase)) {
+                    searchName = searchName.Substring(0, searchName.Length - 14);
+                }
+
+                if (searchName.EndsWith(" Complete Edition", StringComparison.OrdinalIgnoreCase)) {
+                    searchName = searchName.Substring(0, searchName.Length - 17);
+                }
+
+                if (searchName.EndsWith(" Enhanced Edition", StringComparison.OrdinalIgnoreCase)) {
+                    searchName = searchName.Substring(0, searchName.Length - 17);
+                }
+
+                if (searchName.Contains("(")) {
+                    searchName = searchName.Substring(0, searchName.IndexOf("("));
+                }
+                
                 List<HltbModel> hltbModels = howLongToBeatService.Search(searchName).Result;
 
-                AttemptMatchAndSync(game, hltbModels, detailsDictionary);
+                AttemptMatchAndSync(game, hltbModels, detailsDictionary, searchName);
             }
         }
 
-        private void AttemptMatchAndSync(SteamGame game, List<HltbModel> hltbModels, Dictionary<long, GameDetails> detailsDictionary, string searchName = null) {
+        private void AttemptMatchAndSync(SteamGame game, List<HltbModel> hltbModels, Dictionary<long, GameDetails> detailsDictionary, string searchName) {
             long? hltbID = null;
             if (detailsDictionary.ContainsKey(game.ID)) {
                 hltbID = detailsDictionary[game.ID].HowLongToBeatID;
@@ -69,20 +108,13 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 Update(game, model, detailsDictionary);
 
             } else {
-                if (searchName != null) {
-                    if (searchName.Contains("-")) {
-                        string searchName2 = searchName.Substring(0, searchName.IndexOf("-") - 1).SafeTrim();
-                        List<HltbModel> hltbModels2 = howLongToBeatService.Search(searchName2).Result;
-
-                        AttemptMatchAndSync(game, hltbModels2, detailsDictionary, searchName2);
-                    }
-                } else if (game.NameClean.Contains("-")) {
+                if (game.NameClean.Contains("-")) {
                     string searchName2 = game.Name.Substring(0, game.NameClean.IndexOf("-") - 1).SafeTrim();
                     List<HltbModel> hltbModels2 = howLongToBeatService.Search(searchName2).Result;
 
                     AttemptMatchAndSync(game, hltbModels2, detailsDictionary, searchName2);
                 } else {
-                    logger.LogInformation($"Unable to find a match for {game.NameClean}.\n   Possible matches " + string.Join(", ", hltbModels.Select(x => $"{x.Name} ({x.ReleaseYear})")));
+                    logger.LogInformation($"Unable to find a match for {searchName}.\n   Possible matches " + string.Join(", ", hltbModels.Select(x => $"{x.Name} ({x.ReleaseYear})")));
                 }
             }
         }

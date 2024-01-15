@@ -11,8 +11,18 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
                 .WhereEqual(x => x.KeyName, achievementKey));
         }
 
+        public async Task<SteamAchievementSchema> GetAsync(long steamGameID, string achievementKey) {
+            return await GetSingleEntityAsync(Query
+                .WhereEqual(x => x.SteamGameID, steamGameID)
+                .WhereEqual(x => x.KeyName, achievementKey));
+        }
+
         public List<SteamAchievementSchema> GetBySteamGameID(long steamGameID) {
             return GetEntities(WhereEqual(x => x.SteamGameID, steamGameID));
+        }
+
+        public async Task<List<SteamAchievementSchema>> GetBySteamGameIDAsync(long steamGameID) {
+            return await GetEntitiesAsync(WhereEqual(x => x.SteamGameID, steamGameID));
         }
     }
 }

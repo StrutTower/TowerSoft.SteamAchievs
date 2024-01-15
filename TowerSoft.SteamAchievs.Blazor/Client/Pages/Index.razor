@@ -1,0 +1,29 @@
+﻿@page "/"
+@inject HomeDataService service
+
+@if (model != null) {
+    @if (model.PerfectLostCount.HasValue && model.PerfectLostCount > 0) {
+        <div class="alert alert-danger text-center font-weight-semibold">
+            <h5>
+                Perfect Status Has Been Lost on @model.PerfectLostCount game@(model.PerfectLostCount == 1 ? "" : "s")
+            </h5>
+            <a href="PerfectLost">
+                View Perfect Lost Games
+            </a>
+        </div>
+    }
+
+    @if (model.RecentGames == null) {
+        <p>Loading</p>
+    } else {
+        <RecentGameList RecentGames="model.RecentGames" />
+    }
+}
+
+@code{
+    private HomeViewModel model;
+
+    protected override async Task OnInitializedAsync() {
+        model = await service.GetHomeViewModel();
+    }
+}

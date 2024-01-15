@@ -1,9 +1,15 @@
 $(document).ready(function () {
     var sortSelects = $('.twr-sort-select');
     sortSelects.each(function () {
+        var storedSort = sessionStorage.getItem(this.dataset.sortStorageKey);
+        if (storedSort !== null)
+            this.value = storedSort;
+
         sort(this);
+
         $(this).on('change', function () {
             sort(this);
+            sessionStorage.setItem(this.dataset.sortStorageKey, this.value);
         });
     });
 
@@ -59,6 +65,24 @@ $(document).ready(function () {
             case 'playNextSortDesc':
                 itemsArray = itemsArray.sort(playNextSortDesc);
                 break;
+            case 'mainStoryTimeAsc':
+                itemsArray = itemsArray.sort(mainStoryTimeSortAsc);
+                break;
+            case 'mainStoryTimeDesc':
+                itemsArray = itemsArray.sort(mainStoryTimeSortDesc);
+                break;
+            case 'completionistTimeAsc':
+                itemsArray = itemsArray.sort(completionistTimeSortAsc);
+                break;
+            case 'completionistTimeDesc':
+                itemsArray = itemsArray.sort(completionistTimeSortDesc);
+                break;
+            case 'releasedAsc':
+                itemsArray = itemsArray.sort(releasedSortAsc);
+                break;
+            case 'releasedDesc':
+                itemsArray = itemsArray.sort(releasedSortDesc);
+                break;
         }
 
         let container = document.querySelector(containerTarget);
@@ -109,4 +133,22 @@ $(document).ready(function () {
     function playNextSortDesc(a, b) {
         return +b.dataset.playnext - +a.dataset.playnext;
     }
-}, false);
+    function mainStoryTimeSortAsc(a, b) {
+        return +a.dataset.mainstorytime - +b.dataset.mainstorytime;
+    }
+    function mainStoryTimeSortDesc(a, b) {
+        return +b.dataset.mainstorytime - +a.dataset.mainstorytime;
+    }
+    function completionistTimeSortAsc(a, b) {
+        return +a.dataset.completionisttime - +b.dataset.completionisttime;
+    }
+    function completionistTimeSortDesc(a, b) {
+        return +b.dataset.completionisttime - +a.dataset.completionisttime;
+    }
+    function releasedSortAsc(a, b) {
+        return +a.dataset.released - +b.dataset.released;
+    }
+    function releasedSortDesc(a, b) {
+        return +b.dataset.released - +a.dataset.released;
+    }
+});

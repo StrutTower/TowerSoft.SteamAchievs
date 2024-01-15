@@ -31,15 +31,6 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         public void Run() {
             List<UserAppModel> userAppModels = GetOwnedAppData();
 
-            //string json = JsonConvert.SerializeObject(userAppModels);
-            //File.WriteAllText(appSettings.CacheJsonPath, json);
-
-            //List<UserAppModel> userAppModels =
-            //    JsonConvert.DeserializeObject<List<UserAppModel>>(
-            //        File.ReadAllText("tempData.json"));
-
-            var test = userAppModels.Where(x => x.SteamApp.Name.StartsWith("GRIS", StringComparison.OrdinalIgnoreCase)).ToList();
-
             steamDataService.RunAllSyncs(userAppModels);
         }
 
@@ -47,6 +38,11 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             logger.LogInformation("Pulling Owned App Data");
 
             List<OwnedApp> ownedApps = steamApi.PlayerClient.GetOwnedApps(appSettings.DefaultSteamUserID).Result;
+
+
+#if DEBUG
+            //ownedApps = ownedApps.Where(x => x.Name.StartsWith("Sea of Stars Demo", StringComparison.OrdinalIgnoreCase)).ToList();
+#endif
 
             return steamDataService.LoadSteamData(ownedApps);
         }

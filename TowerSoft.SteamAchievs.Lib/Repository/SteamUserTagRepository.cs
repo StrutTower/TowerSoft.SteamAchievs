@@ -13,5 +13,8 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
         public SteamUserTag GetByID(long id) {
             return GetSingleEntity(WhereEqual(x => x.ID, id));
         }
+        public async Task<SteamUserTag> GetByIDAsync(long id) {
+            return await GetSingleEntityAsync(WhereEqual(x => x.ID, id));
+        }
     }
 }

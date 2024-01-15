@@ -106,9 +106,8 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             QueryBuilder query = GetQueryBuilder();
             query.SqlQuery +=
                 $"INNER JOIN gamedetails gd ON {TableName}.ID = gd.SteamGameID " +
-                $"WHERE gd.MainStoryTime IS NULL " +
-                $"AND gd.MainAndSidesTime IS NULL " +
-                $"AND gd.CompletionistTime IS NULL ";
+                $"WHERE gd.HowLongToBeatID IS NULL " +
+                $"OR gd.MainStoryTime IS NULL ";
             return GetEntities(query);
         }
 
@@ -230,7 +229,7 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
 
             int counter = 1;
             List<string> inStatements = new();
-            foreach(long id in ids) {
+            foreach (long id in ids) {
                 inStatements.Add($"@{counter}");
                 query.AddParameter($"@{counter}", id);
                 counter++;
@@ -243,7 +242,7 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
 
         public List<SteamGame> GetBySteamUserTagID(long steamUserTagID) {
             QueryBuilder query = GetQueryBuilder();
-            query.SqlQuery += 
+            query.SqlQuery +=
                 $"INNER JOIN steamgameusertag gt ON {TableName}.ID = gt.SteamGameID " +
                 $"WHERE gt.SteamUserTagID = @TagID";
             query.AddParameter("@TagID", steamUserTagID);

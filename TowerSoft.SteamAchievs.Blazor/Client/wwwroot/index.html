@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <title>SteamAchievs</title>
+    <base href="/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="darkreader" content="dark-mode-supported-natively">
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="lib/bundle.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="text-center">
+            <div>
+                <span class="mdi mdi-4x mdi-loading mdi-spin-fast"></span>
+            </div>
+            <h2>Initalizing...</h2>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script type="text/javascript">
+        caches.delete("blazor-resources-/").then(function (e) {
+            console.log("'blazor-resources-/' cache deleted");
+        });
+    </script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+</html>

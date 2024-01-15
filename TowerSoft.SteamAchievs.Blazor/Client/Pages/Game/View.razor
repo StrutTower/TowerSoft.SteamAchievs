@@ -1,0 +1,134 @@
+﻿@page "/Game/View/{ID:long}"
+@inject GameDataService service
+
+@if (Model != null) {
+    <div id="game-background-img">
+        <img src="@Model.SteamGame.BackgroundUrl" />
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-auto order-lg-last">
+            @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid" />
+            } else {
+                <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
+            }
+        </div>
+        <div class="col-12 col-lg font-shadow">
+            <div class="display-6">@Model.SteamGame.NameClean</div>
+            @if (Model.SteamGame.Delisted) {
+                <p><strong class="text-danger">This game has been delisted from Steam</strong></p>
+            }
+            @*@if (!Model.Categories.SafeAny(x => x.Name == "Steam Cloud")) {
+                    <p><strong class="text-danger">This game does not support Steam Cloud saves.</strong></p>
+                }*@
+            <p>
+                <a href="https://store.steampowered.com/app/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">Steam</a>
+                /
+                <a href="https://steamhunters.com/apps/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">SteamHunters</a>
+                /
+                <a href="https://www.pcgamingwiki.com/w/index.php?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">PCGamingWiki</a>
+            </p>
+            <p>
+                <a asp-action="Edit" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" id="edit-game-details-link">Edit Game Details</a>
+                /
+                <a asp-action="Sync" asp-route-id="@Model.SteamGame.ID">Resync Game</a>
+            </p>
+
+            <div class="row mb-3">
+                <div class="col-auto">
+                    <div class="column-label">Deck Compatibility</div>
+                    <div class="text-center">@Model.SteamGame.DeckCompatibility</div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div id="game-details-container">
+                    <partial name="_GameDetails" model="Model.GameDetails" />
+                </div>
+            </div>
+
+            @if (Model?.ComplicationTags?.Any() == true) {
+                <div class="mb-3">
+                    <div class="column-label">Complications</div>
+                    @foreach (TagModel tag in Model.ComplicationTags) {
+                        <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="achievement-tab" data-bs-toggle="tab" data-bs-target="#achievement-tab-pane" type="button" role="tab">Achievements</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link@(Model.SteamGame.Delisted ? " disabled" : "")" id="game-info-tab" data-bs-toggle="tab" data-bs-target="#game-info-tab-pane" type="button" role="tab">Game Info</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="hltb-tab" data-bs-toggle="tab" data-bs-target="#hltb-tab-pane" type="button" role="tab">HowLongToBeat</button>
+        </li>
+    </ul>
+    <div class="tab-content mb-0 pb-2" id="myTabContent">
+        <div class="tab-pane fade show active" id="achievement-tab-pane" role="tabpanel" tabindex="0">
+            <AchievementList Models="Model.Achievements" SteamGame="Model.SteamGame"></AchievementList>
+        </div>
+
+        <div class="tab-pane fade pt-2" id="game-info-tab-pane" role="tabpanel" tabindex="0">
+            <div class="pt-2">
+                <div>
+                    @foreach (SteamCategoryModel category in Model.Categories) {
+                        <span class="badge bg-primary" display-for="@category.Name"></span>
+                    }
+                </div>
+                <div>
+                    @foreach (SteamUserTagModel tag in Model.UserTags) {
+                        <span class="badge bg-info" display-for="@tag.Name"></span>
+                    }
+                </div>
+                <hr />
+                @*@Html.Raw(Model.GameDescriptions.ShortDescription)
+                @Html.Raw(Model.GameDescriptions.AboutTheGame)
+                @Html.Raw(Model.GameDescriptions.DetailedDescription)
+                @Html.Raw(Model.GameDescriptions.LegalNotice)*@
+            </div>
+        </div>
+
+        <div class="tab-pane fade pt-2" id="hltb-tab-pane" role="tabpanel" tabindex="0">
+            <div class="pt-2">
+                <div class="row mb-3">
+                    <div class="col-auto">
+                        <div class="column-label">Main Story Time</div>
+                        <div display-for="GameDetails.MainStoryTime" class="text-center"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="column-label">Main &amp; Sides</div>
+                        <div display-for="GameDetails.MainAndSidesTime" class="text-center"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="column-label">Completionist</div>
+                        <div display-for="GameDetails.CompletionistTime" class="text-center"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="column-label">All Styles</div>
+                        <div display-for="GameDetails.AllStylesTime" class="text-center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@code {
+    [Parameter]
+    public long ID { get; set; }
+
+    private GameViewModel Model;
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.GetGameViewModel(ID);
+    }
+}

@@ -7,9 +7,9 @@
     <formField asp-for="GameDetails.PlayNextScore"></formField>
     <formField asp-for="GameDetails.Finished" renderer="BooleanRadio"></formField>
 
-    @if (Model.SteamGame.AchievementCount == 0) {
+    @*@if (Model.SteamGame.AchievementCount == 0) {
         <formField asp-for="GameDetails.NotifyIfAchievementsAdded"></formField>
-    }
+    }*@
 
     <hr />
     <formField asp-for="GameDetails.HowLongToBeatID"></formField>

@@ -8,5 +8,9 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
         public SteamGameDescriptions GetBySteamGameID(long steamGameID) {
             return GetSingleEntity(WhereEqual(x => x.SteamGameID, steamGameID));
         }
+
+        public async Task<SteamGameDescriptions> GetBySteamGameIDAsync(long steamGameID) {
+            return await GetSingleEntityAsync(WhereEqual(x => x.SteamGameID, steamGameID));
+        }
     }
 }

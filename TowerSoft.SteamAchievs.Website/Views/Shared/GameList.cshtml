@@ -1,6 +1,8 @@
 ﻿@model GameListModel
 @{
     ViewData["title"] = Model.PageTitle;
+    string controller = ViewContext.RouteData.Values["controller"].ToString();
+    string action = ViewContext.RouteData.Values["action"].ToString();
 }
 
 
@@ -9,7 +11,7 @@
         Sort:
     </div>
     <div class="col-md-6">
-        <select class="form-select twr-sort-select" data-container-target="#game-list-container" data-item-target=".game-list-item">
+        <select class="form-select twr-sort-select" data-container-target="#game-list-container" data-item-target=".game-list-item" data-sort-storage-key="@(controller + "|" + action)">
             @foreach (KeyValuePair<string, string> keyValuePair in Model.SortOptions) {
                 if (keyValuePair.Key == Model.DefaultSortOption) {
                     <option value="@keyValuePair.Key" selected>@keyValuePair.Value</option>

@@ -13,5 +13,9 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
         public SteamCategory GetByID(long id) {
             return GetSingleEntity(WhereEqual(x => x.ID, id));
         }
+
+        public async Task<SteamCategory> GetByIDAsync(long id) {
+            return await GetSingleEntityAsync(WhereEqual(x => x.ID, id));
+        }
     }
 }

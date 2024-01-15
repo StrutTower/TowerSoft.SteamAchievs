@@ -1,0 +1,11 @@
+﻿
+<div class="row">
+    @foreach (RecentGameModel game in RecentGames) {
+        <RecentGameCard RecentGame="game"></RecentGameCard>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public RecentGameModel[]? RecentGames { get; set; }
+}

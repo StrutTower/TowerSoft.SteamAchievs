@@ -85,6 +85,12 @@ namespace TowerSoft.SteamAchievs.Website.Services {
                 new KeyValuePair<string, string>("metacriticScoreDesc", "Metacritic Score (Descending)"),
                 new KeyValuePair<string, string>("playNextSortAsc", "Play Next Score"),
                 new KeyValuePair<string, string>("playNextSortDesc", "Play Next Score (Descending)"),
+                new KeyValuePair<string, string>("mainStoryTimeAsc", "Main Story Time"),
+                new KeyValuePair<string, string>("mainStoryTimeDesc", "Main Story Time (Descending)"),
+                new KeyValuePair<string, string>("completionistTimeAsc", "Completionist Time"),
+                new KeyValuePair<string, string>("completionistTimeDesc", "Completionist Time (Descending)"),
+                new KeyValuePair<string, string>("releasedAsc", "Release Date"),
+                new KeyValuePair<string, string>("releasedDesc", "Release Date (Descending)"),
             };
         }
 

@@ -1,0 +1,15 @@
+﻿@page "/PerfectLost"
+@inject HomeDataService service
+
+@if (gamelist != null) {
+    <GameList Model="gamelist"></GameList>
+
+}
+
+@code {
+    private GameListModel gamelist;
+
+    protected override async Task OnInitializedAsync() {
+        gamelist = await service.GetPerfectLostGameListModel();
+    }
+}
