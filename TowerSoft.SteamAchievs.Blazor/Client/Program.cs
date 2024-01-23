@@ -1,3 +1,4 @@
+using Blzr.BootstrapSelect;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TowerSoft.SteamAchievs.Blazor.Client;
@@ -5,8 +6,7 @@ using TowerSoft.SteamAchievs.Blazor.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
-//builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.RootComponents.Add<HeadOutlet>("head");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp =>
     new HttpClient {
@@ -15,9 +15,13 @@ builder.Services.AddScoped(sp =>
 );
 
 builder.Services
+    .AddBootstrapSelect()
     .AddScoped<HomeDataService>()
     .AddScoped<GameDataService>()
+    .AddScoped<GameDetailsDataService>()
     .AddScoped<AchievementDataService>()
-    .AddScoped<GameListDataService>();
+    .AddScoped<AchievementTagDataService>()
+    .AddScoped<GameListDataService>()
+    .AddScoped<TagDataService>();
 
 await builder.Build().RunAsync();

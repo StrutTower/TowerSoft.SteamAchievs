@@ -1,0 +1,12 @@
+﻿<div class="row mb-3">
+    <div class="col-md-7 col-lg-6 offset-md-4 offset-lg-3">
+        <button type="submit" class="@Class">@Label</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = "Save";
+
+    public string Class { get; set; } = "btn btn-primary";
+}

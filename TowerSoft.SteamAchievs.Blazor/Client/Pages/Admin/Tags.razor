@@ -1,0 +1,66 @@
+﻿@page "/Admin/Tags"
+@inject TagDataService service
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Admin">Site Management</a></li>
+    <li class="breadcrumb-item active">Tags</li>
+</ul>
+
+@if (Model != null) {
+    <a href="Admin/Tags/Edit" class="btn btn-link float-end">
+        <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Global Tag
+    </a>
+
+    <h3>Tags</h3>
+    <hr />
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Name</td>
+                    <td>Type/Game</td>
+                    <td>Color</td>
+                    <td>Complication</td>
+                    <td>Active</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (TagViewModel tagModel in Model.Tags) {
+                    <tr>
+                        <td>
+                            <a href="Admin/Tags/Edit/@tagModel.Tag.ID"><span class="mdi mdi-fw mdi-square-edit-outline"></span></a>
+                        </td>
+                        <td>@tagModel.Tag.Name</td>
+                        <td>
+                            @if (tagModel.SteamGame == null) {
+                                <em>Global</em>
+                            } else {
+                                @tagModel.SteamGame.NameClean
+                            }
+                        </td>
+                        <td class="text-center">
+                            <div style="height:1.5em;width:4em;background-color:@tagModel.Tag.BackgroundColor"></div>
+                        </td>
+                        <td>
+                            <BooleanIcon Bool="tagModel.Tag.IsComplication" />
+                        </td>
+                        <td>
+                            <BooleanIcon Bool="tagModel.Tag.IsActive" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private AdminTagListModel Model;
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.GetAdminTagListModel();
+    }
+}

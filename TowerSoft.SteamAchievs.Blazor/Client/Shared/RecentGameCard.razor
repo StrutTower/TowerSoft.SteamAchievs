@@ -1,7 +1,7 @@
 ﻿@if (RecentGame != null) {
     double progressWidth = (double)RecentGame.CompletedAchievements / (double)RecentGame.TotalAchievements * 100;
 
-    <a href="/Game/View/@RecentGame.SteamGameID" class="col-md-4 mb-3 link-section">
+    <a href="Game/View/@RecentGame.SteamGameID" class="col-md-4 mb-3 link-section">
         <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@RecentGame.SteamGameID/header.jpg" class="img-fluid" />
 
         @if (RecentGame.HasAchievements) {

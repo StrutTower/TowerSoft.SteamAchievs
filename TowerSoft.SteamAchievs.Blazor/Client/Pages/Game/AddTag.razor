@@ -1,0 +1,65 @@
+﻿@page "/Game/AddTag/{ID:long}"
+@inject GameDataService gameService
+@inject TagDataService tagService
+@inject NavigationManager navManager
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Game/View/@ID">Tags</a></li>
+    <li class="breadcrumb-item active">Add Tag</li>
+</ul>
+
+<h3>Add Game Specific Tag</h3>
+<hr />
+
+@if (Model != null) {
+    <EditForm Model="@Model" OnValidSubmit="ValidSubmit">
+        <ValidationSummary />
+        <DataAnnotationsValidator />
+
+        <HrFormField For="@(() => Model.Name)">
+            <InputText @bind-Value="@Model.Name" class="form-control" />
+            <ValidationMessage For="@(() => Model.Name)" />
+        </HrFormField>
+
+        <HrFormField For="@(() => Model.BackgroundColor)">
+            <InputColor @bind-Value="@Model.BackgroundColor" />
+            <ValidationMessage For="@(() => Model.BackgroundColor)" />
+        </HrFormField>
+
+        <HrCheckboxRadio For="@(() => Model.IsComplication)">
+            <InputCheckbox @bind-Value="@Model.IsComplication" class="form-check-input" />
+            <ValidationMessage For="@(() => Model.IsComplication)" />
+        </HrCheckboxRadio>
+
+        <HrCheckboxRadio For="@(() => Model.IsActive)">
+            <InputCheckbox @bind-Value="@Model.IsActive" class="form-check-input" />
+            <ValidationMessage For="@(() => Model.IsActive)" />
+        </HrCheckboxRadio>
+
+        <HrSubmitButton />
+    </EditForm>
+}
+
+
+@code {
+    [Parameter] public long ID { get; set; }
+
+    private SteamGameModel SteamGame;
+
+    private TagModel Model;
+
+    protected async override Task OnInitializedAsync() {
+        SteamGameModel steamGame = await gameService.GetSteamGame(ID);
+        Model = new() {
+            SteamGameID = steamGame.ID,
+            BackgroundColor = "#268d96",
+            IsActive = true
+        };
+    }
+
+    private async Task ValidSubmit() {
+        await tagService.AddOrUpdate(Model);
+        navManager.NavigateTo("Game/View/" + SteamGame.ID);
+    }
+}

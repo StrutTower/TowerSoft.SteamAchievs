@@ -17,18 +17,18 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
     public class SteamSyncService {
         private readonly UnitOfWork uow;
         private readonly SteamApiClient steamApi;
-        private readonly SteamGridClient steamGridClient;
+        //private readonly SteamGridClient steamGridClient;
         private readonly ProtonDbService protonDbService;
         private readonly HowLongToBeatService howLongToBeatService;
         private readonly ILogger logger;
         private readonly AppSettings appSettings;
 
-        public SteamSyncService(UnitOfWork uow, SteamApiClient steamApi, SteamGridClient steamGridClient,
+        public SteamSyncService(UnitOfWork uow, SteamApiClient steamApi, /*SteamGridClient steamGridClient,*/
             ProtonDbService protonDbService, HowLongToBeatService howLongToBeatService,
             IOptionsSnapshot<AppSettings> appSettings, ILogger<SteamSyncService> logger) {
             this.uow = uow;
             this.steamApi = steamApi;
-            this.steamGridClient = steamGridClient;
+            //this.steamGridClient = steamGridClient;
             this.protonDbService = protonDbService;
             this.howLongToBeatService = howLongToBeatService;
             this.appSettings = appSettings.Value;
@@ -79,13 +79,13 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                     continue;
                 }
 
-                SteamGridGame steamGridGame = steamGridClient.GetGameBySteamID(ownedApp.SteamAppID);
-                SteamGridImage gridImage = null;
-                SteamGridImage heroImage = null;
-                if (steamGridGame != null) {
-                    gridImage = steamGridClient.GetBestGridImage(steamGridGame.ID);
-                    heroImage = steamGridClient.GetBestHeroImage(steamGridGame.ID);
-                }
+                //SteamGridGame steamGridGame = steamGridClient.GetGameBySteamID(ownedApp.SteamAppID);
+                //SteamGridImage gridImage = null;
+                //SteamGridImage heroImage = null;
+                //if (steamGridGame != null) {
+                //    gridImage = steamGridClient.GetBestGridImage(steamGridGame.ID);
+                //    heroImage = steamGridClient.GetBestHeroImage(steamGridGame.ID);
+                //}
 
 
                 List<HltbModel> hltbModels = howLongToBeatService.Search(ownedApp.Name).Result;
@@ -104,8 +104,8 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                     UserAchievements = steamApi.UserStatsClient.GetUserAchievements(appSettings.DefaultSteamUserID, ownedApp.SteamAppID).Result,
                     DeckCompatibility = steamApi.StoreClient.GetDeckCompatibility(ownedApp.SteamAppID).Result,
                     ReviewSummary = steamApi.StoreClient.GetReviews(ownedApp.SteamAppID).Result,
-                    GridImage = gridImage,
-                    HeroImage = heroImage,
+                    //GridImage = gridImage,
+                    //HeroImage = heroImage,
                     HltbModel = matchedHltbModel,
                     ProtonDbGame = protonDbGame,
                     UserTags = userTags,

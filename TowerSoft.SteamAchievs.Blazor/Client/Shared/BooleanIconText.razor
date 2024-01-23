@@ -1,0 +1,12 @@
+﻿@if (Bool.HasValue && Bool.Value) {
+    <span class="mdi mdi-fw mdi-checkbox-marked-outline text-success"></span>@:True
+} else if (Bool.HasValue) {
+    <span class="mdi mdi-fw mdi-checkbox-blank-off-outline text-danger"></span>@:False
+} else {
+    <span class="mdi mdi-fw mdi-checkbox-blank-outline text-muted"></span>@:Null
+}
+
+@code {
+    [Parameter]
+    public bool? Bool { get; set; }
+}

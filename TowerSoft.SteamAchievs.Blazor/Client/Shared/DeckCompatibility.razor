@@ -1,0 +1,20 @@
+﻿@switch (Compatibility) {
+    case "Verified":
+        <span class="mdi mdi-fw mdi-check-circle text-success"></span>
+        break;
+    case "Playable":
+        <span class="mdi mdi-fw mdi-alert-circle" style="color: yellow;"></span>
+        break;
+    case "Unknown":
+        <span class="mdi mdi-fw mdi-cancel"></span>
+        break;
+    case "Unsupported":
+        <span class="mdi mdi-fw mdi-close-circle text-danger"></span>
+        break;
+}
+@Compatibility
+
+@code {
+    [Parameter]
+    public string? Compatibility { get; set; }
+}

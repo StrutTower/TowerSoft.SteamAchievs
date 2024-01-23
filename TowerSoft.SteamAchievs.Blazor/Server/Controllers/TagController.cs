@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TowerSoft.SteamAchievs.Blazor.Shared.Models;
+using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Repository;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
@@ -33,6 +34,20 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
         [HttpGet("Assigned/{steamGameID}")]
         public TagModel[] GetAssigned(long steamGameID) {
             return mapper.Map<TagModel[]>(repo.GetActiveForSteamGameID(steamGameID));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(TagModel model) {
+            Tag tag = mapper.Map<Tag>(model);
+            await repo.AddAsync(tag);
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(TagModel model) {
+            Tag tag = mapper.Map<Tag>(model);
+            await repo.UpdateAsync(tag);
+            return Ok();
         }
     }
 }

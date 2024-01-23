@@ -1,0 +1,22 @@
+﻿<div class="pt-2">
+    <div>
+        @foreach (SteamCategoryModel category in Model.Categories) {
+            <span class="badge bg-primary mx-1">@category.Name</span>
+        }
+    </div>
+    <div>
+        @foreach (SteamUserTagModel tag in Model.UserTags) {
+            <span class="badge bg-info mx-1">@tag.Name</span>
+        }
+    </div>
+    <hr />
+    @((MarkupString)Model.Descriptions.ShortDescription)
+    @((MarkupString)Model.Descriptions.AboutTheGame)
+    @((MarkupString)Model.Descriptions.DetailedDescription)
+    @((MarkupString)Model.Descriptions.LegalNotice)
+</div>
+
+@code {
+    [Parameter]
+    public GameViewModel Model { get; set; }
+}

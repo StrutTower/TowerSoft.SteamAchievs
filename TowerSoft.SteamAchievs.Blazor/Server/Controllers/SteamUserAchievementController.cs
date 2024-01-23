@@ -30,10 +30,9 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
             return mapper.Map<SteamUserAchievementModel[]>(await repo.GetBySteamGameIDAsync(steamGameID));
         }
 
-        [HttpGet("GetByIDs/{ids}")]
-        public async Task<SteamUserAchievementModel[]> GetByIDs(string ids) {
-            List<long> ids2 = ids.Split(',').Select(x => long.Parse(x)).ToList();
-            return mapper.Map<SteamUserAchievementModel[]>(await repo.GetBySteamGameIDsAsync(ids2));
+        [HttpPost("[action]")]
+        public async Task<SteamUserAchievementModel[]> GetByIDs(IEnumerable<long> ids) {
+            return mapper.Map<SteamUserAchievementModel[]>(await repo.GetBySteamGameIDsAsync(ids));
         }
     }
 }

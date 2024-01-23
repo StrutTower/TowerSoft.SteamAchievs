@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TowerSoft.SteamAchievs.Blazor.Shared.Models {
     public class TagModel {
@@ -10,12 +6,16 @@ namespace TowerSoft.SteamAchievs.Blazor.Shared.Models {
 
         public long? SteamGameID { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
+        [Required, Display(Name = "Background Color")]
         public string BackgroundColor { get; set; }
 
+        [Display(Name = "Complication")]
         public bool IsComplication { get; set; }
 
+        [Display(Name = "Active")]
         public bool IsActive { get; set; }
     }
 }

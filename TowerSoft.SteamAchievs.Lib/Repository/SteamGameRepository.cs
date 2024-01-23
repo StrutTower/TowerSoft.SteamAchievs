@@ -12,6 +12,9 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
         }
 
         public List<SteamGame> GetByGameListType(GameListType gameListType) {
+            return GetByGameListTypeAsync(gameListType).Result;
+        }
+        public async Task<List<SteamGame>> GetByGameListTypeAsync(GameListType gameListType) {
             QueryBuilder query = GetQueryBuilder();
 
             switch (gameListType) {
@@ -31,8 +34,12 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
                     break;
                 case GameListType.NoComplications:
                     query.SqlQuery +=
-                        $"LEFT JOIN gamecomplication gc ON {TableName}.ID = gc.SteamGameID " +
-                        $"WHERE gc.SteamGameID IS NULL ";
+                        $"WHERE ID NOT IN (" +
+                        $"SELECT sas.SteamGameID " +
+                        $"FROM steamachievementschema sas " +
+                        $"LEFT JOIN achievementtag atag ON sas.KeyName = atag.AchievementKey " +
+                        $"LEFT JOIN tag t ON t.ID = atag.TagID " +
+                        $"WHERE t.IsComplication = 1)";
                     break;
                 case GameListType.Incomplete:
                     query.SqlQuery +=
@@ -53,11 +60,15 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
                 default:
                     throw new Exception("Unsupported GameListType");
             }
-            return GetEntities(query);
+            return await GetEntitiesAsync(query);
         }
 
         public List<SteamGame> Search(string q) {
             return GetEntities(Where(x => x.Name, Comparison.LikeBothSidesWildcard, q));
+        }
+
+        public async Task<List<SteamGame>> SearchAsync(string q) {
+            return await GetEntitiesAsync(Where(x => x.Name, Comparison.LikeBothSidesWildcard, q));
         }
 
         public List<SteamGame> GetWithAchievementsNeedingDescription() {

@@ -12,6 +12,10 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
             this.achievementDataService = achievementDataService;
         }
 
+        public async Task<SteamGameModel> GetSteamGame(long id) {
+            return await http.GetFromJsonAsync<SteamGameModel>("SteamGame/" + id);
+        }
+
         public async Task<GameViewModel> GetGameViewModel(long id) {
             GameViewModel model = new() {
                 SteamGame = await http.GetFromJsonAsync<SteamGameModel>("SteamGame/" + id),
@@ -56,6 +60,11 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
             }
 
             return model;
+        }
+
+        public async Task<GameViewModel> ResyncGame(long id) {
+            await http.GetAsync("SteamGame/Resync/" + id);
+            return await GetGameViewModel(id);
         }
     }
 }

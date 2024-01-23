@@ -1,0 +1,28 @@
+///<reference path="_variables.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables.scss" />
+///<reference path="../node_modules/bootstrap/scss/_variables-dark.scss" />
+///<reference path="../node_modules/bootsteam-theme/src/_twr-variables-dark.scss" />
+
+.bootstrap-select {
+    width: 100%;
+
+    .btn.btn-light {
+        background-color: $input-bg;
+
+        &.dropdown-toggle:focus {
+            outline: none !important;
+            border-color:$input-focus-border-color;
+        }
+    }
+}
+
+
+[data-bs-theme="dark"] {
+    .bootstrap-select {
+        .btn.btn-light {
+            color: $body-color-dark;
+            background-color: $input-bg-dark;
+            border-color: $border-color-dark;
+        }
+    }
+}

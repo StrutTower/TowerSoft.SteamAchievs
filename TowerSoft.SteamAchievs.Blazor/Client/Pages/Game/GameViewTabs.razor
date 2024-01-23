@@ -1,0 +1,54 @@
+﻿<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(activeTab == "achievements" ? "active" : "")" type="button" role="tab" @onclick='() => TabClicked("achievements")'>Achievements</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(activeTab == "info" ? "active" : "") @(Model.SteamGame.Delisted ? "disabled" : "")" @onclick='() => TabClicked("info")' type="button" role="tab">Game Info</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(activeTab == "hltb" ? "active" : "")" @onclick='() => TabClicked("hltb")' type="button" role="tab">HowLongToBeat</button>
+    </li>
+</ul>
+
+@if (ResyncRunning) {
+    <div>
+        <div class="text-center">
+            <div>
+                <span class="mdi mdi-4x mdi-loading mdi-spin-fast"></span>
+            </div>
+            <h2>Resyncing Game...</h2>
+        </div>
+    </div>
+} else {
+    <div class="tab-content mb-0 pb-2" id="myTabContent">
+        <div class="tab-pane fade pt-2 @(activeTab == "achievements" ? "show active" : "")" id="achievement-tab-pane" role="tabpanel" tabindex="0">
+            <AchievementList Models="Model.Achievements" SteamGame="Model.SteamGame" Tags="Tags" />
+        </div>
+
+        <div class="tab-pane fade pt-2 @(activeTab == "info" ? "show active" : "")" id="game-info-tab-pane" role="tabpanel" tabindex="0">
+            <GameViewDescription Model="Model" />
+        </div>
+
+        <div class="tab-pane fade pt-2 @(activeTab == "hltb" ? "show active" : "")" id="hltb-tab-pane" role="tabpanel" tabindex="0">
+            <GameViewHltb Model="Model" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public GameViewModel Model { get; set; }
+
+    [Parameter] public List<TagModel> Tags { get; set; }
+
+    [Parameter] public bool ResyncRunning { get; set; }
+
+    private string activeTab;
+
+    protected async override Task OnInitializedAsync() {
+        activeTab = "achievements";
+    }
+
+    private void TabClicked(string name) {
+        activeTab = name;
+    }
+}

@@ -1,0 +1,69 @@
+﻿@page "/Admin/Tags/Edit/{ID:long?}"
+@inject TagDataService service
+@inject NavigationManager navManager
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Admin">Site Management</a></li>
+    <li class="breadcrumb-item"><a href="Admin/Tags">Tags</a></li>
+    <li class="breadcrumb-item active">@(editing ? "Edit" : "New") Tag</li>
+</ul>
+
+<h3>@(editing ? "Edit" : "New") Tag</h3>
+<hr />
+
+
+
+@if (tag != null) {
+    <EditForm Model="@tag" OnValidSubmit="ValidSubmit">
+        <ValidationSummary />
+        <DataAnnotationsValidator />
+
+        <HrFormField For="@(() => tag.Name)">
+            <InputText @bind-Value="@tag.Name" class="form-control" />
+            <ValidationMessage For="@(() => tag.Name)" />
+        </HrFormField>
+
+        <HrFormField For="@(() => tag.BackgroundColor)">
+            <InputColor @bind-Value="@tag.BackgroundColor" />
+            <ValidationMessage For="@(() => tag.BackgroundColor)" />
+        </HrFormField>
+
+        <HrCheckboxRadio For="@(() => tag.IsComplication)">
+            <InputCheckbox @bind-Value="@tag.IsComplication" class="form-check-input" />
+            <ValidationMessage For="@(() => tag.IsComplication)" />
+        </HrCheckboxRadio>
+
+        <HrCheckboxRadio For="@(() => tag.IsActive)">
+            <InputCheckbox @bind-Value="@tag.IsActive" class="form-check-input" />
+            <ValidationMessage For="@(() => tag.IsActive)" />
+        </HrCheckboxRadio>
+
+        <HrSubmitButton />
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public long? ID { get; set; }
+
+    private TagModel tag;
+    private bool editing;
+
+    protected async override Task OnInitializedAsync() {
+        if (ID.HasValue) {
+            tag = await service.GetTag(ID.Value);
+            editing = true;
+        } else {
+            tag = new() {
+                IsActive = true
+            };
+            editing = false;
+        }
+    }
+
+    private async Task ValidSubmit(EditContext editContext) {
+        await service.AddOrUpdate(tag);
+        navManager.NavigateTo("Admin/Tags");
+    }
+}

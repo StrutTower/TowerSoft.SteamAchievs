@@ -2,6 +2,19 @@
 @inject HomeDataService service
 
 @if (model != null) {
+    <p class="text-center">
+        <a href="List/PerfectGames">Pefect Games</a>
+        /
+        <a href="List/NonPerfectGames">Non-Pefect Games</a>
+        /
+        <a href="List/IncompleteGames">Incomplete Games</a>
+        /
+        <a href="List/PerfectPossibleGames">Perfect Possible Games</a>
+        /
+        <a href="List/NoComplicationGames">No Complication Games</a>
+        /
+        <a href="List/PlayNextScoreGames">With Play Next Score</a>
+    </p>
     @if (model.PerfectLostCount.HasValue && model.PerfectLostCount > 0) {
         <div class="alert alert-danger text-center font-weight-semibold">
             <h5>

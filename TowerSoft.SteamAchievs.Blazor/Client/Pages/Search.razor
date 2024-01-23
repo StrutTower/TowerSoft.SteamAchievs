@@ -1,0 +1,25 @@
+﻿@page "/Search/{SearchTerm}"
+@inject HttpClient Http
+@inject GameListDataService service
+
+@if (Model != null) {
+    <h5>Search results for '@SearchTerm':</h5>
+
+    <GameList Model="Model" />
+}
+
+@code {
+    [Parameter]
+    public string SearchTerm { get; set; }
+
+    public GameListModel Model { get; set; }
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.Search(SearchTerm);
+    }
+
+    protected async override Task OnParametersSetAsync() {
+        Model = null;
+        Model = await service.Search(SearchTerm);
+    }
+}

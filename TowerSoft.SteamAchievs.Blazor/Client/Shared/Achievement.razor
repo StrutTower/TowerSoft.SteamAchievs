@@ -25,14 +25,19 @@
         <small class="position-absolute bottom-0 end-0 text-faded pe-1">
             @(Math.Round(Model.Schema.GlobalCompletionPercentage, 1))%
         </small>
-        @*<a href="@Url.Action("Edit", "Achievement", new { steamGameID = Model.Schema.SteamGameID, achievementKey = Model.Schema.KeyName })"
-           class="position-absolute top-0 end-0 edit-achievement-link">
+
+        <button type="button" class="position-absolute top-0 end-0 btn btn-link" @onclick="ButtonClicked">
             <span class="mdi mdi-fw mdi-square-edit-outline"></span>
-        </a>*@
+        </button>
     </div>
 </div>
 
 @code {
-    [Parameter]
-    public AchievementViewModel Model { get; set; }
+    [Parameter] public AchievementViewModel Model { get; set; }
+
+    [Parameter] public EventCallback<string> OnEditClicked { get; set; }
+
+    private void ButtonClicked() {
+        OnEditClicked.InvokeAsync(Model.Schema.KeyName);
+    }
 }

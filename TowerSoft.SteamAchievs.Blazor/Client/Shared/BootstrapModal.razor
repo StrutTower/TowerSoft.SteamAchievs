@@ -1,0 +1,37 @@
+﻿<div class="modal fade @modalClass" id="achievement-edit-modal" tabindex="-1" @onclick="Close" style="display:@modalDisplay;">
+    <div class="modal-dialog" @onclick:stopPropagation>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">@Title</h1>
+                <button type="button" class="btn-close" @onclick="Close"></button>
+            </div><div class="modal-body">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop fade @modalClass" style="display:@modalDisplay;"></div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private string modalDisplay = "none";
+    private string modalClass = "";
+
+    public async Task Open() {
+        modalDisplay = "block";
+        await Task.Delay(100);
+        modalClass = "show";
+        StateHasChanged();
+    }
+
+    public async Task Close() {
+        modalClass = "";
+        await Task.Delay(250);
+        modalDisplay = "none";
+        StateHasChanged();
+    }
+}

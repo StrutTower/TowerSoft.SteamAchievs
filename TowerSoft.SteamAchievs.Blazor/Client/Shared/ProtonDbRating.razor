@@ -1,0 +1,22 @@
+﻿@switch (Rating) {
+    case "platinum":
+        <span class="proton-db-badge proton-platinum">Platinum</span>
+        break;
+    case "gold":
+        <span class="proton-db-badge proton-gold">Gold</span>
+        break;
+    case "silver":
+        <span class="proton-db-badge proton-silver">Silver</span>
+        break;
+    case "bronze":
+        <span class="proton-db-badge proton-bronze">Bronze</span>
+        break;
+    case "borked":
+        <span class="proton-db-badge proton-borked">Borked</span>
+        break;
+}
+
+@code {
+    [Parameter]
+    public string? Rating { get; set; }
+}

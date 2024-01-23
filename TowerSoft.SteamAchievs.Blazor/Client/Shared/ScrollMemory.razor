@@ -1,0 +1,27 @@
+﻿@implements IDisposable
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+@code {
+    private IDisposable LocationChangeRegistration;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            LocationChangeRegistration = NavigationManager.RegisterLocationChangingHandler(LocationChangeHandler);
+
+            System.Collections.Specialized.NameValueCollection parameters = System.Web.HttpUtility.ParseQueryString(new Uri(NavigationManager.Uri).Query);
+            if (parameters.AllKeys.Contains("scroll") && int.TryParse(parameters["scroll"], out int scrollDistance))
+                await JS.InvokeVoidAsync("setScrollDistance", scrollDistance);
+        }
+    }
+
+    private async ValueTask LocationChangeHandler(LocationChangingContext arg) {
+        int scrollDistance = await JS.InvokeAsync<int>("getScrollDistance");
+        string url = NavigationManager.GetUriWithQueryParameter("scroll", scrollDistance);
+        await JS.InvokeVoidAsync("replaceState", url);
+    }
+
+    public void Dispose() {
+        LocationChangeRegistration?.Dispose();
+    }
+}

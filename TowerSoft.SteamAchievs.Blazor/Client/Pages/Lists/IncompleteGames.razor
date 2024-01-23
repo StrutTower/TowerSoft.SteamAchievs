@@ -1,0 +1,19 @@
+﻿@page "/List/IncompleteGames"
+@inject GameListDataService service
+
+<h3>Incomplete Games</h3>
+
+@if (Model == null) {
+    <Loading />
+} else {
+    <GameList Model="Model"></GameList>
+}
+
+@code {
+
+    private GameListModel Model;
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.GetIncompleteGames();
+    }
+}

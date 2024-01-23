@@ -1,0 +1,18 @@
+﻿@page "/List/PerfectGames"
+@inject GameListDataService service
+
+<h3>Perfect Games</h3>
+
+@if (Model == null) {
+    <Loading />
+} else {
+    <GameList Model="Model" />
+}
+
+@code {
+    private GameListModel Model;
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.GetPerfectGames();
+    }
+}

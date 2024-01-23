@@ -55,5 +55,9 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
             }
             return models;
         }
+
+        public async Task AddOrUpdateAchievementDetails(EditAchievementDetailsModel model) {
+            await http.PostAsJsonAsync("AchievementDetails", model);
+        }
     }
 }

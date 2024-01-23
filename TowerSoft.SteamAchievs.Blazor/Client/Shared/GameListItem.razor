@@ -1,59 +1,170 @@
 ﻿<a href="Game/View/@Model.SteamGame.ID"
-   class="row link-section game-list-item border-bottom pt-2 pb-2">
-    <div class="col-auto">
-        @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid header-img d-none d-lg-block" />
-        } else {
-            <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid header-img d-none d-lg-block" />
-        }
-        <img src="https://steamcdn-a.akamaihd.net/steam/apps/@Model.SteamGame.ID/library_600x900.jpg" class="img-fluid d-lg-none"
-             onerror="this.onerror=null; this.src = '@Model.SteamGame.GridThumbUrl'"
-             style="max-width:110px;" />
-    </div>
-    <div class="col">
-        <div class="display-6 d-none d-lg-block">@Model.SteamGame.NameClean</div>
-        <h4 class="d-lg-none">@Model.SteamGame.NameClean</h4>
+   class="d-block link-section game-list-item border-bottom py-2">
+    <div class="row d-none d-lg-flex">
+        <div class="col-auto">
+            @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid header-img" />
+            } else {
+                <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid header-img" />
+            }
+        </div>
+        <div class="col">
+            <div class="display-6 d-none d-xl-block">@Model.SteamGame.NameClean</div>
+            <h4 class="d-xl-none">@Model.SteamGame.NameClean</h4>
 
-        <div class="row mb-1">
-            <div class="col-auto text-center">
-                <label class="column-label">Playtime</label>
-                <div>
-                    @if (Model.SteamGame.TotalPlaytime == 0) {
-                        <em class="text-info">Unplayed</em>
-                    } else {
-                        <MinutesToTimeString Minutes="Model.SteamGame.TotalPlaytime"></MinutesToTimeString>
-                    }
+            <div class="row mb-1">
+                <div class="col-auto text-center">
+                    <div class="column-label">Playtime</div>
+                    <div>
+                        @if (Model.SteamGame.TotalPlaytime == 0) {
+                            <em class="text-info">Unplayed</em>
+                        } else {
+                            <MinutesToTimeString Minutes="Model.SteamGame.TotalPlaytime" />
+                        }
+                    </div>
+                </div>
+
+                <div class="col-auto text-center">
+                    <div class="column-label">Perfect Possible</div>
+                    <div>
+                        @if (Model.Details?.PerfectPossible != null) {
+                            @Model.Details.PerfectPossible
+                        } else {
+                            <em class="text-faded">null</em>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-auto text-center">
+                    <div class="column-label">Deck Compatibility</div>
+                    <div>
+                        @if (Model.SteamGame.DeckCompatibility != null) {
+                            @Model.SteamGame.DeckCompatibility
+                        } else {
+                            <em class="text-faded">null</em>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-auto text-center">
+                    <div class="column-label">ProtonDB</div>
+                    <div>
+                        @if (Model?.Details?.ProtonDbRating != null) {
+                            @Model.Details.ProtonDbRating.Substring(0, 1).ToUpper()
+                            @Model.Details.ProtonDbRating.Substring(1)
+                        } else {
+                            <em class="text-faded">null</em>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-auto text-center">
+                    <div class="column-label">Released</div>
+                    <div>
+                        @if (Model.SteamGame.ReleaseDate.HasValue) {
+                            @Model.SteamGame.ReleaseDate.Value.ToShortDateString()
+                        } else {
+                            <em class="text-faded">null</em>
+                        }
+                    </div>
                 </div>
             </div>
 
-            @if (Model.Details?.PerfectPossible != null) {
-                <div class="col-auto text-center">
-                    <label class="column-label">Perfect Possible</label>
-                    <div>@Model.Details.PerfectPossible</div>
+            @if (Model.SteamGame.AchievementCount > 0) {
+                <div class="row">
+                    <div class="col">
+                        <div class="progress" role="progressbar" aria-valuenow="@Model.AchievedCount" aria-valuemin="0" aria-valuemax="@Model.SteamGame.AchievementCount" style="height:1.5rem;">
+                            <div class="progress-bar @(Model.Perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(Model.AchievProgressWidth)%;transition: width 0s linear">
+                                @if (Model.AchievProgressWidth >= 20) {
+                                    <span>
+                                        @Math.Round(Model.AchievProgressWidth, 1)%
+                                    </span>
+                                }
+                            </div>
+                            @if (Model.AchievProgressWidth < 20) {
+                                <div class="text-center flex-grow-1" style="font-size:1.2em;">
+                                    @Math.Round(Model.AchievProgressWidth, 1)%
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        @Model.AchievedCount / @Model.SteamGame.AchievementCount
+                    </div>
                 </div>
+            } else {
+                <p class="text-center text-faded">
+                    <em>This game does not have any achievements</em>
+                </p>
             }
 
-            @if (Model.SteamGame.DeckCompatibility != null) {
+            <div class="row mb-1">
                 <div class="col-auto text-center">
-                    <label class="column-label">Deck Compatibility</label>
-                    <div>@Model.SteamGame.DeckCompatibility</div>
+                    <div class="column-label">Reviews</div>
+                    <div>
+                        @if (!string.IsNullOrWhiteSpace(Model.SteamGame.ReviewDescription)) {
+                            @Model.SteamGame.ReviewDescription
+                        }
+                    </div>
                 </div>
-            }
 
-            @if (Model.SteamGame.ReleaseDate.HasValue) {
                 <div class="col-auto text-center">
-                    <label class="column-label">Released</label>
-                    <div>@Model.SteamGame.ReleaseDate.Value.ToShortDateString()</div>
+                    <div class="column-label">Metacritic</div>
+                    <div>
+                        @if (Model.SteamGame.MetacriticScore > 0) {
+                            @Model.SteamGame.MetacriticScore
+                        }
+                    </div>
+                </div>
+
+                <div class="col-auto text-center">
+                    <div class="column-label">Main Story Time</div>
+                    <div>
+                        @if (Model?.Details?.MainStoryTime > 0) {
+                            @Model.Details.MainStoryTime
+                        }
+                    </div>
+                </div>
+
+                <div class="col-auto text-center">
+                    <div class="column-label">Completionist Time</div>
+                    <div>
+                        @if (Model?.Details?.CompletionistTime > 0) {
+                            @Model.Details.CompletionistTime
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @if (Model?.ComplicationTags.Any() == true) {
+                <div>
+                    @foreach (TagModel tag in Model.ComplicationTags.OrderBy(x => x.Name)) {
+                        <span class="badge" style="background-color:@tag.BackgroundColor">@tag.Name</span>
+                    }
                 </div>
             }
         </div>
+    </div>
 
+    <div class="d-lg-none">
+        <div class="row mb-2">
+            <div class="col-4">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid" />
+            </div>
+            <div class="col">
+                <h4>@Model.SteamGame.Name</h4>
+            </div>
+        </div>
         @if (Model.SteamGame.AchievementCount > 0) {
-            <div class="row">
+            <div class="row mb-2">
                 <div class="col">
                     <div class="progress" role="progressbar" aria-valuenow="@Model.AchievedCount" aria-valuemin="0" aria-valuemax="@Model.SteamGame.AchievementCount" style="height:1.5rem;">
-                        <div class="progress-bar @(Model.Perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(Model.AchievProgressWidth)%;">
-                            @Math.Round(Model.AchievProgressWidth, 1)%
+                        <div class="progress-bar @(Model.Perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(Model.AchievProgressWidth)%;transition: width 0s linear">
+                            @if (Model.AchievProgressWidth >= 20) {
+                                <span>
+                                    @Math.Round(Model.AchievProgressWidth, 1)%
+                                </span>
+                            }
                         </div>
                     </div>
                 </div>
@@ -67,50 +178,64 @@
             </p>
         }
 
-        <div class="row mb-1">
-            @if (!string.IsNullOrWhiteSpace(Model.SteamGame.ReviewDescription)) {
-                <div class="col-auto text-center">
-                    <label class="column-label">Reviews</label>
-                    <div>@Model.SteamGame.ReviewDescription</div>
-                </div>
-            }
+        <table class="table-vertical table-vertical-sm mb-0">
+            <tr>
+                <th class="text-end">Playtime</th>
+                <td>
+                    @if (Model.SteamGame.TotalPlaytime > 0) {
+                        <MinutesToTimeString Minutes="Model.SteamGame.TotalPlaytime" />
+                    } else {
+                        <em class="text-info">Unplayed</em>
+                    }
+                </td>
+                <th>PlayNext #</th>
+                <td>
+                    @if (Model?.Details?.PlayNextScore != null) {
+                        @Model?.Details?.PlayNextScore
+                    } else {
+                        <em class="text-faded">null</em>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th>HLTB Times</th>
+                <td>
+                    @if (Model?.Details?.MainStoryTime > 0) {
+                        @Model.Details.MainStoryTime
+                    }
+                    @if (Model?.Details?.MainStoryTime > 0 && Model?.Details?.CompletionistTime > 0) {
+                        @: /
+                    }
 
-            @if (Model.SteamGame.RecommendationCount > 0) {
-                <div class="col-auto text-center">
-                    <label class="column-label">Recommendations</label>
-                    <div>@Model.SteamGame.RecommendationCount</div>
-                </div>
-            }
-
-            @if (Model.SteamGame.MetacriticScore > 0) {
-                <div class="col-auto text-center">
-                    <label class="column-label">Metacritic</label>
-                    <div>@Model.SteamGame.MetacriticScore</div>
-                </div>
-            }
-
-            @if (Model?.Details?.MainStoryTime > 0) {
-                <div class="col-auto text-center">
-                    <label class="column-label">Main Story Time</label>
-                    <div>@Model.Details.MainStoryTime</div>
-                </div>
-            }
-
-            @if (Model?.Details?.CompletionistTime > 0) {
-                <div class="col-auto text-center">
-                    <label class="column-label">Completionist Time</label>
-                    <div>@Model.Details.CompletionistTime</div>
-                </div>
-            }
-        </div>
-
-        @if (Model?.ComplicationTags.Any() == true) {
-            <div>
-                @foreach (TagModel tag in Model.ComplicationTags.OrderBy(x => x.Name)) {
-                    <span class="badge" style="background-color:@tag.BackgroundColor">@tag.Name</span>
-                }
-            </div>
-        }
+                    @if (Model?.Details?.CompletionistTime > 0) {
+                        @Model.Details.CompletionistTime
+                    }
+                    @if (Model?.Details?.MainStoryTime > 0 || Model?.Details?.CompletionistTime > 0) {
+                        @: hrs
+                    }
+                </td>
+                <th>Perfectable</th>
+                <td>
+                    <BooleanIcon Bool="Model?.Details?.PerfectPossible" />
+                </td>
+            </tr>
+            <tr>
+                <th>Released</th>
+                <td>
+                    @if (Model.SteamGame.ReleaseDate.HasValue) {
+                        @Model.SteamGame.ReleaseDate.Value.ToShortDateString()
+                    }
+                </td>
+                <th>Review #</th>
+                <td>
+                    @Model?.SteamGame?.ReviewScore
+                    @if (!string.IsNullOrWhiteSpace(Model?.SteamGame?.ReviewDescription) && Model.SteamGame.MetacriticScore.HasValue) {
+                        @: /
+                    }
+                    @Model?.SteamGame?.MetacriticScore
+                </td>
+            </tr>
+        </table>
     </div>
 </a>
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TowerSoft.SteamAchievs.Blazor.Shared.Models;
+using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Repository;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
@@ -25,10 +26,49 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
             return mapper.Map<GameDetailsModel>(await repo.GetBySteamGameIDAsync(id));
         }
 
-        [HttpGet("GetByIDs/{ids}")]
-        public async Task<GameDetailsModel[]> GetByIDs(string ids) {
-            List<long> ids2 = ids.Split(',').Select(x => long.Parse(x)).ToList();
-            return mapper.Map<GameDetailsModel[]>(await repo.GetByIDsAsync(ids2));
+        [HttpPost("[action]")]
+        public async Task<IActionResult> GetByIDs(IEnumerable<long> ids) {
+            return Ok(mapper.Map<GameDetailsModel[]>(await repo.GetByIDsAsync(ids)));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrUpdate(GameDetailsModel model) {
+            GameDetails existing = repo.GetBySteamGameID(model.SteamGameID);
+            bool isNew = false;
+            bool needsUpdate = false;
+            if (existing == null) {
+                isNew = true;
+                existing = new() {
+                    SteamGameID = model.SteamGameID
+                };
+            }
+
+            if (existing.PerfectPossible != model.PerfectPossible) {
+                needsUpdate = true;
+                existing.PerfectPossible = model.PerfectPossible;
+            }
+
+            if (existing.PlayNextScore != model.PlayNextScore) {
+                needsUpdate = true;
+                existing.PlayNextScore = model.PlayNextScore;
+            }
+
+            if (existing.Finished != model.Finished) {
+                needsUpdate = true;
+                existing.Finished = model.Finished;
+            }
+
+            if (existing.HowLongToBeatID != model.HowLongToBeatID) {
+                needsUpdate = true;
+                existing.HowLongToBeatID = model.HowLongToBeatID;
+            }
+
+            if (isNew)
+                repo.Add(existing);
+            else if (needsUpdate)
+                repo.Update(existing);
+
+            return Ok();
         }
     }
 }

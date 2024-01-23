@@ -1,0 +1,152 @@
+﻿@inject GameDataService service
+@inject GameDetailsDataService detailsService
+
+<div class="row">
+    <div class="col-12 col-lg-auto order-lg-last">
+        @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid" />
+        } else {
+            <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
+        }
+    </div>
+    <div class="col-12 col-lg font-shadow">
+        <div class="display-6">@Model.SteamGame.NameClean</div>
+        @if (Model.SteamGame.Delisted) {
+            <p><strong class="text-danger">This game has been delisted from Steam</strong></p>
+        }
+        @if (!Model.Categories.SafeAny(x => x.Name == "Steam Cloud")) {
+            <p><strong class="text-danger">This game does not support Steam Cloud saves.</strong></p>
+        }
+
+        <ExternalLinks SteamGame="Model.SteamGame" />
+        <p>
+            <a class="fake-link" @onclick="EditDetailsClick">Edit Game Details</a>
+            /
+            <a class="fake-link" @onclick="ResyncGameClick">Resync Game</a>
+            @if (resyncRunning) {
+                <span class="px-2">
+                    <span class="mdi mdi-fw mdi-loading mdi-spin-fast"></span>
+                    Resyncing Game
+                </span>
+            }
+        </p>
+
+        <div class="row mb-3">
+            <div class="col-auto">
+                <div class="column-label">Deck Compatibility</div>
+                <div class="text-center"><DeckCompatibility Compatibility="@Model.SteamGame.DeckCompatibility" /></div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div id="game-details-container">
+                <GameViewDetails GameDetails="Model.GameDetails" />
+            </div>
+        </div>
+
+        @if (Model.ComplicationTags.SafeAny()) {
+            <div class="mb-3">
+                <div class="column-label">Complications</div>
+                @foreach (TagModel tag in Model.ComplicationTags) {
+                    <span class="badge mx-1" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<BootstrapModal @ref="editDetailsModal" Title="Edit Game Details">
+    @if (editDetails != null) {
+        <EditForm Model="@editDetails" OnValidSubmit="EditDetailsSubmit">
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label>Perfect Possible</label>
+                <div>
+                    <InputRadioGroup Name="PerfectPossible" @bind-Value="editDetails.PerfectPossible" TValue="bool?">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label">
+                                <InputRadio Value="true" class="form-check-input" /> True
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label">
+                                <InputRadio Value="false" class="form-check-input" /> False
+                            </label>
+                        </div>
+                    </InputRadioGroup>
+                    <button type="button" class="btn btn-secondary py-0" @onclick="() => editDetails.PerfectPossible = null">Clear</button>
+                </div>
+                <ValidationMessage For="() => editDetails.PerfectPossible" />
+            </div>
+
+            <div class="mb-3">
+                <label>Play Next Score</label>
+                <InputNumber @bind-Value="editDetails.PlayNextScore" class="form-control" />
+                <ValidationMessage For="() => editDetails.PlayNextScore" />
+            </div>
+
+            <div class="mb-3">
+                <label>Finished</label>
+                <div>
+                    <InputRadioGroup Name="Finished" @bind-Value="editDetails.Finished" TValue="bool?">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label">
+                                <InputRadio Value="true" class="form-check-input" /> True
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label">
+                                <InputRadio Value="false" class="form-check-input" /> False
+                            </label>
+                        </div>
+                    </InputRadioGroup>
+                    <button type="button" class="btn btn-secondary  py-0" @onclick="() => editDetails.Finished = null">Clear</button>
+                </div>
+                <ValidationMessage For="() => editDetails.Finished" />
+            </div>
+
+            <div class="mb-3">
+                <label>Play Next Score</label>
+                <InputNumber @bind-Value="editDetails.HowLongToBeatID" class="form-control" />
+                <ValidationMessage For="() => editDetails.HowLongToBeatID" />
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+
+        </EditForm>
+    }
+</BootstrapModal>
+
+@code {
+    [Parameter] public GameViewModel Model { get; set; }
+
+    [Parameter] public EventCallback ResyncGameCallback { get; set; }
+
+    private bool resyncRunning = false;
+
+    private BootstrapModal editDetailsModal;
+
+    private GameDetailsModel editDetails;
+
+    private async Task EditDetailsClick() {
+        editDetails = (GameDetailsModel)Model.GameDetails.Clone();
+        editDetailsModal.Open();
+    }
+
+    private async Task ResyncGameClick() {
+        resyncRunning = true;
+        await ResyncGameCallback.InvokeAsync();
+        resyncRunning = false;
+    }
+
+    private async Task EditDetailsSubmit() {
+        await detailsService.AddOrUpdateGameDetails(editDetails);
+        Model.GameDetails = editDetails;
+        editDetails = null;
+        editDetailsModal.Close();
+    }
+}

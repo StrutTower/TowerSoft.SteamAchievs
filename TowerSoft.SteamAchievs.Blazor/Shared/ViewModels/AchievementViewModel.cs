@@ -15,6 +15,6 @@ namespace TowerSoft.SteamAchievs.Blazor.Shared.ViewModels {
 
         public AchievementDetailsModel Details { get; set; }
 
-        public List<TagModel> AchievementTags { get; set; }
+        public List<TagModel> AchievementTags { get; set; } = new();
     }
 }

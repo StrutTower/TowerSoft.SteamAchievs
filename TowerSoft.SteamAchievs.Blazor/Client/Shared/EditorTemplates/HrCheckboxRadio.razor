@@ -1,0 +1,31 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Linq.Expressions
+@using System.Reflection
+@typeparam TValue
+
+<div class="row mb-3">
+    <div class="col-md-7 col-lg-6 offset-md-4 offset-lg-3">
+        <div class="form-check">
+            <label class="form-check-label">
+                @ChildContent
+                @Label
+            </label>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; }
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    [Parameter] public Expression<Func<TValue>> For { get; set; }
+
+    protected async override Task OnInitializedAsync() {
+        if (string.IsNullOrWhiteSpace(Label) && For != null) {
+            MemberExpression expression = (MemberExpression)For.Body;
+            var value = expression.Member.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
+            Label = value?.Name ?? expression.Member.Name ?? "";
+        }
+    }
+}

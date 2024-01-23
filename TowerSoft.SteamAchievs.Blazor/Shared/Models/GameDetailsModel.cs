@@ -1,5 +1,5 @@
 ﻿namespace TowerSoft.SteamAchievs.Blazor.Shared.Models {
-    public class GameDetailsModel {
+    public class GameDetailsModel : ICloneable {
         public long SteamGameID { get; set; }
 
         public long? HowLongToBeatID { get; set; }
@@ -21,5 +21,9 @@
         public double? CompletionistTime { get; set; }
 
         public double? AllStylesTime { get; set; }
+
+        public object Clone() {
+            return MemberwiseClone();
+        }
     }
 }

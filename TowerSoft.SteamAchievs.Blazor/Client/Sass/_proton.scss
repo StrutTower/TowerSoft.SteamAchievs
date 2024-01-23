@@ -3,7 +3,7 @@
 ///<reference path="../node_modules/bootstrap/scss/_variables-dark.scss" />
 
 .proton-db-badge {
-    color: black;
+    color: black !important;
     padding: .1rem 1rem;
     border-radius:4px;
     font-weight:600;

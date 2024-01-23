@@ -1,4 +1,5 @@
-﻿
+﻿@inject IJSRuntime JS
+@inject AchievementDataService achievementDataService
 
 <div class="pt-2">
     @if (Models?.Any() == true) {
@@ -12,50 +13,187 @@
                 </h5>
             </div>
             <div class="col-md-3 col-auto text-md-end">
-                <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@SteamGame.ID" class="btn btn-link">
+                <a href="Game/AddTag/@SteamGame.ID" class="btn btn-link">
                     <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
                 </a>
             </div>
         </div>
         <div class="row">
             <div class="col-md mb-2">
-                <select id="achieved-filter" class="form-select">
+                <select class="form-select" @bind="achievementFilter" @bind:after="FilterChanged">
                     <option value="">All Achievements</option>
                     <option value="True">Completed Achievements</option>
                     <option value="False">Incompleted Achievements</option>
                 </select>
             </div>
-            @*<div class="col-md mb-2">
-                    <select id="achievement-filter" hidden multiple>
-                        @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
-                            <option value="@tag.ID">@tag.Name</option>
-                        }
-                        <option value="BLANK">No Tags</option>
-                    </select>
-                </div>
-                <div class="col-md mb-2">
-                    <select id="hide-tag-filter" hidden multiple>
-                        @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
-                            <option value="@tag.ID">@tag.Name</option>
-                        }
-                        <option value="BLANK">No Tags</option>
-                    </select>
-                    <div id="hide-filter-overridden" class="text-warning hidden">Overridden</div>
-                </div>*@
+            <div class="col-md mb-2">
+                <BootstrapSelect @bind-Value="tagIncludeFilter" TItem="TagModel" TType="IEnumerable<int>" IsMultiple="true"
+                                 CssClass="form-control" PlaceholderText="Included Tag Filter"
+                                 Data="@Models.SelectMany(x => x.AchievementTags).Distinct().OrderBy(x => x.Name)"
+                                 @bind-Value:after="FilterChanged"
+                                 TextField="@((item) => item.Name)"
+                                 ValueField="@((item) => item.ID.ToString())" />
+            </div>
+            <div class="col-md mb-2">
+                <BootstrapSelect @bind-Value="tagExcludeFilter" TItem="TagModel" TType="IEnumerable<int>" IsMultiple="true"
+                                 CssClass="form-control" PlaceholderText="Excluded Tag Filter"
+                                 Data="@Models.SelectMany(x => x.AchievementTags).Distinct().OrderBy(x => x.Name)"
+                                 @bind-Value:after="FilterChanged"
+                                 TextField="@((item) => item.Name)"
+                                 ValueField="@((item) => item.ID.ToString())" />
+                @if (tagIncludeFilter.SafeAny() && tagExcludeFilter.SafeAny()) {
+                    <div class="text-warning">Overridden</div>
+                }
+            </div>
+            <div class="col-auto mb-2">
+                <button @onclick="ResetFiltersClicked" class="btn btn-secondary">Reset</button>
+            </div>
         </div>
-        @foreach (AchievementViewModel achievement in Models.OrderByDescending(x => x.Schema.GlobalCompletionPercentage)) {
-            @*<partial name="_Achievement" model="achievement" />*@
-            @*<AchievementList></AchievementList>*@
-            <Achievement Model=" achievement"></Achievement>
+        @foreach (AchievementViewModel achievement in filtered.OrderByDescending(x => x.Schema.GlobalCompletionPercentage)) {
+            <Achievement Model=" achievement" OnEditClicked="AchievementEditClicked"></Achievement>
         }
     } else {
         <h5 class="mt-3">This game does not have any achievements</h5>
     }
 </div>
-@code {
-    [Parameter]
-    public List<AchievementViewModel> Models { get; set; }
 
-    [Parameter]
-    public SteamGameModel SteamGame { get; set; }
+<BootstrapModal @ref="bootstrapModal" Title="Edit Achievement Details">
+    @if (editModel != null) {
+        <h4>@editingAchievement.Schema.Name</h4>
+
+        <EditForm Model="@editModel" OnValidSubmit="AchievementEditSubmit">
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label>Manual Description</label>
+                <InputText @bind-Value="@editModel.ManualDescription" class="form-control" />
+                <ValidationMessage For="@(() => editModel.ManualDescription)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Tags</label>
+                <BootstrapSelect @bind-Value="editModel.TagIDstrings" TItem="TagModel" TType="IEnumerable<string>" IsMultiple="true"
+                                 CssClass="form-control" PlaceholderText="No Tags"
+                                 Data="@Tags.OrderBy(x => x.Name)"
+                                 TextField="@((item) => item.Name)"
+                                 ValueField="@((item) => item.ID.ToString())" />
+                <ValidationMessage For="@(() => editModel.TagIDstrings)" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </EditForm>
+    }
+</BootstrapModal>
+
+
+@code {
+    [Parameter] public List<AchievementViewModel> Models { get; set; }
+
+    [Parameter] public SteamGameModel SteamGame { get; set; }
+
+    [Parameter] public List<TagModel> Tags { get; set; }
+
+    private AchievementViewModel editingAchievement = null;
+    private EditAchievementDetailsModel editModel = null;
+    private BootstrapModal bootstrapModal;
+
+    protected async override Task OnInitializedAsync() {
+        filtered = Models;
+    }
+
+    private async Task AchievementEditClicked(string achievementKey) {
+        editingAchievement = Models.Single(x => x.Schema.KeyName == achievementKey);
+        editModel = new() {
+            SteamGameID = SteamGame.ID,
+            AchievementKey = editingAchievement.Schema.KeyName,
+            ManualDescription = editingAchievement?.Details?.Description,
+            TagIDstrings = editingAchievement.AchievementTags.Select(x => x.ID.ToString()).ToArray()
+        };
+        bootstrapModal.Open();
+    }
+
+    private async Task AchievementEditSubmit() {
+        await achievementDataService.AddOrUpdateAchievementDetails(editModel);
+
+        if (!string.IsNullOrWhiteSpace(editModel.ManualDescription))
+            editingAchievement.Description = editModel.ManualDescription;
+        else
+            editingAchievement.Description = editingAchievement.Schema.Description;
+
+        if (editingAchievement.Details == null)
+            editingAchievement.Details = new() { SteamGameID = SteamGame.ID, AchievementKey = editModel.AchievementKey };
+        editingAchievement.Details.Description = editModel.ManualDescription;
+
+        editingAchievement.AchievementTags.Clear();
+        foreach (long tagID in editModel.TagIDs) {
+            TagModel tag = Tags.Single(x => x.ID == tagID);
+            editingAchievement.AchievementTags.Add(new() {
+                ID = tag.ID,
+                Name = tag.Name,
+                SteamGameID = tag.SteamGameID,
+                BackgroundColor = tag.BackgroundColor,
+                IsActive = tag.IsActive,
+                IsComplication = tag.IsComplication
+            });
+        }
+
+        editModel = null;
+
+        bootstrapModal.Close();
+    }
+
+
+    #region Filters
+    private List<AchievementViewModel> filtered;
+
+    private string achievementFilter;
+    private IEnumerable<int> tagIncludeFilter = new List<int>();
+    private IEnumerable<int> tagExcludeFilter = new List<int>();
+
+    private ElementReference tagIncludeElement;
+    private ElementReference tagExcludeElement;
+
+    private void ResetFiltersClicked() {
+        achievementFilter = "";
+        tagIncludeFilter = Enumerable.Empty<int>();
+        tagExcludeFilter = Enumerable.Empty<int>();
+        FilterChanged();
+    }
+
+    private void FilterChanged() {
+        if (achievementFilter == "True") {
+            filtered = Models.Where(x => x.UserAchievement.Achieved).ToList();
+        } else if (achievementFilter == "False") {
+            filtered = Models.Where(x => !x.UserAchievement.Achieved).ToList();
+        } else {
+            filtered = Models;
+        }
+
+        if (tagIncludeFilter.SafeAny()) {
+            filtered = filtered.Where(x => tagIncludeFilter.Any(z => x.AchievementTags.Select(y => y.ID).Contains(z))).ToList();
+        } else if (tagExcludeFilter.SafeAny()) {
+            filtered = filtered.Where(x => !tagExcludeFilter.Any(z => x.AchievementTags.Select(y => y.ID).Contains(z))).ToList();
+        }
+    }
+
+    private void TagIncludeChanged(ChangeEventArgs e) {
+        ((List<int>)tagIncludeFilter).Clear();
+        if (e.Value != null) {
+            foreach (string value in (string[])e.Value) {
+                ((List<int>)tagIncludeFilter).Add(int.Parse(value));
+            }
+        }
+        FilterChanged();
+    }
+
+    private void TagExcludeChanged(ChangeEventArgs e) {
+        ((List<int>)tagExcludeFilter).Clear();
+        if (e.Value != null) {
+            foreach (string value in (string[])e.Value) {
+                ((List<int>)tagExcludeFilter).Add(int.Parse(value));
+            }
+        }
+        FilterChanged();
+    }
+    #endregion
 }
