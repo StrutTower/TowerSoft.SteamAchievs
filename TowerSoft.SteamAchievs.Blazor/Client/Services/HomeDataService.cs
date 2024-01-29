@@ -14,13 +14,13 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
 
         public async Task<HomeViewModel> GetHomeViewModel() {
             return new HomeViewModel() {
-                RecentGames = await http.GetFromJsonAsync<RecentGameModel[]>("RecentGame"),
-                PerfectLostCount = await http.GetFromJsonAsync<int>("PerfectGame/IncompleteCount")
+                RecentGames = await http.GetFromJsonAsync<RecentGameModel[]>("api/RecentGame"),
+                PerfectLostCount = await http.GetFromJsonAsync<int>("api/PerfectGame/IncompleteCount")
             };
         }
 
         public async Task<GameListModel> GetPerfectLostGameListModel() {
-            PerfectGameModel[] incompleteGames = await http.GetFromJsonAsync<PerfectGameModel[]>("PerfectGame/Incomplete");
+            PerfectGameModel[] incompleteGames = await http.GetFromJsonAsync<PerfectGameModel[]>("api/PerfectGame/Incomplete");
             return await gameListDataService.GetGameListModel(incompleteGames.Select(x => x.SteamGameID));
         }
     }

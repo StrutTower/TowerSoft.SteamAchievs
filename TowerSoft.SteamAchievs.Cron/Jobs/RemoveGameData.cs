@@ -35,7 +35,6 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
             SteamAchievementSchemaRepository steamAchievementSchemaRepo = uow.GetRepo<SteamAchievementSchemaRepository>();
             AchievementDetailsRepository achievementDetailsRepo = uow.GetRepo<AchievementDetailsRepository>();
             AchievementTagRepository achievementTagRepo = uow.GetRepo<AchievementTagRepository>();
-            GameComplicationRepository gameComplicationRepo = uow.GetRepo<GameComplicationRepository>();
             GameDetailsRepository gameDetailsRepo = uow.GetRepo<GameDetailsRepository>();
             PerfectGameRepository perfectGameRepo = uow.GetRepo<PerfectGameRepository>();
             RecentGameRepository recentGameRepo = uow.GetRepo<RecentGameRepository>();
@@ -79,10 +78,6 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 List<SteamAchievementSchema> achievementSchemas = steamAchievementSchemaRepo.GetBySteamGameID(steamGame.ID);
                 if (achievementSchemas.SafeAny())
                     achievementSchemas.ForEach(x => steamAchievementSchemaRepo.Remove(x));
-
-                List<GameComplication> gameComplications = gameComplicationRepo.GetBySteamGameID(steamGame.ID);
-                if (gameComplications.SafeAny())
-                    gameComplications.ForEach(x => gameComplicationRepo.Remove(x));
 
                 List<SteamGameCategory> steamGameCategories = steamGameCategoryRepository.GetBySteamGameID(steamGame.ID);
                 if (steamGameCategories.SafeAny())

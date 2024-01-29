@@ -1,0 +1,67 @@
+﻿@page "/Admin/Company/Games/{ID:long?}"
+@inject CompanyDataService service
+
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Admin">Site Management</a></li>
+    <li class="breadcrumb-item"><a href="Admin/Company">Companies</a></li>
+    <li class="breadcrumb-item active">Company Games</li>
+</ul>
+
+@if (Company == null) {
+    <Loading />
+} else {
+    <h3>@Company.Name Games</h3>
+    <hr />
+
+    @if (Games != null) {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Developers</th>
+                        <th>Publishers</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (GameCompanyViewModel game in Games.OrderBy(x => x.SteamGame.Name)) {
+                        <tr>
+                            <td>@game.SteamGame.Name</td>
+                            <td>
+                                @string.Join(", ", game.Developers.Select(x => x.Name))
+                            </td>
+                            <td>
+
+                                @string.Join(", ", game.Publishers.Select(x => x.Name))
+                            </td>
+                            <td>
+                                <a href="Game/View/@game.SteamGame.ID">
+                                    <span class="mdi mdi-fw mdi-eye"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public long ID { get; set; }
+
+    private CompanyModel Company;
+
+    private List<GameCompanyViewModel> Games;
+
+    protected async override Task OnInitializedAsync() {
+        Company = await service.GetByID(ID);
+        Games = await service.GetGamesByCompanyID(ID);
+
+        //Company = await service.GetByID(ID);
+        //Games = await service.GetGamesByCompanyID(ID);
+    }
+}

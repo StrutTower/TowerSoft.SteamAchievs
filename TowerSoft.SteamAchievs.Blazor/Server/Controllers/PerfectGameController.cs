@@ -5,7 +5,7 @@ using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Repository;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PerfectGameController : ControllerBase {
         private readonly PerfectGameRepository repo;

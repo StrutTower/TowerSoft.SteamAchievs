@@ -15,11 +15,11 @@ ServiceProvider services = ConfigureServices();
 
 if (Debugger.IsAttached) {
     //services.GetService<RemoveGameData>().Run();
-    //services.GetService<FullGameSync>().StartJob();
+    services.GetService<FullGameSync>().StartJob();
     //services.GetService<HiddenAchievementSync>().StartJob();
     //services.GetService<PerfectGameScan>().StartJob();
     //services.GetService<RecentGamesSync>().StartJob();
-    services.GetService<HowLongToBeatSync>().StartJob();
+    //services.GetService<HowLongToBeatSync>().StartJob();
     //services.GetService<UpdateGameDetails>().StartJob();
     //services.GetService<ProtonDbSync>().StartJob();
     Environment.Exit(1);

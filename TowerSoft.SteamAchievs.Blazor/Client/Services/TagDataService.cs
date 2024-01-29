@@ -12,21 +12,21 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
         }
 
         public async Task<TagModel> GetTag(long id) {
-            return await http.GetFromJsonAsync<TagModel>("Tag/" + id);
+            return await http.GetFromJsonAsync<TagModel>("api/Tag/" + id);
         }
 
         public async Task<TagModel[]> GetActiveBySteamGameID(long steamGameID) {
-            return await http.GetFromJsonAsync<TagModel[]>("Tag/Assigned/" + steamGameID);
+            return await http.GetFromJsonAsync<TagModel[]>("api/Tag/Assigned/" + steamGameID);
         }
 
         public async Task<AdminTagListModel> GetAdminTagListModel() {
             AdminTagListModel model = new() { Tags = new() };
 
-            TagModel[] tags = await http.GetFromJsonAsync<TagModel[]>("Tag");
+            TagModel[] tags = await http.GetFromJsonAsync<TagModel[]>("api/Tag");
 
             IEnumerable<long> steamGameIDs = tags.Where(x => x.SteamGameID.HasValue).Select(x => x.SteamGameID.Value);
 
-            Dictionary<long, SteamGameModel> games = (await http.PostGetFromJson<SteamGameModel[]>("SteamGame/GetByIDs", steamGameIDs)).ToDictionary(x => x.ID);
+            Dictionary<long, SteamGameModel> games = (await http.PostGetFromJson<SteamGameModel[]>("api/SteamGame/GetByIDs", steamGameIDs)).ToDictionary(x => x.ID);
 
             foreach (TagModel tag in tags.OrderBy(x => x.Name)) {
                 TagViewModel tagViewModel = new() {
@@ -45,10 +45,10 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
 
         public async Task AddOrUpdate(TagModel tag) {
             if (tag.ID == 0) {
-                await http.PostAsJsonAsync("Tag", tag);
+                await http.PostAsJsonAsync("api/Tag", tag);
                 
             } else {
-                await http.PutAsJsonAsync("Tag", tag);
+                await http.PutAsJsonAsync("api/Tag", tag);
             }
         }
     }

@@ -10,7 +10,7 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
         }
 
         public async Task AddOrUpdateGameDetails(GameDetailsModel gameDetails) {
-            await http.PostAsJsonAsync("GameDetails", gameDetails);
+            await http.PostAsJsonAsync("api/GameDetails", gameDetails);
         }
     }
 }

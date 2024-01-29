@@ -1,0 +1,91 @@
+﻿@page "/Admin/Company/Edit/{ID:long?}"
+@using System.Globalization
+@inject CompanyDataService service
+@inject NavigationManager navManager
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Admin">Site Management</a></li>
+    <li class="breadcrumb-item"><a href="Admin/Company">Companies</a></li>
+    <li class="breadcrumb-item active">Edit Company</li>
+</ul>
+
+<h3>Edit Company</h3>
+<hr />
+
+@if (Model == null || Companies == null) {
+    <Loading />
+} else {
+    <h4>@Model.Name</h4>
+
+    <EditForm Model="@Model" OnSubmit="OnSubmit">
+        <div class="mb-3">
+            <InputText @bind-Value="Model.Name" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <div class="input-group">
+                <select @bind="@Model.RedirectToID" class="form-select">
+                    <option value="">Null</option>
+                    @foreach (CompanyModel company in Companies.OrderBy(x => x.Name)) {
+                        <option value="@company.ID">@company.Name</option>
+                    }
+                </select>
+                @*<BootstrapSelect @bind-Value="RedirectToIDstring" TItem="CompanyModel" TType="string"
+                                     PlaceholderText="Do Not Redirect"
+                                     Data="Companies.OrderBy(x => x.Name)" ShowSearch="true"
+                                     TextField="@((item) => $"{item.ID}: {item.Name}")"
+                                     ValueField="@((item) => item.ID.ToString())">
+                        <option value="">Null</option>
+                    </BootstrapSelect>*@
+                @*<button type="button" class="btn btn-secondary" @onclick="ClearRedirect">Clear</button>*@
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </EditForm>
+}
+
+<h4></h4>
+
+@code {
+    [Parameter] public long ID { get; set; }
+
+    private CompanyModel Model;
+
+    private List<CompanyModel> Companies;
+
+    private string originalName;
+
+    public string RedirectToIDstring;
+
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.GetByID(ID);
+        originalName = Model.Name;
+        RedirectToIDstring = Model.RedirectToID.ToString();
+
+        Companies = (await service.GetAll()).ToList();
+        Companies.Remove(Companies.Single(x => x.ID == ID));
+    }
+
+    private async Task OnSubmit() {
+        bool failed = false;
+        if (Model.Name.ToLower() != originalName.ToLower()) {
+            failed = true;
+        }
+
+        if (!failed) {
+            //Model.RedirectToID = long.Parse(RedirectToIDstring);
+
+
+            await service.UpdateCompany(Model);
+            navManager.NavigateTo("/Admin/Company");
+        }
+    }
+
+    private async Task ClearRedirect() {
+        RedirectToIDstring = null;
+        Model.RedirectToID = null;
+    }
+}

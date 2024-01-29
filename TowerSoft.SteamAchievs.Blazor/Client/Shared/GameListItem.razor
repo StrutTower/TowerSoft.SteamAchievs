@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="col-auto text-center">
-                    <div class="column-label">Perfect Possible</div>
+                    <div class="column-label">Perfectable</div>
                     <div>
                         @if (Model.Details?.PerfectPossible != null) {
                             @Model.Details.PerfectPossible
@@ -36,10 +36,10 @@
                 </div>
 
                 <div class="col-auto text-center">
-                    <div class="column-label">Deck Compatibility</div>
+                    <div class="column-label">Play Next #</div>
                     <div>
-                        @if (Model.SteamGame.DeckCompatibility != null) {
-                            @Model.SteamGame.DeckCompatibility
+                        @if (Model?.Details?.PlayNextScore != null) {
+                            @Model?.Details?.PlayNextScore
                         } else {
                             <em class="text-faded">null</em>
                         }
@@ -139,7 +139,7 @@
             @if (Model?.ComplicationTags.Any() == true) {
                 <div>
                     @foreach (TagModel tag in Model.ComplicationTags.OrderBy(x => x.Name)) {
-                        <span class="badge" style="background-color:@tag.BackgroundColor">@tag.Name</span>
+                        <span class="badge mx-1" style="background-color:@tag.BackgroundColor">@tag.Name</span>
                     }
                 </div>
             }
@@ -236,6 +236,16 @@
                 </td>
             </tr>
         </table>
+
+        <div style="height:1.3rem">
+            @if (Model?.ComplicationTags.Any() == true) {
+                <div>
+                    @foreach (TagModel tag in Model.ComplicationTags.OrderBy(x => x.Name)) {
+                        <span class="badge mx-1" style="background-color:@tag.BackgroundColor">@tag.Name</span>
+                    }
+                </div>
+            }
+        </div>
     </div>
 </a>
 

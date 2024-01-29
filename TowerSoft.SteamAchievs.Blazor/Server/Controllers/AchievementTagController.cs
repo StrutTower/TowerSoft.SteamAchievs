@@ -4,8 +4,7 @@ using TowerSoft.SteamAchievs.Blazor.Shared.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
-    [Route("[controller]")]
-    [ApiController]
+    [Route("api/[controller]"), ApiController]
     public class AchievementTagController : ControllerBase {
         private readonly AchievementTagRepository repo;
         private readonly IMapper mapper;

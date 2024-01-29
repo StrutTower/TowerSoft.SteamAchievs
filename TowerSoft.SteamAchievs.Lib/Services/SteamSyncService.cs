@@ -6,8 +6,6 @@ using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
 using TowerSoft.SteamAchievs.Lib.Utilities;
-using TowerSoft.SteamGridDbWrapper.Models;
-using TowerSoft.SteamGridDbWrapper;
 using TowerSoft.SteamTower.Models;
 using TowerSoft.Utilities;
 using TowerSoft.SteamTower;
@@ -17,18 +15,16 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
     public class SteamSyncService {
         private readonly UnitOfWork uow;
         private readonly SteamApiClient steamApi;
-        //private readonly SteamGridClient steamGridClient;
         private readonly ProtonDbService protonDbService;
         private readonly HowLongToBeatService howLongToBeatService;
         private readonly ILogger logger;
         private readonly AppSettings appSettings;
 
-        public SteamSyncService(UnitOfWork uow, SteamApiClient steamApi, /*SteamGridClient steamGridClient,*/
+        public SteamSyncService(UnitOfWork uow, SteamApiClient steamApi,
             ProtonDbService protonDbService, HowLongToBeatService howLongToBeatService,
             IOptionsSnapshot<AppSettings> appSettings, ILogger<SteamSyncService> logger) {
             this.uow = uow;
             this.steamApi = steamApi;
-            //this.steamGridClient = steamGridClient;
             this.protonDbService = protonDbService;
             this.howLongToBeatService = howLongToBeatService;
             this.appSettings = appSettings.Value;
@@ -37,6 +33,11 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
 
         public List<UserAppModel> LoadSteamData(List<OwnedApp> ownedApps) {
             List<UserAppModel> userAppModels = new();
+
+            CompanyRepository companyRepo = uow.GetRepo<CompanyRepository>();
+            Dictionary<string, Company> companies = companyRepo.GetAll().ToDictionary(x => x.Name.ToLower());
+            Dictionary<long, Company> companiesByID = companies.Values.ToDictionary(x => x.ID);
+
             int count = 1;
             foreach (OwnedApp ownedApp in ownedApps.OrderBy(x => x.Name)) {
                 ownedApp.Name = ownedApp.Name.SafeTrim();
@@ -45,8 +46,8 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                     logger.LogInformation($"ID {ownedApp.SteamAppID} is ignored. Skipping {ownedApp.Name}");
                     continue;
                 }
-                // Making requests too quickly seems to cause a short soft ban from Steam's API
 
+                // Making requests too quickly seems to cause a short soft ban from Steam's API
                 SteamApp steamApp = steamApi.StoreClient.GetSteamApp(ownedApp.SteamAppID).Result;
                 if (steamApp != null)
                     steamApp.Name = steamApp.Name.SafeTrim();
@@ -79,15 +80,6 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                     continue;
                 }
 
-                //SteamGridGame steamGridGame = steamGridClient.GetGameBySteamID(ownedApp.SteamAppID);
-                //SteamGridImage gridImage = null;
-                //SteamGridImage heroImage = null;
-                //if (steamGridGame != null) {
-                //    gridImage = steamGridClient.GetBestGridImage(steamGridGame.ID);
-                //    heroImage = steamGridClient.GetBestHeroImage(steamGridGame.ID);
-                //}
-
-
                 List<HltbModel> hltbModels = howLongToBeatService.Search(ownedApp.Name).Result;
                 HltbModel? matchedHltbModel = null;
                 if (hltbModels.Count == 1) {
@@ -104,13 +96,48 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                     UserAchievements = steamApi.UserStatsClient.GetUserAchievements(appSettings.DefaultSteamUserID, ownedApp.SteamAppID).Result,
                     DeckCompatibility = steamApi.StoreClient.GetDeckCompatibility(ownedApp.SteamAppID).Result,
                     ReviewSummary = steamApi.StoreClient.GetReviews(ownedApp.SteamAppID).Result,
-                    //GridImage = gridImage,
-                    //HeroImage = heroImage,
                     HltbModel = matchedHltbModel,
                     ProtonDbGame = protonDbGame,
                     UserTags = userTags,
-                    Delisted = delisted
+                    Delisted = delisted,
+                    Developers = new(),
+                    Publishers = new()
                 };
+
+
+                if (steamApp.Developers.SafeAny()) {
+                    foreach (string dev in steamApp.Developers) {
+                        if (string.IsNullOrWhiteSpace(dev)) continue;
+                        string devTrimmed = dev.Trim();
+
+                        Company company;
+                        if (companies.ContainsKey(devTrimmed.ToLower())) {
+                            company = companies[devTrimmed.ToLower()];
+                        } else {
+                            company = new Company { Name = devTrimmed };
+                            companyRepo.Add(company);
+                            companies.Add(devTrimmed.ToLower(), company);
+                        }
+                        model.Developers.Add(company.ID);
+                    }
+                }
+
+                if (steamApp.Publishers.SafeAny()) {
+                    foreach (string pub in steamApp.Publishers) {
+                        if (string.IsNullOrWhiteSpace(pub)) continue;
+                        string pubTrimmed = pub.Trim();
+
+                        Company company;
+                        if (companies.ContainsKey(pubTrimmed.ToLower())) {
+                            company = companies[pubTrimmed.ToLower()];
+                        } else {
+                            company = new Company { Name = pubTrimmed };
+                            companyRepo.Add(company);
+                            companies.Add(pubTrimmed.ToLower(), company);
+                        }
+                        model.Publishers.Add(company.ID);
+                    }
+                }
 
                 logger.LogInformation($"{count}/{ownedApps.Count}: {ownedApp.Name} - {steamApp.AchievmentCount} Achievements");
                 userAppModels.Add(model);
@@ -130,6 +157,7 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
             SyncSteamGameUserTags(userAppModels);
             SyncAchievementSchemas(userAppModels);
             SyncSteamUserAchievements(userAppModels);
+            SyncCompanies(userAppModels);
         }
 
         public void SyncSteamGames(List<UserAppModel> userAppModels) {
@@ -172,6 +200,25 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
             var steamEntities = ModelConvert.ToSteamUserTags(userAppModels).ToHashSet(comparer);
 
             SyncData(repo, dbEntities, steamEntities, new AllPropertyComparer<SteamUserTag>(), comparer);
+        }
+
+        private void SyncCompanies(List<UserAppModel> userAppModels) {
+            GameCompanyRepository repo = uow.GetRepo<GameCompanyRepository>();
+            var dbEntities = repo.GetAll().ToHashSet();
+
+            List<GameCompany> gameCompanies = ModelConvert.ToGameDevelopers(userAppModels).ToList();
+            gameCompanies.AddRange(ModelConvert.ToGamePublishers(userAppModels));
+            var steamEntities = gameCompanies.ToHashSet();
+
+            SyncData(repo, dbEntities, steamEntities, new AllPropertyComparer<GameCompany>());
+
+            List<long> syncedGameIDs = userAppModels.Select(x => x.SteamApp.ID).ToList();
+
+            var syncedDbEnties = dbEntities.Where(x => syncedGameIDs.Contains(x.SteamGameID)).ToHashSet();
+
+            foreach (GameCompany remove in syncedDbEnties.Except(steamEntities)) {
+                repo.Remove(remove);
+            }
         }
 
         private void SyncSteamGameUserTags(List<UserAppModel> userAppModels) {

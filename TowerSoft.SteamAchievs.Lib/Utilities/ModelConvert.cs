@@ -128,7 +128,7 @@ namespace TowerSoft.SteamAchievs.Lib.Utilities {
                 if (userAppModel.GameStatsSchema == null || !userAppModel.GameStatsSchema.Achievements.SafeAny()) continue;
 
                 foreach (AchievementSchema schema in userAppModel.GameStatsSchema.Achievements) {
-                   GlobalAchievementStat globalAchievementStat = userAppModel.GlobalAchievementStats.SingleOrDefault(x => x.Key == schema.Key);
+                    GlobalAchievementStat globalAchievementStat = userAppModel.GlobalAchievementStats.SingleOrDefault(x => x.Key == schema.Key);
                     yield return new SteamAchievementSchema {
                         KeyName = schema.Key,
                         SteamGameID = userAppModel.OwnedApp.SteamAppID,
@@ -145,14 +145,40 @@ namespace TowerSoft.SteamAchievs.Lib.Utilities {
         }
 
         internal static IEnumerable<SteamUserAchievement> ToSteamUserAchievements(List<UserAppModel> userAppModels) {
-            foreach(UserAppModel userAppModel in userAppModels) {
+            foreach (UserAppModel userAppModel in userAppModels) {
                 if (!userAppModel.UserAchievements.SafeAny()) continue;
-                foreach(UserAchievement userAchievement in userAppModel.UserAchievements) {
+                foreach (UserAchievement userAchievement in userAppModel.UserAchievements) {
                     yield return new SteamUserAchievement {
                         SteamGameID = userAppModel.OwnedApp.SteamAppID,
                         KeyName = userAchievement.AchievementKey,
                         Achieved = userAchievement.Achieved,
                         AchievedOn = userAchievement.AchievedOn,
+                    };
+                }
+            }
+        }
+
+        internal static IEnumerable<GameCompany> ToGameDevelopers(List<UserAppModel> userAppModels) {
+            foreach (UserAppModel userAppModel in userAppModels) {
+                if (!userAppModel.Developers.SafeAny()) continue;
+                foreach (long devID in userAppModel.Developers) {
+                    yield return new GameCompany {
+                        SteamGameID = userAppModel.SteamApp.ID,
+                        CompanyID = devID,
+                        IsDeveloper = true
+                    };
+                }
+            }
+        }
+
+        internal static IEnumerable<GameCompany> ToGamePublishers(List<UserAppModel> userAppModels) {
+            foreach (UserAppModel userAppModel in userAppModels) {
+                if (!userAppModel.Publishers.SafeAny()) continue;
+                foreach (long pubID in userAppModel.Publishers) {
+                    yield return new GameCompany {
+                        SteamGameID = userAppModel.SteamApp.ID,
+                        CompanyID = pubID,
+                        IsDeveloper = false
                     };
                 }
             }

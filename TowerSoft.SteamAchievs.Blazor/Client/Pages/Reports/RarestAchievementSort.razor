@@ -1,0 +1,98 @@
+﻿@page "/Reports/RarestAchievementSort"
+@inject GameDataService service
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Reports">Reports</a></li>
+    <li class="breadcrumb-item active">Rarest Achievement Sort</li>
+</ul>
+
+<h3>Rarest Achievement Sort</h3>
+<p>Sorts game by the losest global completion percentages.</p>
+<hr />
+
+@if (Models == null) {
+    <Loading />
+} else {
+    <Virtualize Items="Filtered" Context="game" OverscanCount="8">
+        <a href="Game/View/@game.Game.ID" class="d-block link-section border-bottom py-2">
+            <div class="row">
+                <div class="col-auto">
+                    @if (string.IsNullOrWhiteSpace(game.Game.HeaderImageUrl)) {
+                        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@game.Game.ID/header.jpg" class="img-fluid header-img" />
+                    } else {
+                        <img src="@game.Game.HeaderImageUrl" class="img-fluid header-img" />
+                    }
+                </div>
+                <div class="col">
+                    <div class="display-6 d-none d-xl-block">@game.Game.NameClean</div>
+                    <h4 class="d-xl-none">@game.Game.NameClean</h4>
+
+                    <div>Rarest Achievement Percentage: @Math.Round(game.RarestAchievementPercentage, 1)%</div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="progress" role="progressbar" aria-valuenow="@game.AchievedCount" aria-valuemin="0" aria-valuemax="@game.Game.AchievementCount" style="height:1.5rem;">
+                                <div class="progress-bar @(game.Perfect ? "progress-bar-striped progress-bar-animated" : "")" style="font-size:1.2em;width: @(game.AchievProgressWidth)%;transition: width 0s linear">
+                                    @if (game.AchievProgressWidth >= 20) {
+                                        <span>
+                                            @Math.Round(game.AchievProgressWidth, 1)%
+                                        </span>
+                                    }
+                                </div>
+                                @if (game.AchievProgressWidth < 20) {
+                                    <div class="text-center flex-grow-1" style="font-size:1.2em;">
+                                        @Math.Round(game.AchievProgressWidth, 1)%
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            @game.AchievedCount / @game.Game.AchievementCount
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-auto text-center">
+                            <div class="column-label">Main Story Time</div>
+                            <div>
+                                @if (game?.Details?.MainStoryTime > 0) {
+                                    @game.Details.MainStoryTime
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-auto text-center">
+                            <div class="column-label">Completionist Time</div>
+                            <div>
+                                @if (game?.Details?.CompletionistTime > 0) {
+                                    @game.Details.CompletionistTime
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </Virtualize>
+}
+
+<ScrollMemory />
+
+@code {
+    [Parameter] public bool showPerfect { get; set; }
+
+    private List<RarestAchievementGameModel> Models;
+
+    private List<RarestAchievementGameModel> Filtered;
+
+    protected async override Task OnInitializedAsync() {
+        Models = await service.GetRarestAchievementGameModels();
+        if (showPerfect) {
+            Filtered = Models;
+        } else {
+            Filtered = Models.Where(x => !x.Perfect).ToList();
+        }
+    }
+}

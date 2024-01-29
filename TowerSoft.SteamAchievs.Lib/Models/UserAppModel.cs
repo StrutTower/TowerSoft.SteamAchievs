@@ -29,5 +29,9 @@ namespace TowerSoft.SteamAchievs.Lib.Models {
         public List<string> UserTags { get; set; }
 
         public bool Delisted { get; set; }
+
+        public List<long> Developers { get; set; }
+
+        public List<long> Publishers { get; set; }
     }
 }

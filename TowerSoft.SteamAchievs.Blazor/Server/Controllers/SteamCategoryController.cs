@@ -4,7 +4,7 @@ using TowerSoft.SteamAchievs.Blazor.Shared.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SteamCategoryController : ControllerBase {
         private readonly SteamCategoryRepository repo;

@@ -24,5 +24,25 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
         public async Task<List<SteamAchievementSchema>> GetBySteamGameIDAsync(long steamGameID) {
             return await GetEntitiesAsync(WhereEqual(x => x.SteamGameID, steamGameID));
         }
+
+        public List<SteamAchievementSchema> GetByIDs(IEnumerable<long> ids) {
+            if (ids == null || !ids.Any()) return default;
+
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery +=
+                $"WHERE SteamGameID IN (";
+
+            int counter = 1;
+            List<string> inStatements = new();
+            foreach (long id in ids) {
+                inStatements.Add($"@{counter}");
+                query.AddParameter($"@{counter}", id);
+                counter++;
+            }
+
+            query.SqlQuery += string.Join(",", inStatements) + ") ";
+
+            return GetEntities(query);
+        }
     }
 }

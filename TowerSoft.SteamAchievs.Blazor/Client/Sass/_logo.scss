@@ -1,0 +1,41 @@
+
+.twr-logo {
+    display: inline-block;
+    font-size: 1em;
+    position: relative;
+    height: 0.9em;
+    width: 1em;
+
+    span {
+        position: absolute;
+        display: block;
+        box-sizing: content-box;
+        height: .1em;
+        width: .5em;
+        background: white;
+
+        &:nth-child(1) {
+            transform: rotate(45deg) skew(-45deg);
+            right: calc(1em / 6);
+            top: calc(1em / 5.1);
+        }
+
+        &:nth-child(2) {
+            transform: rotate(45deg) skew(-45deg);
+            left: calc(1em / 6);
+            bottom: calc(1em / 5.1);
+        }
+
+        &:nth-child(3) {
+            transform: skew(45deg);
+            top: calc(1em /3.1);
+            left: calc(1em / 20);
+        }
+
+        &:nth-child(4) {
+            transform: skew(45deg);
+            bottom: calc(1em / 3.1);
+            right: calc(1em / 20);
+        }
+    }
+}

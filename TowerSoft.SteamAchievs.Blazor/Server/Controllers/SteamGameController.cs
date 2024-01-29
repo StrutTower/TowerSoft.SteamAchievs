@@ -12,7 +12,7 @@ using TowerSoft.Utilities;
 using Microsoft.Extensions.Options;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SteamGameController : Controller {
         private readonly SteamGameRepository repo;
@@ -56,6 +56,11 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
         [HttpGet("GameListType/{gameListType}")]
         public async Task<SteamGameModel[]> GetByGameListType(GameListType gameListType) {
             return mapper.Map<SteamGameModel[]>(await repo.GetByGameListTypeAsync(gameListType));
+        }
+
+        [HttpGet("[action]/{companyID}")]
+        public async Task<SteamGameModel[]> GetByCompanyID(long companyID) {
+            return mapper.Map<SteamGameModel[]>(await repo.GetByCompanyID(companyID));
         }
 
         [HttpGet("Resync/{id}")]

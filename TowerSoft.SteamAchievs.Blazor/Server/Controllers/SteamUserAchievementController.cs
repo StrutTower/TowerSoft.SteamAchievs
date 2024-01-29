@@ -4,7 +4,7 @@ using TowerSoft.SteamAchievs.Blazor.Shared.Models;
 using TowerSoft.SteamAchievs.Lib.Repository;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SteamUserAchievementController : ControllerBase {
         private readonly SteamUserAchievementRepository repo;
@@ -28,6 +28,11 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
         [HttpGet("SteamGameID/{steamGameID}")]
         public async Task<SteamUserAchievementModel[]> GetBySteamGameID(long steamGameID) {
             return mapper.Map<SteamUserAchievementModel[]>(await repo.GetBySteamGameIDAsync(steamGameID));
+        }
+
+        [HttpGet("[action]")]
+        public async Task<SteamUserAchievementModel[]> LatestUnlocked() {
+            return mapper.Map<SteamUserAchievementModel[]>(await repo.GetLatestUnlocked());  
         }
 
         [HttpPost("[action]")]

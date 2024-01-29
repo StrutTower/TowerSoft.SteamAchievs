@@ -8,6 +8,15 @@
         } else {
             <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
         }
+
+        @if (Model.ComplicationTags.SafeAny()) {
+            <div class="mb-3">
+                <div class="column-label">Complications</div>
+                @foreach (TagModel tag in Model.ComplicationTags) {
+                    <span class="badge mx-1" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+                }
+            </div>
+        }
     </div>
     <div class="col-12 col-lg font-shadow">
         <div class="display-6">@Model.SteamGame.NameClean</div>
@@ -33,6 +42,18 @@
 
         <div class="row mb-3">
             <div class="col-auto">
+                <div class="column-label">Total Playtime</div>
+                <div class="text-center"><MinutesToTimeString Minutes="@Model.SteamGame.TotalPlaytime" /></div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">Windows Playtime</div>
+                <div class="text-center"><MinutesToTimeString Minutes="@Model.SteamGame.WindowsTotalPlaytime" /></div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">Linux Playtime</div>
+                <div class="text-center"><MinutesToTimeString Minutes="@Model.SteamGame.LinuxTotalPlaytime" /></div>
+            </div>
+            <div class="col-auto">
                 <div class="column-label">Deck Compatibility</div>
                 <div class="text-center"><DeckCompatibility Compatibility="@Model.SteamGame.DeckCompatibility" /></div>
             </div>
@@ -44,14 +65,33 @@
             </div>
         </div>
 
-        @if (Model.ComplicationTags.SafeAny()) {
-            <div class="mb-3">
-                <div class="column-label">Complications</div>
-                @foreach (TagModel tag in Model.ComplicationTags) {
-                    <span class="badge mx-1" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
-                }
+        <div class="row mb-2">
+            <div class="col-auto text-center">
+                <div class="column-label">Developer@(Model.Developers.Count == 1 ? "" : "s")</div>
+                <div>
+                    @if (Model.Developers.SafeAny()) {
+                        @foreach (CompanyModel company in Model.Developers.OrderBy(x => x.Name)) {
+                            <div>@company.Name</div>
+                        }
+                    } else {
+                        @:Unknown
+                    }
+                </div>
             </div>
-        }
+
+            <div class="col-auto text-center">
+                <div class="column-label">Publisher@(Model.Publishers.Count == 1 ? "" : "s")</div>
+                <div>
+                    @if (Model.Publishers.SafeAny()) {
+                        @foreach (CompanyModel company in Model.Publishers.OrderBy(x => x.Name)) {
+                            <div>@company.Name</div>
+                        }
+                    } else {
+                        @:Unknown
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -62,7 +102,7 @@
             <DataAnnotationsValidator />
 
             <div class="mb-3">
-                <label>Perfect Possible</label>
+                <label>Perfectable</label>
                 <div>
                     <InputRadioGroup Name="PerfectPossible" @bind-Value="editDetails.PerfectPossible" TValue="bool?">
                         <div class="form-check form-check-inline">

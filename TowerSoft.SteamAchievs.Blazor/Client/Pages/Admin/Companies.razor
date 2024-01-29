@@ -1,0 +1,98 @@
+﻿@page "/Admin/Company"
+@inject CompanyDataService service
+@inject NavigationManager navManager
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Admin">Site Management</a></li>
+    <li class="breadcrumb-item active">Companies</li>
+</ul>
+
+<h3>Companies</h3>
+<hr />
+
+@if (Models == null) {
+    <Loading />
+} else {
+
+    <div class="row mb-3">
+        <div class="col-lg-4 col-md-6 col">
+            <div class="input-group">
+                <InputText @bind-Value="Filter" @oninput="(e) => Filter = e.Value.ToString()" class="form-control"></InputText>
+                <button type="button" class="btn btn-secondary" @onclick="ResetFilter">Reset</button>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped w-auto">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>RedirectID</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CompanyModel company in Filtered.OrderBy(x => x.Name)) {
+                    <tr>
+                        <td>
+                            <a href="Admin/Company/Edit/@company.ID">
+                                <span class="mdi mdi-fw mdi-square-edit-outline"></span>
+                            </a>
+                        </td>
+                        <td>@company.ID</td>
+                        <td>@company.Name</td>
+                        <td>@company.RedirectToID</td>
+
+                        <td>
+                            <a href="Admin/Company/Games/@company.ID">View Games</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private string _filter;
+    [Parameter]
+    public string Filter {
+        get { return _filter; }
+        set {
+            _filter = value;
+
+            string url = navManager.GetUriWithQueryParameter("Filter", _filter);
+            navManager.NavigateTo(url, false, true);
+            FilterUpdated();
+        }
+    }
+
+    private CompanyModel[] Models;
+
+    private IEnumerable<CompanyModel> Filtered;
+
+    protected async override Task OnInitializedAsync() {
+        Models = await service.GetAll();
+
+        System.Collections.Specialized.NameValueCollection parameters = System.Web.HttpUtility.ParseQueryString(new Uri(navManager.Uri).Query);
+
+        if (parameters.AllKeys.Contains("Filter"))
+            Filter = parameters["Filter"];
+        await FilterUpdated();
+    }
+
+    private async Task FilterUpdated() {
+        if (string.IsNullOrWhiteSpace(Filter))
+            Filtered = Models;
+        else
+            Filtered = Models.Where(x => x.Name.ToLower().Contains(Filter.ToLower().Trim()));
+    }
+
+    private async Task ResetFilter() {
+        Filtered = Models;
+        Filter = string.Empty;
+    }
+}

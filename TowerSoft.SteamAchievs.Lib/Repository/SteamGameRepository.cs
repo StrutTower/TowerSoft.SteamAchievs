@@ -71,6 +71,18 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             return await GetEntitiesAsync(Where(x => x.Name, Comparison.LikeBothSidesWildcard, q));
         }
 
+        public async Task<List<SteamGame>> GetByCompanyID(long companyID) {
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery += 
+                $"INNER JOIN gamecompany gc ON {TableName}.ID = gc.SteamGameID " +
+                $"INNER JOIN company c ON c.ID = gc.CompanyID " +
+                $"WHERE gc.CompanyID = @CompanyID " +
+                $"OR c.RedirectToID = @CompanyID " +
+                $"GROUP BY {TableName}.ID ";
+            query.AddParameter("@CompanyID", companyID);
+            return GetEntities(query);
+        }
+
         public List<SteamGame> GetWithAchievementsNeedingDescription() {
             QueryBuilder query = GetQueryBuilder();
             query.SqlQuery += $"" +
@@ -90,11 +102,27 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             return GetEntities(query);
         }
 
+        public async Task<List<SteamGame>> GetWithNullPerfectPossibleAsync() {
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery += $"" +
+                $"LEFT JOIN GameDetails gd ON {TableName}.ID = gd.SteamGameID " +
+                $"WHERE PerfectPossible IS NULL ";
+            return await GetEntitiesAsync(query);
+        }
+
         public List<SteamGame> GetWithNullPlayPriority() {
             QueryBuilder query = GetQueryBuilder();
             query.SqlQuery += $"" +
                 $"LEFT JOIN GameDetails gd ON {TableName}.ID = gd.SteamGameID " +
-                $"WHERE PlayPriority IS NULL ";
+                $"WHERE PlayNextScore IS NULL ";
+            return GetEntities(query);
+        }
+
+        public async Task<List<SteamGame>> GetWithNullPlayPriorityAsync() {
+            QueryBuilder query = GetQueryBuilder();
+            query.SqlQuery += $"" +
+                $"LEFT JOIN GameDetails gd ON {TableName}.ID = gd.SteamGameID " +
+                $"WHERE PlayNextScore IS NULL ";
             return GetEntities(query);
         }
 

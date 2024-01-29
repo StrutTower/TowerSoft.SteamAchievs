@@ -1,0 +1,46 @@
+﻿@page "/Reports/RecentlyUnlocked"
+@inject AchievementDataService service
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Reports">Reports</a></li>
+    <li class="breadcrumb-item active">Recently Unlocked Achievements</li>
+</ul>
+
+<h3>Recently Unlocked Achievements</h3>
+
+@if (Models == null) {
+    <Loading />
+} else {
+    @foreach (RecentlyUnlockedAchievementModel model in Models) {
+        @if (lastGameID != model.SteamGame.ID) {
+            <hr />
+            <h4>
+                <a href="Game/View/@model.SteamGame.ID">
+                    @model.SteamGame.NameClean
+                </a>
+            </h4>
+        }
+
+        <div>
+            @model.Schema.Name
+            @if (model.UserAchievement.AchievedOn.HasValue) {
+                <span class="text-secondary"> (@model.UserAchievement.AchievedOn.Value)</span>
+            }
+        </div>
+
+        lastGameID = model.SteamGame.ID;
+    }
+}
+
+<ScrollMemory />
+
+@code {
+    private List<RecentlyUnlockedAchievementModel> Models;
+
+    private long lastGameID = 0;
+
+    protected override async Task OnInitializedAsync() {
+        Models = await service.GetLatestUnlocked();
+    }
+}

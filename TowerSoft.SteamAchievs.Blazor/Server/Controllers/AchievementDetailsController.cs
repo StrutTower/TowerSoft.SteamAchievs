@@ -6,8 +6,7 @@ using TowerSoft.SteamAchievs.Lib.Domain;
 using TowerSoft.SteamAchievs.Lib.Repository;
 
 namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
-    [Route("[controller]")]
-    [ApiController]
+    [Route("api/[controller]"), ApiController]
     public class AchievementDetailsController : ControllerBase {
         private readonly AchievementDetailsRepository repo;
         private readonly UnitOfWork uow;
@@ -17,6 +16,11 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Controllers {
             repo = uow.GetRepo<AchievementDetailsRepository>();
             this.uow = uow;
             this.mapper = mapper;
+        }
+
+        [HttpGet]
+        public async Task<AchievementDetailsModel[]> GetAll() {
+            return mapper.Map<AchievementDetailsModel[]>(await repo.GetAllAsync());
         }
 
         [HttpGet("{steamGameID}/{achievementKey}")]

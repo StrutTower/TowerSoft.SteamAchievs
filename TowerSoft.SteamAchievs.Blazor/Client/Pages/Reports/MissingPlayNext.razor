@@ -1,0 +1,25 @@
+﻿@page "/Reports/MissingPlayNext"
+@inject ReportsDataService service
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+    <li class="breadcrumb-item"><a href="Reports">Reports</a></li>
+    <li class="breadcrumb-item active">Missing Play Next Score</li>
+</ul>
+
+<h3>Missing Play Next Score</h3>
+<hr />
+
+@if (Model == null) {
+    <Loading />
+} else {
+    <GameList Model="Model"></GameList>
+}
+@code {
+
+    private GameListModel Model;
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.GetMissingPerfectPossibleGames();
+    }
+}

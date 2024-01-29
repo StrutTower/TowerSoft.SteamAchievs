@@ -31,6 +31,12 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
             return await GetEntitiesAsync(WhereEqual(x => x.SteamGameID, steamGameID));
         }
 
+        public async Task<List<SteamUserAchievement>> GetLatestUnlocked() {
+            return await GetEntitiesAsync(Query
+                .OrderByDescending(x => x.AchievedOn)
+                .LimitTo(200));
+        }
+
         public async Task<List<SteamUserAchievement>> GetBySteamGameIDsAsync(IEnumerable<long> steamGameIDs) {
             if (!steamGameIDs.SafeAny()) return default;
 

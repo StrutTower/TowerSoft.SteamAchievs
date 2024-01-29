@@ -8,6 +8,8 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Infrastructure {
             CreateMap<AchievementDetails, AchievementDetailsModel>().ReverseMap();
             CreateMap<AchievementTag, AchievementTagModel>().ReverseMap();
             CreateMap<Complication, ComplicationModel>().ReverseMap();
+            CreateMap<Company, CompanyModel>().ReverseMap();
+            CreateMap<GameCompany, GameCompanyModel>().ReverseMap();
             CreateMap<GameDetails, GameDetailsModel>().ReverseMap();
             CreateMap<PerfectGame, PerfectGameModel>().ReverseMap();
             CreateMap<RecentGame, RecentGameModel>().ReverseMap();

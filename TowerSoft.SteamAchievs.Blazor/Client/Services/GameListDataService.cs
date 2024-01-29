@@ -13,26 +13,26 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
         }
 
         public async Task<GameListModel> Search(string searchTerm) {
-            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("SteamGame/Search?q=" + searchTerm);
+            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/SteamGame/Search?q=" + searchTerm);
             return await GetGameListModel(games);
         }
 
         public async Task<GameListModel> GetGameListModel(IEnumerable<long> steamGameIDs) {
-            SteamGameModel[] games = await http.PostGetFromJson<SteamGameModel[]>("SteamGame/GetByIDs", steamGameIDs);
+            SteamGameModel[] games = await http.PostGetFromJson<SteamGameModel[]>("api/SteamGame/GetByIDs", steamGameIDs);
             return await GetGameListModel(games);
         }
 
         public async Task<GameListModel> GetGameListModel(IEnumerable<SteamGameModel> games) {
             List<long> steamGameIDs = games.Select(x => x.ID).ToList();
 
-            GameDetailsModel[] details = await http.PostGetFromJson<GameDetailsModel[]>("GameDetails/GetByIDs", steamGameIDs);
+            GameDetailsModel[] details = await http.PostGetFromJson<GameDetailsModel[]>("api/GameDetails/GetByIDs", steamGameIDs);
             Dictionary<long, GameDetailsModel> detailDictionary = details.ToDictionary(x => x.SteamGameID);
-            SteamUserAchievementModel[] achievements = await http.PostGetFromJson<SteamUserAchievementModel[]>("SteamUserAchievement/GetByIDs", steamGameIDs);
+            SteamUserAchievementModel[] achievements = await http.PostGetFromJson<SteamUserAchievementModel[]>("api/SteamUserAchievement/GetByIDs", steamGameIDs);
 
-            TagModel[] tags = await http.GetFromJsonAsync<TagModel[]>("Tag");
+            TagModel[] tags = await http.GetFromJsonAsync<TagModel[]>("api/Tag");
             Dictionary<long, TagModel> tagDictionary = tags.ToDictionary(x => x.ID);
 
-            AchievementTagModel[] achievementTags = await http.GetFromJsonAsync<AchievementTagModel[]>("AchievementTag");
+            AchievementTagModel[] achievementTags = await http.GetFromJsonAsync<AchievementTagModel[]>("api/AchievementTag");
 
             GameListModel model = new() { Games = new() };
             foreach (SteamGameModel game in games) {
@@ -65,32 +65,32 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
         }
 
         public async Task<GameListModel> GetPerfectGames() {
-            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("SteamGame/GameListType/" + GameListType.Perfect);
+            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/SteamGame/GameListType/" + GameListType.Perfect);
             return await GetGameListModel(games);
         }
 
         public async Task<GameListModel> GetNonPerfectGames() {
-            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("SteamGame/GameListType/" + GameListType.NonPerfect);
+            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/SteamGame/GameListType/" + GameListType.NonPerfect);
             return await GetGameListModel(games);
         }
 
         public async Task<GameListModel> GetIncompleteGames() {
-            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("SteamGame/GameListType/" + GameListType.Incomplete);
+            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/SteamGame/GameListType/" + GameListType.Incomplete);
             return await GetGameListModel(games);
         }
 
         public async Task<GameListModel> GetPerfectPossibleGames() {
-            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("SteamGame/GameListType/" + GameListType.PerfectPossible);
+            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/SteamGame/GameListType/" + GameListType.PerfectPossible);
             return await GetGameListModel(games);
         }
 
         public async Task<GameListModel> GetNoComplicationsGames() {
-            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("SteamGame/GameListType/" + GameListType.NoComplications);
+            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/SteamGame/GameListType/" + GameListType.NoComplications);
             return await GetGameListModel(games);
         }
 
         public async Task<GameListModel> GetPlayNextScoreGames() {
-            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("SteamGame/GameListType/" + GameListType.HasPlayNextScore);
+            SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/SteamGame/GameListType/" + GameListType.HasPlayNextScore);
             return await GetGameListModel(games);
         }
     }
