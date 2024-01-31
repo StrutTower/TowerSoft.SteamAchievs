@@ -22,7 +22,6 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
         public async Task<GameViewModel> GetGameViewModel(long id) {
             GameViewModel model = new() {
                 SteamGame = await http.GetFromJsonAsync<SteamGameModel>("api/SteamGame/" + id),
-                GameDetails = await http.GetFromJsonAsync<GameDetailsModel>("api/GameDetails/" + id),
                 Descriptions = await http.GetFromJsonAsync<SteamGameDescriptionsModel>("api/SteamGameDescriptions/" + id),
                 Achievements = await achievementDataService.GetBySteamGameID(id),
                 ComplicationTags = new(),
@@ -30,6 +29,9 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
                 UserTags = new(),
             };
 
+            try {
+                model.GameDetails = await http.GetFromJsonAsync<GameDetailsModel>("api/GameDetails/" + id);
+            } catch { }
 
             var companies = await http.GetFromJsonAsync<List<CompanyModel>>("api/Company/SteamGameID/" + id);
             model.Developers = companies.Where(x => x.IsDeveloper).ToList();

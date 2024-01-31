@@ -1,23 +1,25 @@
-﻿<div class="pt-2">
-    <div class="row mb-3">
-        <div class="col-auto">
-            <div class="column-label">Main Story Time</div>
-            <div class="text-center">@Model.GameDetails.MainStoryTime</div>
-        </div>
-        <div class="col-auto">
-            <div class="column-label">Main &amp; Sides</div>
-            <div class="text-center">@Model.GameDetails.MainAndSidesTime</div>
-        </div>
-        <div class="col-auto">
-            <div class="column-label">Completionist</div>
-            <div class="text-center">@Model.GameDetails.CompletionistTime</div>
-        </div>
-        <div class="col-auto">
-            <div class="column-label">All Styles</div>
-            <div class="text-center">@Model.GameDetails.AllStylesTime</div>
+﻿@if (Model.GameDetails != null) {
+    <div class="pt-2">
+        <div class="row mb-3">
+            <div class="col-auto">
+                <div class="column-label">Main Story Time</div>
+                <div class="text-center">@Model.GameDetails.MainStoryTime</div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">Main &amp; Sides</div>
+                <div class="text-center">@Model.GameDetails.MainAndSidesTime</div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">Completionist</div>
+                <div class="text-center">@Model.GameDetails.CompletionistTime</div>
+            </div>
+            <div class="col-auto">
+                <div class="column-label">All Styles</div>
+                <div class="text-center">@Model.GameDetails.AllStylesTime</div>
+            </div>
         </div>
     </div>
-</div>
+}
 
 @code {
     [Parameter]

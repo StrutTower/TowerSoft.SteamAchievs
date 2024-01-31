@@ -59,11 +59,13 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <div id="game-details-container">
-                <GameViewDetails GameDetails="Model.GameDetails" />
+        @if (Model.GameDetails != null) {
+            <div class="mb-3">
+                <div id="game-details-container">
+                    <GameViewDetails GameDetails="Model.GameDetails" />
+                </div>
             </div>
-        </div>
+        }
 
         <div class="row mb-2">
             <div class="col-auto text-center">
