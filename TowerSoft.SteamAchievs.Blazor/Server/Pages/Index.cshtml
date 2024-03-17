@@ -19,9 +19,17 @@
 
 <body>
     <div id="app">
-        <div class="text-center">
+        <div class="text-center mt-5 pt-5">
             <div>
-                <span class="mdi mdi-4x mdi-loading mdi-spin-fast"></span>
+                @*<span class="mdi mdi-4x mdi-loading mdi-spin-fast"></span>*@
+                <div class="bar-loader">
+                    <b></b>
+                    <b></b>
+                    <b></b>
+                    <b></b>
+                    <b></b>
+                    <b></b>
+                </div>
             </div>
             <h2>Initalizing...</h2>
         </div>
@@ -70,7 +78,12 @@
                 });
             }, 50);
         }
+
+        window.intializeRellax = function () {
+            new Rellax('.rellax');
+        }
     </script>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/dixonandmoe/rellax@master/rellax.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,32 @@
+﻿
+@switch (Model.Column.DataType) {
+    case ColumnDataType.Text:
+        @Model.Value.Text
+        break;
+    case ColumnDataType.Number:
+        @Model.Value.Number
+        break;
+    case ColumnDataType.Double:
+        @Model.Value.Double
+        break;
+    case ColumnDataType.Date:
+        if (Model.Value.DateTime.HasValue) {
+            @Model.Value.DateTime.Value.ToShortDateString()
+        }
+        break;
+    case ColumnDataType.DateTime:
+        if (Model.Value.DateTime.HasValue) {
+            @Model.Value.DateTime.Value.ToString()
+        }
+        break;
+    case ColumnDataType.RadioButtons:
+    case ColumnDataType.SelectList:
+        if (Model.SelectedChoice != null) {
+            @Model.SelectedChoice.Title
+        }
+        break;
+}
+
+@code {
+    [Parameter] public TableRowColumnViewModel Model { get; set; }
+}

@@ -40,6 +40,11 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
 
             foreach (SteamGame game in games) {
                 if (skipAppIDs.Contains(game.ID)) continue;
+                if (game.ID == 21170) continue;
+                if (game.ID == 206210) continue;
+#if DEBUG
+                Console.WriteLine("Checking HLTB data for " + game.NameClean);
+#endif
 
                 string searchName = game.NameClean
                     .Replace("™", "")
@@ -77,8 +82,22 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 if (searchName.Contains("(")) {
                     searchName = searchName.Substring(0, searchName.IndexOf("("));
                 }
-                
-                List<HltbModel> hltbModels = howLongToBeatService.Search(searchName).Result;
+
+                if (game.ID == 213030) {
+                    searchName = "Precipice of Darkness 3";
+                }
+
+                if (game.ID == 237570) {
+                    searchName = "Precipice of Darkness 4";
+                }
+
+                List<HltbModel> hltbModels;
+                try {
+                    hltbModels = howLongToBeatService.Search(searchName).Result;
+                } catch (Exception ex) {
+                    logger.LogWarning("Failed to get data from HLTB for " + game.NameClean);
+                    continue;
+                }
 
                 AttemptMatchAndSync(game, hltbModels, detailsDictionary, searchName);
             }
@@ -108,14 +127,18 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
                 Update(game, model, detailsDictionary);
 
             } else {
-                if (game.NameClean.Contains("-")) {
-                    string searchName2 = game.Name.Substring(0, game.NameClean.IndexOf("-") - 1).SafeTrim();
-                    List<HltbModel> hltbModels2 = howLongToBeatService.Search(searchName2).Result;
+                //if (game.NameClean.Contains("-")) {
+                //    string searchName2 = game.Name.Substring(0, game.NameClean.IndexOf("-") - 1).SafeTrim();
+                //    List<HltbModel> hltbModels2 = howLongToBeatService.Search(searchName2).Result;
 
-                    AttemptMatchAndSync(game, hltbModels2, detailsDictionary, searchName2);
-                } else {
+                //    AttemptMatchAndSync(game, hltbModels2, detailsDictionary, searchName2);
+                //} else {
+                if (hltbModels.SafeAny()) {
                     logger.LogInformation($"Unable to find a match for {searchName}.\n   Possible matches " + string.Join(", ", hltbModels.Select(x => $"{x.Name} ({x.ReleaseYear})")));
+                } else {
+                    logger.LogInformation($"Unable to find a match for {searchName}. No possible matches found.");
                 }
+                //}
             }
         }
 

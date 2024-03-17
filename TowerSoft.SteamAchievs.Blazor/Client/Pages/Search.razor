@@ -12,7 +12,7 @@
     [Parameter]
     public string SearchTerm { get; set; }
 
-    public GameListModel Model { get; set; }
+    public GameListViewModel Model { get; set; }
 
     protected async override Task OnInitializedAsync() {
         Model = await service.Search(SearchTerm);

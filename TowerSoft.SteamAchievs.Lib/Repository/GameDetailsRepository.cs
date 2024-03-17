@@ -29,7 +29,7 @@ namespace TowerSoft.SteamAchievs.Lib.Repository {
                 query.AddParameter($"@{counter}", id);
                 counter++;
             }
-
+            
             query.SqlQuery += string.Join(",", inStatements) + ") ";
 
             return await GetEntitiesAsync(query);

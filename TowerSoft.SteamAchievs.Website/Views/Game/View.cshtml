@@ -3,184 +3,194 @@
     ViewData["title"] = Model.SteamGame.NameClean;
 }
 
-<div id="game-background-img">
-    <img src="@Model.SteamGame.BackgroundUrl" />
-</div>
+@*<div id="game-background-img">
+        <img src="@Model.SteamGame.BackgroundUrl" />
+    </div>*@
 
-<div class="row">
-    <div class="col-12 col-lg-auto order-lg-last">
-        @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid" />
-        } else {
-            <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
-        }
+<div class="parallax-group">
+    <div class="parallax-layer parallax-layer-background" style="background-image:url(@Model.SteamGame.BackgroundUrl);">
+        @*<img src="@Model.SteamGame.BackgroundUrl" />*@
     </div>
-    <div class="col-12 col-lg font-shadow">
-        <div class="display-6" display-for="SteamGame.NameClean"></div>
-        @if (Model.SteamGame.Delisted) {
-            <p><strong class="text-danger">This game has been delisted from Steam</strong></p>
-        }
-        @if (!Model.Categories.SafeAny(x => x.Name == "Steam Cloud")) {
-            <p><strong class="text-danger">This game does not support Steam Cloud saves.</strong></p>
-        }
-        <p>
-            <a href="https://store.steampowered.com/app/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">Steam</a>
-            /
-            <a href="https://steamhunters.com/apps/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">SteamHunters</a>
-            /
-            <a href="https://www.pcgamingwiki.com/w/index.php?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">PCGamingWiki</a>
-        </p>
-        <p>
-            <a asp-action="Edit" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" id="edit-game-details-link">Edit Game Details</a>
-            /
-            <a asp-action="Sync" asp-route-id="@Model.SteamGame.ID">Resync Game</a>
-        </p>
+    <div class="parallax-layer parallax-layer-foreground">
 
-        <div class="row mb-3">
-            <div class="col-auto">
-                <div class="column-label">Deck Compatibility</div>
-                <div display-for="SteamGame.DeckCompatibility" class="text-center"></div>
-            </div>
-        </div>
 
-        <div class="mb-3">
-            <div id="game-details-container">
-                <partial name="_GameDetails" model="Model.GameDetails" />
-            </div>
-        </div>
-
-        @if (Model.ComplicationTags.SafeAny()) {
-            <div class="mb-3">
-                <div class="column-label">Complications</div>
-                @foreach (Tag tag in Model.ComplicationTags) {
-                    <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+        <div class="row">
+            <div class="col-12 col-lg-auto order-lg-last">
+                @if (string.IsNullOrWhiteSpace(Model.SteamGame.HeaderImageUrl)) {
+                    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/@Model.SteamGame.ID/header.jpg" class="img-fluid" />
+                } else {
+                    <img src="@Model.SteamGame.HeaderImageUrl" class="img-fluid" />
                 }
             </div>
-        }
-    </div>
-</div>
-
-
-
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="achievement-tab" data-bs-toggle="tab" data-bs-target="#achievement-tab-pane" type="button" role="tab">Achievements</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link@(Model.SteamGame.Delisted ? " disabled" : "")" id="game-info-tab" data-bs-toggle="tab" data-bs-target="#game-info-tab-pane" type="button" role="tab">Game Info</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="hltb-tab" data-bs-toggle="tab" data-bs-target="#hltb-tab-pane" type="button" role="tab">HowLongToBeat</button>
-    </li>
-</ul>
-<div class="tab-content mb-0 pb-2" id="myTabContent">
-    <div class="tab-pane fade show active" id="achievement-tab-pane" role="tabpanel" tabindex="0">
-        <div class="pt-2">
-            @if (Model.Achievements.SafeAny()) {
-                <div class="row">
-                    <div class="col-md-3 col-auto col-auto">
-
-                    </div>
-                    <div class="col-md-6 col text-md-center">
-                        <h5>
-                            @Model.Achievements.Count(x => x.Achieved) / @Model.Achievements.Count Achievements
-                        </h5>
-                    </div>
-                    <div class="col-md-3 col-auto text-md-end">
-                        <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@Model.SteamGame.ID" class="btn btn-link">
-                            <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md mb-2">
-                        <select id="achieved-filter" class="form-select">
-                            <option value="">All Achievements</option>
-                            <option value="True">Completed Achievements</option>
-                            <option value="False">Incompleted Achievements</option>
-                        </select>
-                    </div>
-                    <div class="col-md mb-2">
-                        <select id="achievement-filter" hidden multiple>
-                            @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
-                                <option value="@tag.ID">@tag.Name</option>
-                            }
-                            <option value="BLANK">No Tags</option>
-                        </select>
-                    </div>
-                    <div class="col-md mb-2">
-                        <select id="hide-tag-filter" hidden multiple>
-                            @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
-                                <option value="@tag.ID">@tag.Name</option>
-                            }
-                            <option value="BLANK">No Tags</option>
-                        </select>
-                        <div id="hide-filter-overridden" class="text-warning hidden">Overridden</div>
-                    </div>
-                </div>
-                @foreach (AchievementModel achievement in Model.Achievements.OrderByDescending(x => x.GlobalCompletionPercentage)) {
-                    <partial name="_Achievement" model="achievement" />
+            <div class="col-12 col-lg font-shadow">
+                <div class="display-6" display-for="SteamGame.NameClean"></div>
+                @if (Model.SteamGame.Delisted) {
+                    <p><strong class="text-danger">This game has been delisted from Steam</strong></p>
                 }
-            } else {
-                <h5 class="mt-3">This game does not have any achievements</h5>
-            }
-        </div>
-    </div>
+                @if (!Model.Categories.SafeAny(x => x.Name == "Steam Cloud")) {
+                    <p><strong class="text-danger">This game does not support Steam Cloud saves.</strong></p>
+                }
+                <p>
+                    <a href="https://store.steampowered.com/app/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">Steam</a>
+                    /
+                    <a href="https://steamhunters.com/apps/@Model.SteamGame.ID" target="_blank" rel="noopener noreferrer">SteamHunters</a>
+                    /
+                    <a href="https://www.pcgamingwiki.com/w/index.php?search=@Model.SteamGame.NameClean" target="_blank" rel="noopener noreferrer">PCGamingWiki</a>
+                </p>
+                <p>
+                    <a asp-action="Edit" asp-controller="Game" asp-route-id="@Model.SteamGame.ID" id="edit-game-details-link">Edit Game Details</a>
+                    /
+                    <a asp-action="Sync" asp-route-id="@Model.SteamGame.ID">Resync Game</a>
+                </p>
 
-    <div class="tab-pane fade pt-2" id="game-info-tab-pane" role="tabpanel" tabindex="0">
-        <div class="pt-2">
-            <div>
-                @foreach (SteamCategoryModel category in Model.Categories) {
-                    <span class="badge bg-primary" display-for="@category.Name"></span>
+                <div class="row mb-3">
+                    <div class="col-auto">
+                        <div class="column-label">Deck Compatibility</div>
+                        <div display-for="SteamGame.DeckCompatibility" class="text-center"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div id="game-details-container">
+                        <partial name="_GameDetails" model="Model.GameDetails" />
+                    </div>
+                </div>
+
+                @if (Model.ComplicationTags.SafeAny()) {
+                    <div class="mb-3">
+                        <div class="column-label">Complications</div>
+                        @foreach (Tag tag in Model.ComplicationTags) {
+                            <span class="badge" style="background-color:@tag.BackgroundColor;">@tag.Name</span>
+                        }
+                    </div>
                 }
             </div>
-            <div>
-                @foreach (SteamUserTagModel tag in Model.UserTags) {
-                    <span class="badge bg-info" display-for="@tag.Name"></span>
-                }
-            </div>
-            <hr />
-            @Html.Raw(Model.GameDescriptions.ShortDescription)
-            @Html.Raw(Model.GameDescriptions.AboutTheGame)
-            @Html.Raw(Model.GameDescriptions.DetailedDescription)
-            @Html.Raw(Model.GameDescriptions.LegalNotice)
         </div>
-    </div>
 
-    <div class="tab-pane fade pt-2" id="hltb-tab-pane" role="tabpanel" tabindex="0">
-        <div class="pt-2">
-            <div class="row mb-3">
-                <div class="col-auto">
-                    <div class="column-label">Main Story Time</div>
-                    <div display-for="GameDetails.MainStoryTime" class="text-center"></div>
+
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="achievement-tab" data-bs-toggle="tab" data-bs-target="#achievement-tab-pane" type="button" role="tab">Achievements</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link@(Model.SteamGame.Delisted ? " disabled" : "")" id="game-info-tab" data-bs-toggle="tab" data-bs-target="#game-info-tab-pane" type="button" role="tab">Game Info</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="hltb-tab" data-bs-toggle="tab" data-bs-target="#hltb-tab-pane" type="button" role="tab">HowLongToBeat</button>
+            </li>
+        </ul>
+        <div class="tab-content mb-0 pb-2" id="myTabContent">
+            <div class="tab-pane fade show active" id="achievement-tab-pane" role="tabpanel" tabindex="0">
+                <div class="pt-2">
+                    @if (Model.Achievements.SafeAny()) {
+                        <div class="row">
+                            <div class="col-md-3 col-auto col-auto">
+
+                            </div>
+                            <div class="col-md-6 col text-md-center">
+                                <h5>
+                                    @Model.Achievements.Count(x => x.Achieved) / @Model.Achievements.Count Achievements
+                                </h5>
+                            </div>
+                            <div class="col-md-3 col-auto text-md-end">
+                                <a asp-action="Edit" asp-controller="Tag" asp-area="Admin" asp-route-steamGameID="@Model.SteamGame.ID" class="btn btn-link">
+                                    <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Tag
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md mb-2">
+                                <select id="achieved-filter" class="form-select">
+                                    <option value="">All Achievements</option>
+                                    <option value="True">Completed Achievements</option>
+                                    <option value="False">Incompleted Achievements</option>
+                                </select>
+                            </div>
+                            <div class="col-md mb-2">
+                                <select id="achievement-filter" hidden multiple>
+                                    @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
+                                        <option value="@tag.ID">@tag.Name</option>
+                                    }
+                                    <option value="BLANK">No Tags</option>
+                                </select>
+                            </div>
+                            <div class="col-md mb-2">
+                                <select id="hide-tag-filter" hidden multiple>
+                                    @foreach (var tag in Model.AchievementTags.OrderBy(x => x.Name)) {
+                                        <option value="@tag.ID">@tag.Name</option>
+                                    }
+                                    <option value="BLANK">No Tags</option>
+                                </select>
+                                <div id="hide-filter-overridden" class="text-warning hidden">Overridden</div>
+                            </div>
+                        </div>
+                        @foreach (AchievementModel achievement in Model.Achievements.OrderByDescending(x => x.GlobalCompletionPercentage)) {
+                            <partial name="_Achievement" model="achievement" />
+                        }
+                    } else {
+                        <h5 class="mt-3">This game does not have any achievements</h5>
+                    }
                 </div>
-                <div class="col-auto">
-                    <div class="column-label">Main &amp; Sides</div>
-                    <div display-for="GameDetails.MainAndSidesTime" class="text-center"></div>
+            </div>
+
+            <div class="tab-pane fade pt-2" id="game-info-tab-pane" role="tabpanel" tabindex="0">
+                <div class="pt-2">
+                    <div>
+                        @foreach (SteamCategoryModel category in Model.Categories) {
+                            <span class="badge bg-primary" display-for="@category.Name"></span>
+                        }
+                    </div>
+                    <div>
+                        @foreach (SteamUserTagModel tag in Model.UserTags) {
+                            <span class="badge bg-info" display-for="@tag.Name"></span>
+                        }
+                    </div>
+                    <hr />
+                    @Html.Raw(Model.GameDescriptions.ShortDescription)
+                    @Html.Raw(Model.GameDescriptions.AboutTheGame)
+                    @Html.Raw(Model.GameDescriptions.DetailedDescription)
+                    @Html.Raw(Model.GameDescriptions.LegalNotice)
                 </div>
-                <div class="col-auto">
-                    <div class="column-label">Completionist</div>
-                    <div display-for="GameDetails.CompletionistTime" class="text-center"></div>
-                </div>
-                <div class="col-auto">
-                    <div class="column-label">All Styles</div>
-                    <div display-for="GameDetails.AllStylesTime" class="text-center"></div>
+            </div>
+
+            <div class="tab-pane fade pt-2" id="hltb-tab-pane" role="tabpanel" tabindex="0">
+                <div class="pt-2">
+                    <div class="row mb-3">
+                        <div class="col-auto">
+                            <div class="column-label">Main Story Time</div>
+                            <div display-for="GameDetails.MainStoryTime" class="text-center"></div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="column-label">Main &amp; Sides</div>
+                            <div display-for="GameDetails.MainAndSidesTime" class="text-center"></div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="column-label">Completionist</div>
+                            <div display-for="GameDetails.CompletionistTime" class="text-center"></div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="column-label">All Styles</div>
+                            <div display-for="GameDetails.AllStylesTime" class="text-center"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 
-<div class="modal fade" id="game-view-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Edit Achievement</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal fade" id="game-view-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Edit Achievement</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body" id="game-view-modal-body"></div>
+                </div>
             </div>
-
-            <div class="modal-body" id="game-view-modal-body"></div>
         </div>
+
     </div>
 </div>

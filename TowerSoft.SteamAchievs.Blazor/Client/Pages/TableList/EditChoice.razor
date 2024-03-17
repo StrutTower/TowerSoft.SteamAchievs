@@ -1,0 +1,62 @@
+﻿@page "/TableList/EditChoice/{ID:long?}"
+@inject TableListDataService service
+@inject NavigationManager navManager
+
+@if (editModel == null) {
+    <Loading />
+} else {
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="Game/View/@model.SteamGame.ID">@model.SteamGame.NameClean</a></li>
+        <li class="breadcrumb-item"><a href="TableList/List/@model.SteamGame.ID">Table Lists</a></li>
+        <li class="breadcrumb-item"><a href="TableList/Manage/@model.TableList.ID">Manage @model.TableList.Name</a></li>
+        <li class="breadcrumb-item active">Edit Column</li>
+    </ul>
+
+    <h3>@(editing ? "Edit" : "New") Choice</h3>
+    <hr />
+
+    <EditForm Model="@editModel" OnValidSubmit="ValidSubmit">
+        <ValidationSummary />
+        <DataAnnotationsValidator />
+
+        <HrFormField For="@(() => editModel.Title)">
+            <InputText @bind-Value="@editModel.Title" class="form-control" />
+            <ValidationMessage For="@(() => editModel.Title)" />
+        </HrFormField>
+
+        <HrFormField For="@(() => editModel.SortValue)">
+            <InputNumber @bind-Value="@editModel.SortValue" class="form-control" />
+            <ValidationMessage For="@(() => editModel.SortValue)" />
+        </HrFormField>
+
+        <HrCheckboxRadio For="@(() => editModel.IsActive)">
+            <InputCheckbox @bind-Value="@editModel.IsActive" class="form-check-input" />
+            <ValidationMessage For="@(() => editModel.IsActive)" />
+        </HrCheckboxRadio>
+
+        <HrSubmitButton />
+    </EditForm>
+}
+
+@code {
+    [Parameter] public long? ID { get; set; }
+
+    [Parameter, SupplyParameterFromQuery] public long? TableColumnID { get; set; }
+
+    private bool editing;
+    private EditChoiceModel model;
+    private TableColumnChoiceModel editModel;
+
+    protected override async Task OnInitializedAsync() {
+        if (ID.HasValue) editing = true;
+
+        model = await service.GetEditChoiceModel(ID, TableColumnID);
+        editModel = model.TableColumnChoice;
+    }
+
+    private async Task ValidSubmit(EditContext editContext) {
+        await service.AddOrUpdateTableColumnChoice(editModel);
+        navManager.NavigateTo("/TableList/ManageChoices/" + model.TableColumn.ID);
+    }
+}

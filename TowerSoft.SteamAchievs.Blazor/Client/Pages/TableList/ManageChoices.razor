@@ -1,0 +1,59 @@
+﻿@page "/TableList/ManageChoices/{ID:long}"
+@inject TableListDataService service
+
+
+@if (viewModel == null) {
+    <Loading />
+} else {
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="Game/View/@viewModel.SteamGame.ID">@viewModel.SteamGame.NameClean</a></li>
+        <li class="breadcrumb-item"><a href="TableList/List/@viewModel.SteamGame.ID">Table Lists</a></li>
+        <li class="breadcrumb-item"><a href="TableList/Manage/@viewModel.TableList.ID">Manage @viewModel.TableList.Name</a></li>
+        <li class="breadcrumb-item active">Manage Choices</li>
+    </ul>
+
+    <a href="TableList/EditChoice?tableColumnID=@viewModel.TableColumn.ID" class="btn btn-link float-end">
+        <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Choice
+    </a>
+    <h3>Manage Choices</h3>
+
+    @if (viewModel.Choices.SafeAny()) {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Title</th>
+                    <th>Sort</th>
+                    <th>Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (TableColumnChoiceModel choice in viewModel.Choices.OrderBy(x => x.SortValue).ThenBy(x => x.Title)) {
+                    <tr>
+                        <td>
+                            <a href="TableList/EditChoice/@choice.ID">
+                                <span class="mdi mdi-fw mdi-square-edit-outline"></span>
+                            </a>
+                        </td>
+                        <td>@choice.Title</td>
+                        <td>@choice.SortValue</td>
+                        <td>@choice.IsActive</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    } else {
+        <h5>No choices have been added yet.</h5>
+    }
+}
+
+@code {
+    [Parameter] public long ID { get; set; }
+
+    private ManageChoicesModel viewModel;
+
+    protected override async Task OnInitializedAsync() {
+        viewModel = await service.GetManageChoicesModel(ID);
+    }
+}

@@ -15,6 +15,7 @@ using TowerSoft.SteamAchievs.Lib.Repository;
 using TowerSoft.SteamAchievs.Lib.Services;
 using TowerSoft.SteamAchievs.Website.Areas.Admin.Services;
 using TowerSoft.SteamAchievs.Website.HtmlRenderers;
+using TowerSoft.SteamAchievs.Website.Infrastructure;
 using TowerSoft.SteamAchievs.Website.Services;
 using TowerSoft.SteamGridDbWrapper;
 using TowerSoft.SteamTower;
@@ -106,6 +107,8 @@ namespace TowerSoft.SteamAchievs.Website {
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
+
+            app.UseMiddleware<TestMiddleware>();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(

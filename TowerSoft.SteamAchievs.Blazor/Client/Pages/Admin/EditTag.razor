@@ -12,9 +12,9 @@
 <h3>@(editing ? "Edit" : "New") Tag</h3>
 <hr />
 
-
-
-@if (tag != null) {
+@if (tag == null) {
+    <Loading />
+} else {
     <EditForm Model="@tag" OnValidSubmit="ValidSubmit">
         <ValidationSummary />
         <DataAnnotationsValidator />

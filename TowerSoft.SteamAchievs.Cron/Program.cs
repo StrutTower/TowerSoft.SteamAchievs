@@ -42,6 +42,16 @@ if (args.Contains("-all")) {
         services.GetService<RecentGamesSync>().StartJob();
     if (args.Contains("-hidden"))
         services.GetService<HiddenAchievementSync>().StartJob();
+    if (args.Contains("-perfect"))
+        services.GetService<PerfectGameScan>().StartJob();
+    if (args.Contains("-extras")) {
+        services.GetService<HiddenAchievementSync>().StartJob();
+        services.GetService<HowLongToBeatSync>().StartJob();
+        services.GetService<PerfectGameScan>().StartJob();
+        services.GetService<ProtonDbSync>().StartJob();
+        services.GetService<RecentGamesSync>().StartJob();
+        services.GetService<UpdateGameDetails>().StartJob();
+    }
 }
 
 
@@ -52,7 +62,7 @@ static ServiceProvider ConfigureServices() {
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
 #else
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                //.AddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true)
 #endif
                 .AddJsonFile("appsecrets.json", optional: false, reloadOnChange: true)
                 .Build();
@@ -79,7 +89,7 @@ static ServiceProvider ConfigureServices() {
     services.AddHttpClient<AchievementStatsService>("achievementStats", client => { });
 
     services
-        .AddLogging(c => c.AddSerilog())
+        .AddLogging(c => c.AddSerilog(Log.Logger, true))
         .AddSingleton(configuration)
         .Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)))
         .AddScoped<FullGameSync>()
@@ -118,10 +128,10 @@ static void ConfigureLogger(AppSettings appSettings) {
     Log.Logger = new LoggerConfiguration()
         .Enrich.FromLogContext()
         .MinimumLevel.Override("System.Net.Http", LogEventLevel.Warning)
-        .WriteTo.Console(Serilog.Events.LogEventLevel.Information)
+        .WriteTo.Console(LogEventLevel.Information)
         .WriteTo.File(
             Environment.ExpandEnvironmentVariables(appSettings.LogPath),
-            Serilog.Events.LogEventLevel.Information,
+            LogEventLevel.Information,
             rollingInterval: RollingInterval.Day)
         .CreateLogger();
 

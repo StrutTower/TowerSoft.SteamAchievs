@@ -1,0 +1,52 @@
+﻿@page "/TableList/List/{ID:long?}"
+@inject TableListDataService service
+
+@if (Model == null) {
+    <Loading />
+} else {
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="Game/View/@Model.SteamGame.ID">@Model.SteamGame.NameClean</a></li>
+        <li class="breadcrumb-item active">Lists</li>
+    </ul>
+
+    <a href="TableList/Edit?steamGameID=@Model.SteamGame.ID" class="btn btn-link float-end">
+        <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add New List
+    </a>
+    <h3>Manage @Model.SteamGame.NameClean Lists</h3>
+    <hr />
+
+    <table class="table table-bordered table-striped w-auto">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var list in Model.TableLists) {
+                <tr>
+                    <td>@list.Name</td>
+                    <td>@list.ListType.ToString()</td>
+                    <td>@list.IsActive</td>
+                    <td>
+                        <a href="TableList/Edit/@list.ID">Edit</a> /
+                        <a href="TableList/Manage/@list.ID">Manage</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter] public long ID { get; set; }
+
+    private TableListManageModel Model;
+
+    protected async override Task OnInitializedAsync() {
+        Model = await service.GetTableListManageModel(ID);
+    }
+}

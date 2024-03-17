@@ -1,0 +1,74 @@
+﻿@page "/TableList/EditColumn/{ID:long?}"
+@inject TableListDataService service
+@inject NavigationManager navManager
+
+@if (tableColumn == null) {
+    <Loading />
+} else {
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="Game/View/@viewModel.SteamGame.ID">@viewModel.SteamGame.NameClean</a></li>
+        <li class="breadcrumb-item"><a href="TableList/List/@viewModel.SteamGame.ID">Table Lists</a></li>
+        <li class="breadcrumb-item"><a href="TableList/Manage/@viewModel.TableList.ID">Manage @viewModel.TableList.Name</a></li>
+        <li class="breadcrumb-item active">Edit Column</li>
+    </ul>
+
+    <h3>@(editing ? "Edit" : "New") Column</h3>
+    <hr />
+
+    <EditForm Model="@tableColumn" OnValidSubmit="@ValidSubmit">
+        <ValidationSummary />
+        <DataAnnotationsValidator />
+
+        <HrFormField For="@(() => tableColumn.Title)">
+            <InputText @bind-Value="@tableColumn.Title" class="form-control" />
+            <ValidationMessage For="@(() => tableColumn.Title)" />
+        </HrFormField>
+
+        <HrFormField For="@(() => tableColumn.DataType)">
+            <InputSelect @bind-Value="@tableColumn.DataType" class="form-select">
+                @foreach (ColumnDataType type in Enum.GetValues<ColumnDataType>()) {
+                    <option value="@type">@type.ToString()</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => tableColumn.DataType)" />
+        </HrFormField>
+
+        <HrFormField For="@(() => tableColumn.SortValue)">
+            <InputNumber @bind-Value="@tableColumn.SortValue" class="form-control" />
+            <ValidationMessage For="@(() => tableColumn.SortValue)" />
+        </HrFormField>
+
+        <HrCheckboxRadio For="@(() => tableColumn.IsActive)">
+            <InputCheckbox @bind-Value="@tableColumn.IsActive" class="form-check-input" />
+            <ValidationMessage For="@(() => tableColumn.IsActive)" />
+        </HrCheckboxRadio>
+
+        <HrSubmitButton />
+    </EditForm>
+}
+
+@code {
+    [Parameter] public long? ID { get; set; }
+
+    [Parameter, SupplyParameterFromQuery] public long? TableListID { get; set; }
+
+    private bool editing;
+    private EditTableColumnModel viewModel;
+    private TableColumnModel tableColumn;
+
+    protected override async Task OnInitializedAsync() {
+        viewModel = await service.GetEditTableColumnModel(ID, TableListID);
+        tableColumn = viewModel.TableColumn;
+        if (ID.HasValue) {
+            editing = true;
+        } else {
+            editing = false;
+        }
+    }
+
+    private async Task ValidSubmit(EditContext editContext) {
+        await service.AddOrUpdateTableColumn(tableColumn);
+        navManager.NavigateTo("/TableList/Manage/" + viewModel.TableList.ID);
+    }
+}

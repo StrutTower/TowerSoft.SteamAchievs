@@ -22,6 +22,12 @@ namespace TowerSoft.SteamAchievs.Blazor.Server.Infrastructure {
             CreateMap<SteamUserAchievement, SteamUserAchievementModel>().ReverseMap();
             CreateMap<SteamUserTag, SteamUserTagModel>().ReverseMap();
             CreateMap<Tag, TagModel>().ReverseMap();
+
+            CreateMap<TableList, TableListModel>().ReverseMap();
+            CreateMap<TableColumn, TableColumnModel>().ReverseMap();
+            CreateMap<TableColumnChoice, TableColumnChoiceModel>().ReverseMap();
+            CreateMap<TableRow, TableRowModel>().ReverseMap();
+            CreateMap<TableData, TableDataModel>().ReverseMap();
         }
     }
 }

@@ -10,7 +10,7 @@
 }
 
 @code {
-    private GameListModel Model;
+    private GameListViewModel Model;
 
     protected async override Task OnInitializedAsync() {
         Model = await service.GetPerfectGames();

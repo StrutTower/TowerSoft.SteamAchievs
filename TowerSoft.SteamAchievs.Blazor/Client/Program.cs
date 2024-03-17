@@ -24,6 +24,7 @@ builder.Services
     .AddScoped<GameListDataService>()
     .AddScoped<ReportsDataService>()
     .AddScoped<CompanyDataService>()
-    .AddScoped<TagDataService>();
+    .AddScoped<TagDataService>()
+    .AddScoped<TableListDataService>();
 
 await builder.Build().RunAsync();

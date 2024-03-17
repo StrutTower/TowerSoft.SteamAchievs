@@ -19,7 +19,7 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
             };
         }
 
-        public async Task<GameListModel> GetPerfectLostGameListModel() {
+        public async Task<GameListViewModel> GetPerfectLostGameListModel() {
             PerfectGameModel[] incompleteGames = await http.GetFromJsonAsync<PerfectGameModel[]>("api/PerfectGame/Incomplete");
             return await gameListDataService.GetGameListModel(incompleteGames.Select(x => x.SteamGameID));
         }

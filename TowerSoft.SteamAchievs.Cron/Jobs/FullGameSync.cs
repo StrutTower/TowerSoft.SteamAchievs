@@ -5,6 +5,7 @@ using TowerSoft.SteamAchievs.Lib.Models;
 using TowerSoft.SteamAchievs.Lib.Services;
 using TowerSoft.SteamTower;
 using TowerSoft.SteamTower.Models;
+using TowerSoft.Utilities;
 
 namespace TowerSoft.SteamAchievs.Cron.Jobs {
     public class FullGameSync {
@@ -31,7 +32,12 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
         public void Run() {
             List<UserAppModel> userAppModels = GetOwnedAppData();
 
-            steamDataService.RunAllSyncs(userAppModels);
+            //steamDataService.RunAllSyncs(userAppModels);
+
+            IEnumerable<IEnumerable<UserAppModel>> batchList = userAppModels.Batch(100);
+            foreach(IEnumerable<UserAppModel> batch in batchList) {
+                steamDataService.RunAllSyncs(batch.ToList());
+            }
         }
 
         private List<UserAppModel> GetOwnedAppData() {
@@ -39,12 +45,18 @@ namespace TowerSoft.SteamAchievs.Cron.Jobs {
 
             List<OwnedApp> ownedApps = steamApi.PlayerClient.GetOwnedApps(appSettings.DefaultSteamUserID).Result;
 
-
 #if DEBUG
-            //ownedApps = ownedApps.Where(x => x.Name.StartsWith("Sea of Stars Demo", StringComparison.OrdinalIgnoreCase)).ToList();
+            //ownedApps = ownedApps.Where(x => x.Name.StartsWith("Torchlight", StringComparison.OrdinalIgnoreCase)).ToList();
 #endif
 
             return steamDataService.LoadSteamData(ownedApps);
+
+            //IEnumerable<IEnumerable<OwnedApp>> batchedApps = ownedApps.Batch(250);
+            //List<UserAppModel> models = [];
+            //foreach (IEnumerable<OwnedApp> batch in batchedApps) {
+            //   models.AddRange(steamDataService.LoadSteamData(batch.ToList()));
+            //}
+            //return models;
         }
     }
 }

@@ -12,12 +12,12 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
             this.gameListDataService = gameListDataService;
         }
 
-        public async Task<GameListModel> GetMissingPerfectPossibleGames() {
+        public async Task<GameListViewModel> GetMissingPerfectPossibleGames() {
             SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/Reports/MissingPerfectPossible");
             return await gameListDataService.GetGameListModel(games);
         }
 
-        public async Task<GameListModel> GetMissingPlayNextGames() {
+        public async Task<GameListViewModel> GetMissingPlayNextGames() {
             SteamGameModel[] games = await http.GetFromJsonAsync<SteamGameModel[]>("api/Reports/MissingPlayNext");
             return await gameListDataService.GetGameListModel(games);
         }

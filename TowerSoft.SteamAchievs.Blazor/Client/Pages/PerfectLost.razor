@@ -7,7 +7,7 @@
 }
 
 @code {
-    private GameListModel gamelist;
+    private GameListViewModel gamelist;
 
     protected override async Task OnInitializedAsync() {
         gamelist = await service.GetPerfectLostGameListModel();

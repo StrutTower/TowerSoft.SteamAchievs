@@ -1,9 +1,10 @@
 ﻿@page "/Game/View/{ID:long}"
 @inject GameDataService service
 @inject TagDataService tagDataService
+@inject IJSRuntime JS
 
 @if (Model != null) {
-    <div id="game-background-img">
+    <div id="game-background-img" class="rellax" data-rellax-speed="-10">
         <img src="@Model.SteamGame.BackgroundUrl" />
     </div>
 
@@ -24,6 +25,10 @@
     protected async override Task OnInitializedAsync() {
         Model = await service.GetGameViewModel(ID);
         Tags = (await tagDataService.GetActiveBySteamGameID(ID)).ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        await JS.InvokeVoidAsync("intializeRellax");
     }
 
     private async Task ResyncGame() {

@@ -39,3 +39,55 @@
         }
     }
 }
+
+$backgroundColors: #754fa0,#09b7bf,#90d36b,#f2d40d,#fcb12b,#ed1b72;
+$animationTime: 0.5s;
+$animationStyle: cubic-bezier(.23,.78,.69,.84);
+
+.bar-loader {
+    width: 120px;
+    height: 100px;
+    text-align: center;
+    margin-left:auto;
+    margin-right:auto;
+    transition: all $animationTime $animationStyle;
+
+    b {
+        height: 100%;
+        width: 16px;
+        display: inline-block;
+        float: left;
+        margin-left: 2.4px;
+        margin-right: 2.4px;
+        transition: margin $animationTime $animationStyle;
+        animation: pulse 0.8s infinite ease-in-out;
+
+        $delay: -0.8;
+
+        @for $i from 1 through 6 {
+            &:nth-child(#{$i}) {
+                background: nth($backgroundColors, $i);
+                animation-delay: $delay + 0.1s;
+                $delay: $delay + 0.1s;
+            }
+        }
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+@keyframes pulse {
+    0%, 40%, 100% {
+        transform: scaleY(0.05);
+    }
+
+    20% {
+        transform: scaleY(1.0);
+    }
+}

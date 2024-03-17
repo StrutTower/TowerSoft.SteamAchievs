@@ -24,9 +24,10 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
                 SteamGame = await http.GetFromJsonAsync<SteamGameModel>("api/SteamGame/" + id),
                 Descriptions = await http.GetFromJsonAsync<SteamGameDescriptionsModel>("api/SteamGameDescriptions/" + id),
                 Achievements = await achievementDataService.GetBySteamGameID(id),
-                ComplicationTags = new(),
-                Categories = new(),
-                UserTags = new(),
+                ComplicationTags = [],
+                Categories = [],
+                UserTags = [],
+                Lists = []
             };
 
             try {
@@ -66,6 +67,56 @@ namespace TowerSoft.SteamAchievs.Blazor.Client.Services {
                 foreach (SteamGameUserTagModel gameUserTag in gameUserTags) {
                     SteamUserTagModel userTag = userTags[gameUserTag.SteamUserTagID];
                     model.UserTags.Add(userTag);
+                }
+            }
+
+            List<TableListModel> tableLists = await http.GetFromJsonAsync<List<TableListModel>>("api/TableList/SteamGameID/" + id);
+            if (tableLists?.Any() == true) {
+                List<TableColumnModel> columns = await http.GetFromJsonAsync<List<TableColumnModel>>("api/TableColumn/SteamGameID/" + id);
+                List<TableColumnChoiceModel> choices = await http.GetFromJsonAsync<List<TableColumnChoiceModel>>("api/TableColumnChoice/SteamGameID/" + id);
+                List<TableRowModel> rows = await http.GetFromJsonAsync<List<TableRowModel>>("api/TableRow/SteamGameID/" + id);
+                List<TableDataModel> values = await http.GetFromJsonAsync<List<TableDataModel>>("api/TableData/SteamGameID/" + id);
+
+                foreach (TableListModel tableList in tableLists.Where(x => x.IsActive).ToList()) {
+                    ManageTableListModel tableListModel = new() {
+                        TableList = tableList,
+                        Columns = [],
+                        Rows = []
+                    };
+
+                    var cols = columns.Where(x => x.IsActive && x.TableListID == tableList.ID).ToList();
+                    foreach(var col in cols) {
+                        ManageTableColumnViewModel colModel = new() {
+                            Column = col,
+                            Choices = choices.Where(x => x.TableColumnID == col.ID).ToList()
+                        };
+                        tableListModel.Columns.Add(colModel);
+                    }
+
+                    var listRows = rows.Where(x => x.IsActive && x.TableListID == tableList.ID).ToList();
+                    foreach(var row in listRows) {
+                        TableRowViewModel rowModel = new() {
+                            Row = row,
+                            Columns = []
+                        };
+                        foreach(var col in cols) {
+                            TableRowColumnViewModel rowColModel = new() {
+                                Column = col,
+                                RowID = row.ID,
+                                Value = values.SingleOrDefault(x => x.TableRowID == row.ID && x.TableColumnID == col.ID)
+                            };
+
+                            if (rowColModel.Value == null)
+                                rowColModel.Value = new() { TableRowID = row.ID, TableColumnID = col.ID };
+
+                            if (rowColModel.Value.ChoiceID.HasValue) {
+                                rowColModel.SelectedChoice = choices.SingleOrDefault(x => x.ID == rowColModel.Value.ChoiceID.Value);
+                            }
+                            rowModel.Columns.Add(rowColModel);
+                        }
+                        tableListModel.Rows.Add(rowModel);
+                    }
+                    model.Lists.Add(tableListModel);
                 }
             }
 

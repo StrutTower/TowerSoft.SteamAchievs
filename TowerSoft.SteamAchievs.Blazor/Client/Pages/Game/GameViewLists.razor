@@ -1,0 +1,83 @@
+﻿@inject TableListDataService service
+@inject IJSRuntime JS
+
+<div class="text-end">
+    <a href="TableList/List/@Model.SteamGame.ID">
+        Manage Lists
+    </a>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+    @foreach (var list in Model.Lists) {
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == list.TableList.Name + list.TableList.ID ? "active" : "")" type="button" role="tab"
+                    @onclick="() => TabClicked(list.TableList.Name + list.TableList.ID)">
+                @list.TableList.Name
+            </button>
+        </li>
+    }
+</ul>
+
+<div class="tab-content mb-0 pb-2">
+    @foreach (var list in Model.Lists) {
+        <div class="tab-pane fade py-1 @(activeTab == list.TableList.Name + list.TableList.ID ? "show active" : "")" role="tabpanel" tabindex="0">
+            <h5>@list.TableList.Name</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        @if (list.TableList.ListType == ListType.Checklist) {
+                            <th></th>
+                        }
+                        @foreach (var col in list.Columns.OrderBy(x => x.Column.SortValue).ThenBy(x => x.Column.Title)) {
+                            <th>
+                                <div>@col.Column.Title</div>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in list.Rows) {
+                        <tr>
+                            @if (list.TableList.ListType == ListType.Checklist) {
+                                <td class="min-width">
+                                    <input type="checkbox" checked="@row.Row.IsComplete" @onchange="(e) => CheckboxChanged(e, row.Row.ID)" />
+                                </td>
+                            }
+                            @foreach (var col in row.Columns.OrderBy(x => x.Column.SortValue).ThenBy(x => x.Column.Title)) {
+                                <td>
+                                    <TableDataDisplay Model="col" />
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public GameViewModel Model { get; set; }
+
+    private string activeTab;
+
+    protected override void OnInitialized() {
+        ManageTableListModel firstList = Model.Lists.First();
+        activeTab = firstList.TableList.Name + firstList.TableList.ID;
+    }
+
+    private async Task CheckboxChanged(ChangeEventArgs evt, long rowID) {
+        if (evt.Value is bool) {
+            bool isChecked = (bool)evt.Value;
+            if (!isChecked) {
+                bool confirmed = await JS.InvokeAsync<bool>("confirm", "Are you sure you want to uncheck this item?");
+                if (!confirmed) return;
+            }
+            await service.UpdateRowCompletion(rowID, isChecked);
+        }
+    }
+
+    private async Task TabClicked(string tabName) {
+        activeTab = tabName;
+    }
+}

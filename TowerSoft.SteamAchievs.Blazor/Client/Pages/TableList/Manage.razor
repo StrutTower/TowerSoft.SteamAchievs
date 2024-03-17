@@ -1,0 +1,73 @@
+﻿@page "/TableList/Manage/{ID:long?}"
+@inject TableListDataService service
+
+@if (Model == null) {
+    <Loading />
+} else {
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="Game/View/@Model.SteamGame.ID">@Model.SteamGame.NameClean</a></li>
+        <li class="breadcrumb-item"><a href="TableList/List/@Model.SteamGame.ID">Table Lists</a></li>
+        <li class="breadcrumb-item active">Manage @Model.TableList.Name</li>
+    </ul>
+
+    <a href="TableList/EditRow?tableListID=@Model.TableList.ID" class="btn btn-link float-end">
+        <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Row
+    </a>
+    <a href="TableList/EditColumn?tableListID=@Model.TableList.ID" class="btn btn-link float-end">
+        <span class="mdi mdi-fw mdi-plus-box-outline"></span>Add Column
+    </a>
+
+    <h3>Manage @Model.TableList.Name</h3>
+    <hr />
+
+    @if (Model.Columns.SafeAny()) {
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    @foreach (var col in Model.Columns.OrderBy(x => x.Column.SortValue).ThenBy(x => x.Column.Title)) {
+                        <th>
+                            <div>
+                                @col.Column.Title
+                                <a href="TableList/EditColumn/@col.Column.ID"><span class="mdi mdi-fw mdi-square-edit-outline"></span></a>
+
+                                @if (col.Column.DataType == ColumnDataType.RadioButtons || col.Column.DataType == ColumnDataType.SelectList) {
+                                    <a href="TableList/ManageChoices/@col.Column.ID"><span class="mdi mdi-fw mdi-view-list"></span></a>
+                                }
+                            </div>
+                            <div class="small text-faded">@col.Column.DataType</div>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Rows) {
+                    <tr>
+                        <td class="min-width">
+                            <a href="TableList/EditRow/@row.Row.ID"><span class="mdi mdi-fw mdi-square-edit-outline"></span></a>
+                        </td>
+                        @foreach (var col in row.Columns.OrderBy(x => x.Column.SortValue).ThenBy(x => x.Column.Title)) {
+                            <td>
+                                <TableDataDisplay Model="col" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    } else {
+        <h5>No columns have been added yet.</h5>
+    }
+}
+
+@code {
+    [Parameter] public long ID { get; set; }
+
+    private ManageTableListModel Model;
+
+    protected override async Task OnInitializedAsync() {
+        Model = await service.GetManageTableListModel(ID);
+    }
+}

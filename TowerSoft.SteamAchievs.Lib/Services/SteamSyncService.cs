@@ -92,10 +92,6 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                     OwnedApp = ownedApp,
                     SteamApp = steamApp,
                     GlobalAchievementStats = globalAchievements,
-                    GameStatsSchema = steamApi.UserStatsClient.GetGameStatsSchema(ownedApp.SteamAppID).Result,
-                    UserAchievements = steamApi.UserStatsClient.GetUserAchievements(appSettings.DefaultSteamUserID, ownedApp.SteamAppID).Result,
-                    DeckCompatibility = steamApi.StoreClient.GetDeckCompatibility(ownedApp.SteamAppID).Result,
-                    ReviewSummary = steamApi.StoreClient.GetReviews(ownedApp.SteamAppID).Result,
                     HltbModel = matchedHltbModel,
                     ProtonDbGame = protonDbGame,
                     UserTags = userTags,
@@ -103,6 +99,12 @@ namespace TowerSoft.SteamAchievs.Lib.Services {
                     Developers = new(),
                     Publishers = new()
                 };
+
+
+                model.GameStatsSchema = steamApi.UserStatsClient.GetGameStatsSchema(ownedApp.SteamAppID).Result;
+                model.UserAchievements = steamApi.UserStatsClient.GetUserAchievements(appSettings.DefaultSteamUserID, ownedApp.SteamAppID).Result;
+                model.DeckCompatibility = steamApi.StoreClient.GetDeckCompatibility(ownedApp.SteamAppID).Result;
+                model.ReviewSummary = steamApi.StoreClient.GetReviews(ownedApp.SteamAppID).Result;
 
 
                 if (steamApp.Developers.SafeAny()) {

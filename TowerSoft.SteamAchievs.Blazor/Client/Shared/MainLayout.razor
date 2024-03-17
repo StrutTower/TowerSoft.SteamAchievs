@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<NavMenu></NavMenu>
+<NavMenu />
 
 <main class="container">
     @Body
@@ -9,14 +9,14 @@
 <footer class="container">
     <hr />
     <p class="text-center">
-        <span style="height:.9em">
-            <span class="twr-logo" style="font-size:1.5em;vertical-align:top;margin-right:.2em;">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-        </span>
+        <svg height="1.5em" width="1.5em" style="transform: translateY(-2px);">
+            <rect height="11%" width="50%" x="-38%" y="38%" fill="white" transform="skewX(45)" />
+            <rect height="11%" width="50%" x="-15%" y="54%" fill="white" transform="skewX(45)" />
+
+            <rect height="11%" width="50%" x="19.5%" y="-25%" fill="white" transform="rotate(45) skewX(-45)" />
+            <rect height="11%" width="50%" x="76.5%" y="15%" fill="white" transform="rotate(45) skewX(-45)" />
+        </svg>
+
         <a href="https://github.com/StrutTower" target="_blank" rel="noopener noreferrer">TowerSoft</a>
         SteamAchievs
         &copy; @DateTime.Now.Year

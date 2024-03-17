@@ -1,0 +1,66 @@
+﻿@page "/TableList/Edit/{ID:long?}"
+@inject TableListDataService service
+@inject NavigationManager navManager
+
+@if (tableList == null) {
+    <Loading />
+} else {
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="Game/View/@viewModel.SteamGame.ID">@viewModel.SteamGame.NameClean</a></li>
+        <li class="breadcrumb-item"><a href="TableList/List/@viewModel.SteamGame.ID">Lists</a></li>
+        <li class="breadcrumb-item active">@(editing ? "Edit" : "New") Table List</li>
+    </ul>
+
+    <h3>@(editing ? "Edit" : "New") Table List</h3>
+    <hr />
+
+    <EditForm Model="@tableList" OnValidSubmit="@ValidSubmit">
+        <ValidationSummary />
+        <DataAnnotationsValidator />
+
+        <HrFormField For="@(() => tableList.Name)">
+            <InputText @bind-Value="@tableList.Name" class="form-control" />
+            <ValidationMessage For="@(() => tableList.Name)" />
+        </HrFormField>
+
+        <HrFormField For="@(() => tableList.ListType)">
+            <InputSelect @bind-Value="@tableList.ListType" class="form-select">
+                @foreach (ListType enumValue in Enum.GetValues<ListType>()) {
+                    <option value="@enumValue">@enumValue.ToString()</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => tableList.ListType)" />
+        </HrFormField>
+
+        <HrCheckboxRadio For="@(() => tableList.IsActive)">
+            <InputCheckbox @bind-Value="@tableList.IsActive" class="form-check-input" />
+            <ValidationMessage For="@(() => tableList.IsActive)" />
+        </HrCheckboxRadio>
+
+        <HrSubmitButton />
+    </EditForm>
+}
+
+@code {
+    [Parameter] public long? ID { get; set; }
+
+    [Parameter, SupplyParameterFromQuery] public long? SteamGameID { get; set; }
+
+    private EditTableListViewModel viewModel;
+    private TableListModel tableList;
+    private bool editing;
+
+    protected async override Task OnInitializedAsync() {
+        if (ID.HasValue) editing = true;
+        else editing = false;
+
+        viewModel = await service.GetEditTableListViewModel(ID, SteamGameID);
+        tableList = viewModel.TableList;
+    }
+
+    private async Task ValidSubmit(EditContext editContext) {
+        await service.AddOrUpdateTableList(tableList);
+        navManager.NavigateTo("/TableList/List/" + tableList.SteamGameID);
+    }
+}

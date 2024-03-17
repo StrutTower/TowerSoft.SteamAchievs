@@ -1,0 +1,92 @@
+﻿@page "/TableList/EditRow/{ID:long?}"
+@inject TableListDataService service
+@inject NavigationManager navManager
+
+@if (editModel == null) {
+    <Loading />
+} else {
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href=""><span class="mdi mdi-fw mdi-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="Game/View/@viewModel.SteamGame.ID">@viewModel.SteamGame.NameClean</a></li>
+        <li class="breadcrumb-item"><a href="TableList/List/@viewModel.SteamGame.ID">Table Lists</a></li>
+        <li class="breadcrumb-item"><a href="TableList/Manage/@viewModel.TableList.ID">Manage @viewModel.TableList.Name</a></li>
+        <li class="breadcrumb-item active">@(editing ? "Edit" : "New") Row</li>
+    </ul>
+    
+    <h3>@(editing ? "Edit" : "New") Row</h3>
+    <hr />
+
+    <EditForm Model="editModel" OnValidSubmit="ValidSubmit">
+        <ValidationSummary />
+        <DataAnnotationsValidator />
+        @foreach (TableRowColEditModel col in editModel.ColumnValues) {
+            <div class="row mb-3">
+                <div class="col-md-4 col-lg-3 col-form-label text-md-end">
+                    <label>@col.Title</label>
+                </div>
+                <div class="col-md-7 col-lg-6">
+                    @switch (col.DataType) {
+                        case ColumnDataType.Text:
+                            <InputText @bind-Value="@col.Data.Text" class="form-control" />
+                            break;
+                        case ColumnDataType.Number:
+                            <InputNumber @bind-Value="@col.Data.Number" class="form-control" />
+                            break;
+                        case ColumnDataType.Double:
+                            <InputNumber @bind-Value="@col.Data.Double" class="form-control" />
+                            break;
+                        case ColumnDataType.Date:
+                            <InputDate @bind-Value="@col.Data.Double" Type="InputDateType.Date" class="form-control" />
+                            break;
+                        case ColumnDataType.DateTime:
+                            <InputDate @bind-Value="@col.Data.Double" Type="InputDateType.DateTimeLocal" class="form-control" />
+                            break;
+                        case ColumnDataType.RadioButtons:
+                            <InputRadioGroup @bind-Value="col.Data.ChoiceID">
+                                @foreach (TableColumnChoiceModel choice in col.Choices.OrderBy(x => x.SortValue).ThenBy(x => x.Title)) {
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label">
+                                            <InputRadio Value="choice.ID" class="form-check-input" /> @choice.Title
+                                        </label>
+                                    </div>
+                                }
+                            </InputRadioGroup>
+                            break;
+                        case ColumnDataType.SelectList:
+                            <InputSelect @bind-Value="@col.Data.ChoiceID" class="form-select">
+                                @foreach (TableColumnChoiceModel choice in col.Choices.OrderBy(x => x.SortValue).ThenBy(x => x.Title)) {
+                                    <option value="@choice">@choice.Title</option>
+                                }
+                            </InputSelect>
+                            break;
+                    }
+                </div>
+            </div>
+        }
+
+        <HrSubmitButton />
+    </EditForm>
+}
+
+@code {
+    [Parameter] public long? ID { get; set; }
+
+    [Parameter, SupplyParameterFromQuery] public long? TableListID { get; set; }
+
+    private bool editing;
+    private EditTableRowModel viewModel;
+    private TableRowEditModel editModel;
+
+    protected override async Task OnInitializedAsync() {
+        if (ID.HasValue) editing = true;
+        else editing = false;
+
+        viewModel = await service.GetEditTableRowModel(ID, TableListID);
+        editModel = viewModel.EditModel;
+    }
+
+    private async Task ValidSubmit(EditContext editContext) {
+        await service.AddOrUpdateTableRow(editModel);
+        navManager.NavigateTo("/TableList/Manage/" + viewModel.TableList.ID);
+    }
+}

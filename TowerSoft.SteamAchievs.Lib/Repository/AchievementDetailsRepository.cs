@@ -2,7 +2,7 @@
 using TowerSoft.SteamAchievs.Lib.Domain;
 
 namespace TowerSoft.SteamAchievs.Lib.Repository {
-    public class AchievementDetailsRepository :DbRepository<AchievementDetails> {
+    public class AchievementDetailsRepository : DbRepository<AchievementDetails> {
         public AchievementDetailsRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 
         public AchievementDetails Get(long steamGameID, string achievementKey) {
